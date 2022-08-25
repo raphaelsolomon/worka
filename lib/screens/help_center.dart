@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:worka/phoenix/CustomScreens.dart';
 import 'package:worka/phoenix/dashboard_work/Success.dart';
 import '../phoenix/GeneralButtonContainer.dart';
@@ -111,7 +112,7 @@ class _Help_CenterState extends State<Help_Center> {
                     scheme: 'tel',
                     path: '+12673399844',
                   );
-                  await launch(launchUri.toString());
+                  await launchUrlString(launchUri.toString());
                 },
                 child: Row(
                   children: [

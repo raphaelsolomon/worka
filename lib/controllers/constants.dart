@@ -40,7 +40,7 @@ Map<String, Map<String, dynamic>> PLAN_PRICE = {
   'Silver Premium': {
     'price': '5000.00',
     'plan': '32282003',
-    'ID': 'SILVER_PREMIUM_PLAN',
+    'ID': 'worka_silver_plan',
     'color': Color(0xFFC0C0C0),
     'duration': 'Annually',
     'features': [
@@ -54,7 +54,7 @@ Map<String, Map<String, dynamic>> PLAN_PRICE = {
   'Gold Premium': {
     'price': '10000.00',
     'plan': '12900320',
-    'ID': 'GOLD_PREMIUM',
+    'ID': 'worka_gold_plan',
     'color': Color(0xFFFFD700),
     'duration': 'Annually',
     'features': [
@@ -68,7 +68,7 @@ Map<String, Map<String, dynamic>> PLAN_PRICE = {
   'Diamond': {
     'price': '20000.00',
     'plan': '40151001',
-    'ID': 'DIAMOND_PLAN',
+    'ID': 'worka_diamond_plan',
     'color': Color(0xFFB9F2FF),
     'duration': 'Annually',
     'features': [

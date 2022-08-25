@@ -22,7 +22,6 @@ import 'package:worka/interfaces/login_interface.dart';
 import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/GeneralButtonContainer.dart';
 import 'package:worka/phoenix/Resusable.dart';
-import 'package:worka/phoenix/dashboard_work/billing.dart';
 import 'package:worka/phoenix/dashboard_work/profile.dart';
 import 'package:worka/phoenix/model/MySkill.dart';
 import 'package:worka/screens/login_screen.dart';
@@ -3024,15 +3023,15 @@ Widget getDrawer(BuildContext context, scaffold, {name, type}) => Drawer(
               // ...
             },
           ),
-          ListTile(
-            title: Text('Billing', style: GoogleFonts.montserrat(fontSize: 16)),
-            leading: const Icon(Icons.payment, color: DEFAULT_COLOR),
-            onTap: () {
-              // Update the state of the app.
-              Get.to(() => BillingPage());
-              // ...
-            },
-          ),
+          // ListTile(
+          //   title: Text('Billing', style: GoogleFonts.montserrat(fontSize: 16)),
+          //   leading: const Icon(Icons.payment, color: DEFAULT_COLOR),
+          //   onTap: () {
+          //     // Update the state of the app.
+          //     Get.to(() => BillingPage());
+          //     // ...
+          //   },
+          // ),
           ListTile(
             title:
                 Text('Settings', style: GoogleFonts.montserrat(fontSize: 16)),
@@ -3156,15 +3155,15 @@ Widget getDrawer2(BuildContext context, scaffold) => Drawer(
               Get.to(() => PlanPrice());
             },
           ),
-          ListTile(
-            title: Text('Billing', style: GoogleFonts.montserrat(fontSize: 16)),
-            leading: const Icon(Icons.payment, color: DEFAULT_COLOR),
-            onTap: () {
-              // Update the state Getof the app.
-              // ...
-              Get.to(() => BillingPage());
-            },
-          ),
+          // ListTile(
+          //   title: Text('Billing', style: GoogleFonts.montserrat(fontSize: 16)),
+          //   leading: const Icon(Icons.payment, color: DEFAULT_COLOR),
+          //   onTap: () {
+          //     // Update the state Getof the app.
+          //     // ...
+          //     Get.to(() => BillingPage());
+          //   },
+          // ),
           ListTile(
             title:
                 Text('Settings', style: GoogleFonts.montserrat(fontSize: 16)),

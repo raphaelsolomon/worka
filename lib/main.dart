@@ -14,9 +14,7 @@ import 'employer_page/controller/empContoller.dart';
 import 'screens/welcome_screen.dart';
 
 final _configuration =
-    PurchasesConfiguration('appl_JmXeXxakZDeIwYPsxJOfyKwzbGm')
-      ..appUserID = null
-      ..observerMode = false;
+    PurchasesConfiguration('appl_gehUcjdPYKsNGkoMlngIqZZsktZ');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
