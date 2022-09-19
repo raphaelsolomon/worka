@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:flutter_paystack/flutter_paystack.dart';
+import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:worka/controllers/constants.dart';
+import 'package:worka/phoenix/CustomScreens.dart';
 import '../phoenix/Controller.dart';
 import '../phoenix/dashboard_work/Success.dart';
 import '../phoenix/model/Constant.dart';
@@ -28,13 +29,13 @@ class _PlanPriceState extends State<PlanPrice> {
   bool isLoading = false;
   bool isScrolled = false;
   String plan = '';
-  //final plugin = PaystackPlugin();
+  final plugin = PaystackPlugin();
   final _scrollController = ScrollController();
   bool platform = Platform.isIOS;
 
   @override
   void initState() {
-    //plugin.initialize(publicKey: PUBLIC_KEY);
+    plugin.initialize(publicKey: PUBLIC_KEY);
     Purchases.logIn(context.read<Controller>().email);
     super.initState();
   }
@@ -259,7 +260,7 @@ class _PlanPriceState extends State<PlanPrice> {
           }
           platform
               ? executeIOS(ID)
-              : print('');
+              : chargeCard(context, price, context.read<Controller>().email);
         },
         child: Container(
             width: MediaQuery.of(context).size.width,
@@ -288,33 +289,33 @@ class _PlanPriceState extends State<PlanPrice> {
             )),
       );
 
-  // chargeCard(BuildContext context, String price, String email) async {
-  //   Charge charge = Charge()
-  //     ..amount = double.tryParse('${price}')!.toInt() * 100
-  //     ..reference = _getReference()
-  //     //..accessCode = await _fetchAccessCodeFrmServer(email, '${price}00')
-  //     ..email = email;
-  //   CheckoutResponse response = await plugin.checkout(
-  //     context,
-  //     method: CheckoutMethod.card, // Defaults to CheckoutMethod.selectable
-  //     charge: charge,
-  //     fullscreen: false,
-  //     logo: Image.asset(
-  //       'assets/logo.png',
-  //       width: 50,
-  //       height: 50,
-  //       fit: BoxFit.cover,
-  //     ),
-  //   );
-  //   final reference = response.reference;
+   chargeCard(BuildContext context, String price, String email) async {
+    Charge charge = Charge()
+      ..amount = double.tryParse('${price}')!.toInt() * 100
+      ..reference = _getReference()
+      //..accessCode = await _fetchAccessCodeFrmServer(email, '${price}00')
+      ..email = email;
+    CheckoutResponse response = await plugin.checkout(
+      context,
+      method: CheckoutMethod.card, // Defaults to CheckoutMethod.selectable
+      charge: charge,
+      fullscreen: false,
+      logo: Image.asset(
+        'assets/logo.png',
+        width: 50,
+        height: 50,
+        fit: BoxFit.cover,
+      ),
+    );
+    final reference = response.reference;
 
-  //   // Checking if the transaction is successful
-  //   if (response.status) {
-  //     _verifyOnServer(reference);
-  //   } else {
-  //     CustomSnack('Error', response.message);
-  //   }
-  // }
+    // Checking if the transaction is successful
+    if (response.status) {
+      _verifyOnServer(reference);
+    } else {
+      CustomSnack('Error', response.message);
+    }
+  }
 
   // ignore: unused_element
   Future<String?> _fetchAccessCodeFrmServer(email, charge) async {
@@ -337,21 +338,21 @@ class _PlanPriceState extends State<PlanPrice> {
     return accessCode;
   }
 
-  // void _verifyOnServer(ref) async {
-  //   String url = 'https://api.paystack.co/transaction/verify/$ref';
-  //   try {
-  //     final response = await http.get(Uri.parse(url),
-  //         headers: {"Authorization": "Bearer $SECRET_KEY"});
-  //     if (response.statusCode == 200) {
-  //       final parsed = jsonDecode(response.body);
-  //       if (parsed['message'] == "Verification successful") {
-  //         updatePlan(plan, ref, context);
-  //       }
-  //     }
-  //   } catch (e) {
-  //     print(e.toString());
-  //   }
-  // }
+  void _verifyOnServer(ref) async {
+    String url = 'https://api.paystack.co/transaction/verify/$ref';
+    try {
+      final response = await http.get(Uri.parse(url),
+          headers: {"Authorization": "Bearer $SECRET_KEY"});
+      if (response.statusCode == 200) {
+        final parsed = jsonDecode(response.body);
+        if (parsed['message'] == "Verification successful") {
+          updatePlan(plan, ref, context);
+        }
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   executeIOS(String id) async {
     try {
