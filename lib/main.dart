@@ -14,11 +14,11 @@ import 'employer_page/controller/empContoller.dart';
 import 'screens/welcome_screen.dart';
 
 final _configuration =
-    PurchasesConfiguration('appl_gehUcjdPYKsNGkoMlngIqZZsktZ');
+    PurchasesConfiguration('appl_uyuvsRRrjeEWgnvXRbAQPptLoDV');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Purchases.setDebugLogsEnabled(true);
+  await Purchases.setDebugLogsEnabled(false);
   await Purchases.configure(_configuration);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());

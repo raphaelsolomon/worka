@@ -76,20 +76,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
           body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              height: 200,
-              width: 200,
               color: Colors.transparent,
               child: Padding(
-                padding: const EdgeInsets.all(30.0),
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 15.0, bottom: 10.0),
                 child: Image.asset(
-                  'assets/logo1.png',
-                  height: 190,
-                  width: 190,
+                  'assets/black.png',
+                  height: 280,
+                  width: 250,
                   fit: BoxFit.contain,
                 ),
               ),

@@ -197,7 +197,7 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 0.0),
-            child: CustomAuthForm('Last name', 'Last name', TextInputType.name,
+            child: CustomAuthForm('Last name', 'Last name', TextInputType.text,
                 ctl: lastNameController),
           ),
           const SizedBox(
@@ -265,7 +265,7 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 0.0),
             child: CustomAuthForm(
-                'Company Email', 'Company Email', TextInputType.name,
+                'Company Email', 'Company Email', TextInputType.emailAddress,
                 ctl: companyController),
           ),
           const SizedBox(

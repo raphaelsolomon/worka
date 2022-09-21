@@ -1,20 +1,23 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:worka/controllers/constants.dart';
+import 'package:worka/employer_page/payment_queue.dart';
 import 'package:worka/phoenix/CustomScreens.dart';
 import '../phoenix/Controller.dart';
 import '../phoenix/dashboard_work/Success.dart';
 import '../phoenix/model/Constant.dart';
+import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import '../phoenix/model/UserResponse.dart';
 
 class PlanPrice extends StatefulWidget {
@@ -32,37 +35,129 @@ class _PlanPriceState extends State<PlanPrice> {
   final plugin = PaystackPlugin();
   final _scrollController = ScrollController();
   bool platform = Platform.isIOS;
+  final InAppPurchase _inAppPurchase = InAppPurchase.instance;
+  late StreamSubscription<List<PurchaseDetails>> _subscription;
+
+  Map<String, Map<String, dynamic>> PLAN_PRICE = {
+    'Free': {
+      'price': '0.00',
+      'plan': '20220322',
+      'color': Colors.black,
+      'duration': 'Annually',
+      'details': ProductDetails(currencyCode: 'USD', description: '', id: '', price: '0.00', title: '', rawPrice: 0.00),
+      'features': [
+        'Access to five(5) shortlisted staff',
+        'Access to unlimited choice of candidate',
+        'Access to interview five(5) candidates',
+        'Access to online test/interview',
+        'Free access to candidate anywhere in the world'
+      ]
+    },
+    'Silver Premium': {
+      'price': '5000.00',
+      'plan': '32282003',
+      'ID': '_worka_silver_plan',
+      'color': Color(0xFFC0C0C0),
+      'duration': 'Annually',
+      'details': ProductDetails(currencyCode: 'USD', description: 'Worka Silver Plan', id: '_worka_silver_plan', price: '\$10.99', title: '', rawPrice: 10.99),
+      'features': [
+        'Access to ten(10) shortlisted staff',
+        'Access to unlimited choice of candidate',
+        'Access to interview ten(10) candidates',
+        'Access to online test/interview',
+        'Free access to candidate anywhere in the world'
+      ]
+    },
+    'Gold Premium': {
+      'price': '10000.00',
+      'plan': '12900320',
+      'ID': '_worka_gold_plan',
+      'color': Color(0xFFFFD700),
+      'duration': 'Annually',
+      'details': ProductDetails(currencyCode: 'USD', description: 'Worka Gold Plan', id: '_worka_gold_plan', price: '\$21.99', title: '', rawPrice: 21.99),
+      'features': [
+        'Access to twenty(20) shortlisted staffs',
+        'Access to unlimited choice of candidate',
+        'Access to interview twenty(20) candidates',
+        'Access to online test/interview',
+        'Free access to candidate anywhere in the world'
+      ]
+    },
+    'Diamond': {
+      'price': '20000.00',
+      'plan': '40151001',
+      'ID': '_worka_diamond_plan',
+      'color': Color(0xFFB9F2FF),
+      'duration': 'Annually',
+      'details': ProductDetails(currencyCode: 'USD', description: 'Worka Diamond Plan', id: '_worka_diamond_plan', price: '\$43.99', title: '', rawPrice: 43.99),
+      'features': [
+        'Unlimited access to shortlisted staffs',
+        'Unlimited access to choice of candidates',
+        'Unlimited access to test/interview candidates',
+        'Unlimited access to candidates anywhere in the world'
+      ]
+    }
+  };
 
   @override
   void initState() {
     plugin.initialize(publicKey: PUBLIC_KEY);
-    Purchases.logIn(context.read<Controller>().email);
+    initStoreInfo();
+    final purchaseUpdated = _inAppPurchase.purchaseStream;
+    SchedulerBinding.instance.addPostFrameCallback((_) { 
+      _subscription = purchaseUpdated.listen((event) {
+        _listenToPurchaseUpdated(event);
+      }, onDone: () => _subscription.cancel(), onError: (error) => print(error));
+    });
     super.initState();
   }
 
-  Future<List<Offering>> fetchOffers() async {
-    try {
-      final offerings = await Purchases.getOfferings();
-      final current = offerings.current;
+  @override
+  void dispose() {
+    disposeStore();
+    _subscription.cancel();
+    super.dispose();
+  }
 
-      return current == null ? [] : [current];
-    } on PlatformException {
-      return [];
+  Future<void> initStoreInfo() async {
+  if (Platform.isIOS) {
+    var iosPlatformAddition = _inAppPurchase
+            .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+    await iosPlatformAddition.setDelegate(PaymentQueueDelegate());
+  }
+}
+
+
+Future<void> disposeStore() async {
+  if (Platform.isIOS) {
+    var iosPlatformAddition = _inAppPurchase
+            .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+    await iosPlatformAddition.setDelegate(null);
+  }
+}
+
+  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) async {
+    for (var p in purchaseDetailsList) {
+      if(!p.pendingCompletePurchase) continue;
+
+        InAppPurchase.instance.completePurchase(p).then((value) {
+          updatePlan(plan, '${p.productID}_${_getReference()}', context);
+        });
     }
   }
 
-  executeFirst()async {
-    final offerings = await fetchOffers();
-    if(offerings.isEmpty){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No Plans Found'),));
-    }else{
-      final offer = offerings.first;
-      print(offer);
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
+    _inAppPurchase.purchaseStream.listen(
+        (List<PurchaseDetails> purchaseDetailsList) {
+      print(purchaseDetailsList.length);
+    }, onDone: () {
+      _subscription.cancel();
+    }, onError: (Object error) {
+      // handle error here.
+    });
     return Scaffold(
         resizeToAvoidBottomInset: false,
         floatingActionButtonLocation: isScrolled
@@ -243,14 +338,13 @@ class _PlanPriceState extends State<PlanPrice> {
           ),
           Visibility(
               visible: e != 'Free',
-              child: selectButton(context, '${plan_price['plan']}',
-                  '${plan_price['price']}', '${plan_price['ID']}'))
+              child: selectButton(context, '${plan_price['plan']}', '${plan_price['price']}', plan_price['details']))
         ],
       ),
     );
   }
 
-  selectButton(BuildContext context, String plan, String price, String ID) =>
+  selectButton(BuildContext context, String plan, String price, ProductDetails ID) =>
       GestureDetector(
         onTap: () async {
           this.plan = plan;
@@ -289,7 +383,7 @@ class _PlanPriceState extends State<PlanPrice> {
             )),
       );
 
-   chargeCard(BuildContext context, String price, String email) async {
+  chargeCard(BuildContext context, String price, String email) async {
     Charge charge = Charge()
       ..amount = double.tryParse('${price}')!.toInt() * 100
       ..reference = _getReference()
@@ -354,12 +448,10 @@ class _PlanPriceState extends State<PlanPrice> {
     }
   }
 
-  executeIOS(String id) async {
+  executeIOS(ProductDetails productDetail) async {
     try {
-      Purchases.purchaseProduct(id).then((value) {
-        updatePlan(
-            plan, '${value.originalAppUserId}_${_getReference()}', context);
-      });
+      final PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetail);
+      InAppPurchase.instance.buyConsumable(purchaseParam: purchaseParam);
     } catch (e) {}
   }
 }
