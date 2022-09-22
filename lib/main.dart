@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:worka/controllers/loading_controller.dart';
 import 'package:worka/employer_page/controller/answerController.dart';
 import 'package:worka/phoenix/Controller.dart';
@@ -13,13 +12,9 @@ import 'package:provider/provider.dart';
 import 'employer_page/controller/empContoller.dart';
 import 'screens/welcome_screen.dart';
 
-final _configuration =
-    PurchasesConfiguration('appl_uyuvsRRrjeEWgnvXRbAQPptLoDV');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Purchases.setDebugLogsEnabled(false);
-  await Purchases.configure(_configuration);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }

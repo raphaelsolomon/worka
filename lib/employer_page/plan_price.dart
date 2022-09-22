@@ -167,7 +167,7 @@ class _PlanPriceState extends State<PlanPrice> {
     this.purchaseDetailsList = purchaseDetailsList;
     for (var p in purchaseDetailsList) {
       if (p.status == PurchaseStatus.pending) {
-
+         
       } else if (p.status == PurchaseStatus.error) {
           CoolAlert.show(
               barrierDismissible: false,
@@ -188,7 +188,7 @@ class _PlanPriceState extends State<PlanPrice> {
   }
 
   verifyReceipt(product) async {
-    final response = await validateReceiptIos(product, false);
+    final response = await validateReceiptIos(product, true);
     if(response.statusCode == 200) {
        updatePlan(plan, '${product.productID}_${_getReference()}', context);
     }
@@ -395,7 +395,7 @@ class _PlanPriceState extends State<PlanPrice> {
           ),
           Visibility(
               visible: e != 'Free',
-              child: index > -1 && purchaseDetailsList[index].status == PurchaseStatus.purchased 
+              child: (index > -1 && purchaseDetailsList[index].status == PurchaseStatus.purchased)
               ? purchaseDate(DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.fromMillisecondsSinceEpoch(int.parse(purchaseDetailsList[index].transactionDate!))))
               : selectButton('${_PLAN_PRICE['plan']}', '${_PLAN_PRICE['price']}', _PLAN_PRICE['details']))
         ],
@@ -406,10 +406,16 @@ class _PlanPriceState extends State<PlanPrice> {
   selectButton(plan, price, ID) => GestureDetector(
         onTap: () async {
           this.plan = plan;
+          var transactions = await paymentWrapper.transactions();
           if (plan.toLowerCase() == 'free') {
             updatePlan(plan, _getReference()!, context);
             return;
           }
+          //pending transaction is available then cancel
+          transactions.forEach((transaction) async {
+            await paymentWrapper.finishTransaction(transaction);
+          });
+          //proceed to payment transaction
           executeIOS(ID);
         },
         child: Container(
@@ -456,8 +462,7 @@ class _PlanPriceState extends State<PlanPrice> {
 
   executeIOS(ProductDetails productDetail) async {
     try {
-      final PurchaseParam purchaseParam =
-          PurchaseParam(productDetails: productDetail);
+      final PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetail);
       InAppPurchase.instance.buyConsumable(purchaseParam: purchaseParam);
     } catch (e) {}
   }
