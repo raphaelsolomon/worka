@@ -403,7 +403,7 @@ class _PlanPriceState extends State<PlanPrice> {
     );
   }
 
-  selectButton(plan, price, ID) => GestureDetector(
+  selectButton(plan, price, product) => GestureDetector(
         onTap: () async {
           this.plan = plan;
           var transactions = await paymentWrapper.transactions();
@@ -416,7 +416,7 @@ class _PlanPriceState extends State<PlanPrice> {
             await paymentWrapper.finishTransaction(transaction);
           });
           //proceed to payment transaction
-          executeIOS(ID);
+          executeIOS(product);
         },
         child: Container(
             width: MediaQuery.of(context).size.width,
