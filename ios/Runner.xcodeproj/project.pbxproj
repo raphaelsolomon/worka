@@ -14,21 +14,8 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		A7AF0AC7DA6660908BC081F2 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D807D3E7A05C14E05469257E /* Pods_Runner.framework */; };
-		CE867DD228B6116600E38EF1 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE867DD128B6116600E38EF1 /* StoreKit.framework */; };
+		CE155AE928DC7F70004B73A8 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE867DD128B6116600E38EF1 /* StoreKit.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
@@ -60,7 +47,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A7AF0AC7DA6660908BC081F2 /* Pods_Runner.framework in Frameworks */,
-				CE867DD228B6116600E38EF1 /* StoreKit.framework in Frameworks */,
+				CE155AE928DC7F70004B73A8 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,7 +133,6 @@
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
-				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				ECDECC6632CD10DAC1A369B9 /* [CP] Embed Pods Frameworks */,
 			);
@@ -367,7 +353,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 4M5F6CFH72;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -376,7 +362,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wnetwork.worka;
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.wnetwork.worka;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -503,7 +489,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerDebug.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 4M5F6CFH72;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -512,7 +498,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wnetwork.worka;
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.wnetwork.worka;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -533,7 +519,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 4M5F6CFH72;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -542,7 +528,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wnetwork.worka;
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.wnetwork.worka;
 				PRODUCT_NAME = "$(TARGET_NAME)";

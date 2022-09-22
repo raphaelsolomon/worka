@@ -18,6 +18,7 @@ import 'package:worka/employer_page/phoenix/screens/EmpObjQuestions.dart';
 import 'package:worka/employer_page/phoenix/screens/companyProfile.dart';
 import 'package:worka/employer_page/phoenix/screens/postedJobs.dart';
 import 'package:worka/employer_page/phoenix/screens/theoryQuestion.dart';
+import 'package:worka/employer_page/plan_price_android.dart';
 import 'package:worka/interfaces/login_interface.dart';
 import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/GeneralButtonContainer.dart';
@@ -3152,7 +3153,10 @@ Widget getDrawer2(BuildContext context, scaffold) => Drawer(
             onTap: () {
               // Update the state Getof the app.
               // ...
-              Get.to(() => PlanPrice());
+              if (Platform.isIOS)
+                Get.to(() => PlanPrice());
+              else
+                Get.to(() => AndroidPlanPrice());
             },
           ),
           // ListTile(
@@ -3315,14 +3319,14 @@ upgradePop(BuildContext c) => showDialog(
       builder: (context) {
         return Dialog(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           elevation: 16,
           backgroundColor: Colors.white,
           child: Container(
               height: 200,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(30.0),
+                borderRadius: BorderRadius.circular(15.0),
               ),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

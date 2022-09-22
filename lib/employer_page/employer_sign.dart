@@ -100,10 +100,10 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
               ),
             ]),
             Image.asset(
-              'assets/logo1.png',
+              'assets/black.png',
               fit: BoxFit.contain,
               height: 100,
-              width: 100,
+              width: 150,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -189,7 +189,7 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 0.0),
-            child: CustomAuthForm('Full name', 'Full name', TextInputType.name,
+            child: CustomAuthForm('First name', 'First name', TextInputType.name,
                 ctl: firstnameController),
           ),
           const SizedBox(
