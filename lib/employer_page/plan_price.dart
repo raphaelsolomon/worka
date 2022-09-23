@@ -28,7 +28,7 @@ class PlanPrice extends StatefulWidget {
 }
 
 class _PlanPriceState extends State<PlanPrice> {
-  String reference = '';
+  String reference = 'Free';
   final Set<String> _kIds = <String>{
     '_worka_silver_plan',
     '_worka_gold_plan',
@@ -39,6 +39,7 @@ class _PlanPriceState extends State<PlanPrice> {
   bool isScrolled = false;
   bool isPurchased = false;
   String plan = '';
+  String key = '';
   final _scrollController = ScrollController();
   bool platform = Platform.isIOS;
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
@@ -50,6 +51,7 @@ class _PlanPriceState extends State<PlanPrice> {
       'plan': '20220322',
       'color': Colors.black,
       'duration': 'Annually',
+      'isSelected': false,
       'details': ProductDetails(
           currencyCode: 'USD',
           description: '',
@@ -79,13 +81,15 @@ class _PlanPriceState extends State<PlanPrice> {
               // Handle the error.
             }
             value.productDetails.forEach((product) {
-              if (product.id == '_worka_diamond_plan') {
+              setState(() {
+                if (product.id == '_worka_diamond_plan') {
                 _PLAN_PRICE.putIfAbsent('Diamond', () => {
                           'price': '20000.00',
                           'plan': '40151001',
                           'ID': '_worka_diamond_plan',
                           'color': Color(0xFFB9F2FF),
                           'duration': 'Annually',
+                          'isSelected': false,
                           'details': product,
                           'features': [
                             'Unlimited access to shortlisted staffs',
@@ -101,6 +105,7 @@ class _PlanPriceState extends State<PlanPrice> {
                           'ID': '_worka_gold_plan',
                           'color': Color(0xFFFFD700),
                           'duration': 'Annually',
+                          'isSelected': false,
                           'details': product,
                           'features': [
                             'Access to twenty(20) shortlisted staffs',
@@ -117,6 +122,7 @@ class _PlanPriceState extends State<PlanPrice> {
                           'ID': '_worka_silver_plan',
                           'color': Color(0xFFC0C0C0),
                           'duration': 'Annually',
+                          'isSelected': false,
                           'details': product,
                           'features': [
                             'Access to ten(10) shortlisted staff',
@@ -127,8 +133,8 @@ class _PlanPriceState extends State<PlanPrice> {
                           ]
                         });
               }
+              });
             });
-            setState(() {});
           });
         }
       });
@@ -167,7 +173,7 @@ class _PlanPriceState extends State<PlanPrice> {
     this.purchaseDetailsList = purchaseDetailsList;
     for (var p in purchaseDetailsList) {
       if (p.status == PurchaseStatus.pending) {
-         
+        
       } else if (p.status == PurchaseStatus.error) {
           CoolAlert.show(
               barrierDismissible: false,
@@ -175,6 +181,7 @@ class _PlanPriceState extends State<PlanPrice> {
               type: CoolAlertType.error,
               text: '${p.error!.code}\n${p.error!.details['NSLocalizedDescription']}',
               onConfirmBtnTap: () {
+                setState(() => _PLAN_PRICE[key]!['isSelected'] = false);
                   Navigator.pop(context);
                  },
               );
@@ -188,12 +195,12 @@ class _PlanPriceState extends State<PlanPrice> {
   }
 
   verifyReceipt(product) async {
-    final response = await validateReceiptIos(product, true);
+    print(this.purchaseDetailsList.length);
+    final response = await validateReceiptIos(product, false);
     if(response.statusCode == 200) {
        updatePlan(plan, '${product.productID}_${_getReference()}', context);
     }
-    print(response.body);
-    print(response.statusCode);
+    setState(() => _PLAN_PRICE[key]!['isSelected'] = false);
   }
 
   Future<http.Response> validateReceiptIos(PurchaseDetails product, isTest) async {
@@ -279,7 +286,7 @@ class _PlanPriceState extends State<PlanPrice> {
                     textAlign: TextAlign.center),
                 Expanded(
                     child: Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
+                  padding: const EdgeInsets.only(left: 5.0),
                   child: ListView.builder(
                       itemCount: _PLAN_PRICE.keys.toList().length,
                       scrollDirection: Axis.horizontal,
@@ -304,7 +311,7 @@ class _PlanPriceState extends State<PlanPrice> {
     return Container(
       width: 320,
       padding: const EdgeInsets.only(bottom: 20.0, right: 20.0, left: 20.0),
-      margin: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      margin: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 20.0),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
           color: Colors.white,
@@ -397,23 +404,27 @@ class _PlanPriceState extends State<PlanPrice> {
               visible: e != 'Free',
               child: (index > -1 && purchaseDetailsList[index].status == PurchaseStatus.purchased)
               ? purchaseDate(DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.fromMillisecondsSinceEpoch(int.parse(purchaseDetailsList[index].transactionDate!))))
-              : selectButton('${_PLAN_PRICE['plan']}', '${_PLAN_PRICE['price']}', _PLAN_PRICE['details']))
+              : _PLAN_PRICE['isSelected'] ? CircularProgressIndicator(
+                color: DEFAULT_COLOR,
+              ) : selectButton('${_PLAN_PRICE['plan']}', '${_PLAN_PRICE['price']}', _PLAN_PRICE['details'], e))
         ],
       ),
     );
   }
 
-  selectButton(plan, price, product) => GestureDetector(
+  selectButton(plan, price, product, String key) => GestureDetector(
         onTap: () async {
           this.plan = plan;
+          this.key = key;
           var transactions = await paymentWrapper.transactions();
+          setState(() => _PLAN_PRICE[key]!['isSelected'] = true);
           if (plan.toLowerCase() == 'free') {
             updatePlan(plan, _getReference()!, context);
             return;
           }
           //pending transaction is available then cancel
           transactions.forEach((transaction) async {
-            await paymentWrapper.finishTransaction(transaction);
+             await paymentWrapper.finishTransaction(transaction);
           });
           //proceed to payment transaction
           executeIOS(product);
@@ -445,14 +456,14 @@ class _PlanPriceState extends State<PlanPrice> {
             )),
       );
 
-      purchaseDate(date) => Container(
+  purchaseDate(date) => Container(
           width: MediaQuery.of(context).size.width,
           padding:
               const EdgeInsets.symmetric(horizontal: 20.0, vertical: 13.0),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(50.0),
-              color: DEFAULT_COLOR),
-          child: FittedBox(
+              color: Colors.grey),
+          child: Center(
             child: Text(
               '$date',
               style: GoogleFonts.montserrat(
@@ -470,8 +481,7 @@ class _PlanPriceState extends State<PlanPrice> {
 
 void updatePlan(String plan, String ref, BuildContext context) async {
   try {
-    final response = await http.Client()
-        .get(Uri.parse('${ROOT}plan_upgrade/$plan/$ref'), headers: {
+    final response = await http.Client().get(Uri.parse('${ROOT}plan_upgrade/$plan/$ref'), headers: {
       "Authorization": 'TOKEN ${context.read<Controller>().token}'
     });
     if (response.statusCode == 200) {
