@@ -2273,7 +2273,7 @@ Widget termOfUse(BuildContext context) => Column(
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(50.0),
-                            child: Image.asset('assets/icon.jpg',
+                            child: Image.asset('assets/editted.png',
                                 width: 50, height: 50, fit: BoxFit.contain),
                           ),
                           const SizedBox(width: 20.0),
@@ -2539,7 +2539,7 @@ Widget about(BuildContext context) => Column(
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(50.0),
-                            child: Image.asset('assets/icon.jpg',
+                            child: Image.asset('assets/editted.png',
                                 width: 50, height: 50, fit: BoxFit.contain),
                           ),
                           const SizedBox(width: 20.0),
@@ -2829,7 +2829,7 @@ Widget privacy(BuildContext context) => Column(
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(50.0),
-                            child: Image.asset('assets/icon.jpg',
+                            child: Image.asset('assets/editted.png',
                                 width: 50, height: 50, fit: BoxFit.contain),
                           ),
                           const SizedBox(width: 20.0),
