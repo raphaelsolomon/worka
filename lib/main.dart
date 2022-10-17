@@ -9,9 +9,8 @@ import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/Helper.dart';
 import 'package:worka/phoenix/ProfileController.dart';
 import 'package:provider/provider.dart';
+import 'package:worka/redesigns/employer/redesign_post_job.dart';
 import 'employer_page/controller/empContoller.dart';
-import 'screens/welcome_screen.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +41,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),
-            home: const WelcomeScreen(),
+            //home: const WelcomeScreen(),
+            home: const RePostJobs(),
           ));
 }
