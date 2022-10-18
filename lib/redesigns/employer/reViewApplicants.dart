@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:worka/phoenix/model/Constant.dart';
+import 'package:worka/redesigns/employer/re_application_details.dart';
 
 class ReViewApplicant extends StatelessWidget {
   const ReViewApplicant({super.key});
@@ -286,15 +287,18 @@ class ReViewApplicant extends StatelessWidget {
                                                       const SizedBox(
                                                         height: 8.0,
                                                       ),
-                                                      Text(
-                                                        'View Application',
-                                                        style: GoogleFonts.lato(
-                                                            fontSize: 15.0,
-                                                            color:
-                                                                DEFAULT_COLOR,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
+                                                      InkWell(
+                                                        onTap: () => Get.to(() => ReApplicationDetails()),
+                                                        child: Text(
+                                                          'View Application',
+                                                          style: GoogleFonts.lato(
+                                                              fontSize: 15.0,
+                                                              color:
+                                                                  DEFAULT_COLOR,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        ),
                                                       ),
                                                       const SizedBox(
                                                         height: 10.0,
