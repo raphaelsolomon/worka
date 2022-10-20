@@ -42,16 +42,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     getValidationData().then((value) async {
       Timer(
           const Duration(seconds: 4),
-          () => ILogin().getType().then((value) => {
+          () => ILogin().getType().then((value) {
                 if (value.isNotEmpty)
                   {
                     if (value == 'employer')
-                      {Get.offAll(() => EmployerNav())}
+                      {Get.offAll(() => EmployerNav());}
                     else
-                      {Get.offAll(() => const MainNav())}
+                      {Get.offAll(() => const MainNav());}
                   }
                 else
-                  {Get.offAll(() => WalkThrough())}
+                  {Get.offAll(() => WalkThrough());}
               }));
     });
     super.initState();
@@ -60,12 +60,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void execute() async {
     String token = await ILogin().getToken();
     if (token != null) {
-      ILogin().getType().then((value) => {
+      ILogin().getType().then((value) {
             if (value == 'employer')
               {}
             else
               {
-                context.read<Controller>().getRelative_JobTags(),
+                context.read<Controller>().getRelative_JobTags();
               }
           });
       context.read<Controller>().setToken(token, await ILogin().getType());
@@ -88,7 +88,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 child: Image.asset(
                   'assets/black.png',
                   height: 280,
-                  width: 250,
+                  width: 280,
                   fit: BoxFit.contain,
                 ),
               ),

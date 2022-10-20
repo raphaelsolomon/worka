@@ -6,7 +6,6 @@ import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/reuseables/general_button_container.dart';
 import 'package:worka/reuseables/general_container.dart';
-import 'package:worka/reuseables/general_header.dart';
 import 'package:provider/provider.dart';
 import 'package:worka/screens/help_center.dart';
 import 'package:worka/screens/login_screen.dart';
@@ -14,7 +13,6 @@ import 'package:worka/screens/registration_page.dart';
 
 import '../phoenix/CustomScreens.dart';
 import '../phoenix/dashboard_work/preview.dart';
-import 'main_screens/jobs_page.dart';
 
 class SelectionPage extends StatefulWidget {
   const SelectionPage({Key? key}) : super(key: key);
@@ -40,32 +38,29 @@ class _SelectionPageState extends State<SelectionPage> {
       child: Scaffold(
         body: ListView(
           children: [
-            Container(
-                padding: const EdgeInsets.fromLTRB(0, 25, 20, 0),
-                width: MediaQuery.of(context).size.width,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
-                    onTap: () => Get.to(() => const JobsPage()),
-                    child: Text('Skip',
-                        style: GoogleFonts.montserrat(
-                            color: const Color(0xff0D30D9),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500)),
-                  ),
-                )),
-            const GeneralHeader(
-              input1: 'Worka',
-              input2:
-                  'Select your Profile Type to Hire\n   Talents or Get job interview',
-              paddingTop: 84,
-              paddingLeft: 120,
-              paddingRight: 120,
-              paddingBottom: 0,
-              paddingLeft2: 40,
-              paddingRight2: 40,
-              paddingTop2: 12,
-              paddingBottom2: 0,
+            Row(
+              children: [
+                IconButton(
+                    icon: Icon(
+                      Icons.keyboard_backspace,
+                      color: DEFAULT_COLOR,
+                    ),
+                    onPressed: () => Get.back())
+              ],
+            ),
+            const SizedBox(
+              height: 15.0,
+            ),
+            Text(
+              'Worka.',
+              style: GoogleFonts.lato(fontSize: 14.0, color: DEFAULT_COLOR),
+            ),
+            const SizedBox(
+              height: 25.0,
+            ),
+            Text(
+              'Select your profile type.',
+              style: GoogleFonts.lato(fontSize: 14.0, color: DEFAULT_COLOR),
             ),
             GeneralContainer(
               name: 'EMPLOYER',

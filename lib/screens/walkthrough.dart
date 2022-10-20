@@ -72,12 +72,12 @@ final onboardingPagesList = [
         Expanded(
           child: Image.asset(
             'assets/illustration 2.png',
-            width: 200,
-            height: 200,
+            width: 240,
+            height: 240,
           ),
         ),
         Text('Attend to Job Interview on the go.',
-            style: GoogleFonts.montserrat(fontSize: 18)),
+            style: GoogleFonts.montserrat(fontSize: 20.0)),
         SizedBox(height: 10.0),
         Text(
             'Your Dream Job is a step away when you Attend  to interview invite',
@@ -92,12 +92,12 @@ final onboardingPagesList = [
         Expanded(
           child: Image.asset(
             'assets/illustration 1.png',
-            width: 200,
-            height: 200,
+            width: 240,
+            height: 240,
           ),
         ),
         Text('New Offers are waiting for you',
-            style: GoogleFonts.montserrat(fontSize: 17)),
+            style: GoogleFonts.montserrat(fontSize: 20.0)),
         SizedBox(height: 10.0),
         Text('job Offers uploaded from verified companies every minute',
             style: GoogleFonts.montserrat(fontSize: 13.5)),
