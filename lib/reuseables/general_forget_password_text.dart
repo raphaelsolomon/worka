@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:worka/phoenix/model/Constant.dart';
 
 class GeneralForgetPasswordText extends StatelessWidget {
   const GeneralForgetPasswordText(
@@ -19,7 +20,7 @@ class GeneralForgetPasswordText extends StatelessWidget {
           onPressed: onPress,
           child: Text(
             input,
-            style: GoogleFonts.montserrat(color: const Color(0xff0D30D9), fontSize: 12),
+            style: GoogleFonts.lato(color: DEFAULT_COLOR, fontSize: 13.5),
           ),
         ),
       ),

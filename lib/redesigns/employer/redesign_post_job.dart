@@ -22,7 +22,7 @@ class RePostJobs extends StatelessWidget {
               onTap: () => Get.back(),
               child: Icon(Icons.keyboard_backspace, color: DEFAULT_COLOR,)),
           const SizedBox(width: 20.0,),
-          Text('Post a Job', style: GoogleFonts.lato(fontSize: 19.0, color: Colors.black54),)
+          Text('Post a Job', style: GoogleFonts.lato(fontSize: 17.0, color: Colors.black54),)
         ],),
         const SizedBox(height: 30.0,),
         Expanded(child: Padding(
@@ -97,7 +97,7 @@ Widget inputWidget({text = 'Company Name', icons = Icons.person, hint = 'ProLink
       Row(children: [
           Icon(icons, color: Colors.black54,),
           const SizedBox(width: 20.0,),
-          Text('$text', style: GoogleFonts.lato(fontSize: 17.0, color: Colors.black54, fontWeight: FontWeight.bold),)
+          Text('$text', style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54, fontWeight: FontWeight.bold),)
         ],),
         const SizedBox(height: 10.0,),
         Container(
@@ -106,10 +106,10 @@ Widget inputWidget({text = 'Company Name', icons = Icons.person, hint = 'ProLink
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: TextFormField(controller: ctl, 
-          style: GoogleFonts.lato(fontSize: 17.0, color: Colors.black54),
+          style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-            hintStyle: GoogleFonts.lato(fontSize: 17.0, color: Colors.black54),
+            hintStyle: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),
             hintText: '$hint',
             border: OutlineInputBorder(borderSide: BorderSide.none)
           ),),
@@ -125,7 +125,7 @@ Widget inputWidgetRich({text = 'Job Description', icons = Icons.edit, hint = 'Ty
       Row(children: [
           Icon(icons, color: Colors.black54,),
           const SizedBox(width: 20.0,),
-          Text('$text', style: GoogleFonts.lato(fontSize: 17.0, color: Colors.black54, fontWeight: FontWeight.bold),)
+          Text('$text', style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54, fontWeight: FontWeight.bold),)
         ],),
         const SizedBox(height: 10.0,),
         Container(
@@ -136,10 +136,10 @@ Widget inputWidgetRich({text = 'Job Description', icons = Icons.edit, hint = 'Ty
           child: TextFormField(controller: ctl, 
           maxLines: null,
           keyboardType: TextInputType.multiline,
-          style: GoogleFonts.lato(fontSize: 17.0, color: Colors.black54),
+          style: GoogleFonts.lato(fontSize: 16.0, color: Colors.black54),
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-            hintStyle: GoogleFonts.lato(fontSize: 17.0, color: Colors.black54),
+            hintStyle: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),
             hintText: '$hint',
             border: OutlineInputBorder(borderSide: BorderSide.none)
           ),),
@@ -155,7 +155,7 @@ Widget inputDropDown(List<String> list, {text = 'Benefits', icons = Icons.shield
       Row(children: [
           Icon(icons, color: Colors.black54,),
           const SizedBox(width: 20.0,),
-          Text('$text', style: GoogleFonts.lato(fontSize: 17.0, color: Colors.black54, fontWeight: FontWeight.bold),)
+          Text('$text', style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54, fontWeight: FontWeight.bold),)
         ],),
         const SizedBox(height: 10.0,),
         Container(
@@ -178,11 +178,11 @@ Widget inputDropDown(List<String> list, {text = 'Benefits', icons = Icons.shield
               ),
               // initialValue: 'Male',
               onChanged: (s) => callBack(s),
-              hint: Text('$hint', style:  GoogleFonts.lato(fontSize: 17.0, color: Colors.black54)),
+              hint: Text('$hint', style:  GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
               items: list
                   .map((s) => DropdownMenuItem(
                         value: s,
-                        child: Text('$s', style: GoogleFonts.lato(fontSize: 17.0, color: Colors.black54),),
+                        child: Text('$s', style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),),
                       ))
                   .toList(),
             ),

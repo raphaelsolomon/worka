@@ -4,8 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:worka/employer_page/employer_sign.dart';
 import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/model/Constant.dart';
-import 'package:worka/reuseables/general_button_container.dart';
-import 'package:worka/reuseables/general_container.dart';
 import 'package:provider/provider.dart';
 import 'package:worka/screens/help_center.dart';
 import 'package:worka/screens/login_screen.dart';
@@ -36,7 +34,7 @@ class _SelectionPageState extends State<SelectionPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: ListView(
+        body: Column(
           children: [
             Row(
               children: [
@@ -53,73 +51,122 @@ class _SelectionPageState extends State<SelectionPage> {
             ),
             Text(
               'Worka.',
-              style: GoogleFonts.lato(fontSize: 14.0, color: DEFAULT_COLOR),
+              style: GoogleFonts.lato(
+                  fontSize: 14.0,
+                  color: DEFAULT_COLOR,
+                  fontWeight: FontWeight.w700),
             ),
             const SizedBox(
-              height: 25.0,
+              height: 45.0,
             ),
             Text(
               'Select your profile type.',
-              style: GoogleFonts.lato(fontSize: 14.0, color: DEFAULT_COLOR),
+              style: GoogleFonts.lato(
+                  fontSize: 20.0,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600),
             ),
-            GeneralContainer(
-              name: 'EMPLOYER',
-              onPress: () {
-                //Get.to(() => const EmployerSignUp()
+            const SizedBox(
+              height: 10.0,
+            ),
+            Text(
+              'Hire Talents or Get job Interview',
+              style: GoogleFonts.lato(
+                  fontSize: 14.0,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(
+              height: 40.0,
+            ),
+            GestureDetector(
+              onTap: () {
                 context.read<Controller>().changeSelectionPage("Employer");
               },
-              paddingLeft: 55,
-              paddingTop: 101,
-              paddingRight: 55,
-              paddingBottom: 0,
-              width: 200,
-              height: 50,
-              bcolor: context.watch<Controller>().selectionPage == "Employer"
-                  ? const Color(0xff0D30D9)
-                  : Colors.transparent,
-              stroke: 1.5,
-              size: 14,
+              child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.all(15.0),
+                  margin: const EdgeInsets.symmetric(horizontal: 40.0),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        width: .7,
+                        color: context.watch<Controller>().selectionPage ==
+                                "Employer"
+                            ? DEFAULT_COLOR
+                            : DEFAULT_COLOR.withOpacity(.2),
+                      ),
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.white),
+                  child: Center(
+                    child: Text(
+                      'Employer',
+                      style: GoogleFonts.lato(
+                          fontSize: 15.0, color: DEFAULT_COLOR),
+                    ),
+                  )),
             ),
-            GeneralContainer(
-                name: 'APPLICANT',
-                paddingLeft: 55,
-                paddingRight: 55,
-                paddingTop: 11,
-                paddingBottom: 0,
-                width: 200,
-                height: 45,
-                size: 14,
-                bcolor: context.watch<Controller>().selectionPage == "Employee"
-                    ? const Color(0xff0D30D9)
-                    : Colors.transparent,
-                stroke: 1.5,
-                onPress: () {
-                  //
-                  context.read<Controller>().changeSelectionPage("Employee");
-                }),
+            const SizedBox(
+              height: 20.0,
+            ),
+            GestureDetector(
+              onTap: () {
+                context.read<Controller>().changeSelectionPage("Employee");
+              },
+              child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.all(15.0),
+                  margin: const EdgeInsets.symmetric(horizontal: 40.0),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        width: .7,
+                        color: context.watch<Controller>().selectionPage ==
+                                "Employee"
+                            ? DEFAULT_COLOR
+                            : DEFAULT_COLOR.withOpacity(.2),
+                      ),
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.white),
+                  child: Center(
+                    child: Text(
+                      'Job Seeker',
+                      style: GoogleFonts.lato(
+                          fontSize: 15.0, color: DEFAULT_COLOR),
+                    ),
+                  )),
+            ),
             Padding(
-              padding: const EdgeInsets.only(top: 12),
+              padding: const EdgeInsets.only(top: 18, bottom: 18.0),
               child: Text('Choose an option to proceed',
-                  style: GoogleFonts.montserrat(
-                      color: const Color(0xffBDBDBD), fontSize: 13.0),
+                  style:
+                      GoogleFonts.lato(color: Colors.black87, fontSize: 13.0),
                   textAlign: TextAlign.center),
             ),
-            GeneralButtonContainer(
-                paddingWidth: 200,
-                paddingHeight: 45,
-                name: 'Get Started',
-                paddingLeft: 55,
-                paddingTop: 19,
-                paddingRight: 55,
-                paddingBottom: 25,
-                radius: 10,
-                onPress: () {
-                  if (context.read<Controller>().selectionPage == "Employee") {
-                    Get.to(() => const RegistrationPage());
-                  } else {
-                    Get.to(() => EmployerSignUp());
-                  }
-                }),
+            GestureDetector(
+              onTap: () {
+                if (context.read<Controller>().selectionPage == "Employee") {
+                  Get.to(() => const RegistrationPage());
+                } else {
+                  Get.to(() => EmployerSignUp());
+                }
+              },
+              child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.all(15.0),
+                  margin: const EdgeInsets.symmetric(horizontal: 40.0),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: DEFAULT_COLOR),
+                  child: Center(
+                    child: Text(
+                      'Get Started',
+                      style:
+                          GoogleFonts.lato(fontSize: 15.0, color: Colors.white),
+                    ),
+                  )),
+            ),
+            const SizedBox(
+              height: 20.0,
+            ),
             GestureDetector(
               onTap: () => Get.to(() => const LoginScreen()),
               child: Align(
@@ -128,14 +175,14 @@ class _SelectionPageState extends State<SelectionPage> {
                   text: TextSpan(
                       text: 'Already have an account?',
                       style: GoogleFonts.montserrat(
-                          color: Colors.black,
-                          fontSize: 12.5,
+                          color: Colors.black87,
+                          fontSize: 13.5,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 1),
                       children: [
                         TextSpan(
                             text: ' Login',
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.lato(
                                 color: const Color(0xff0D30D9),
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -155,7 +202,7 @@ class _SelectionPageState extends State<SelectionPage> {
                   },
                   child: Text(
                     'Terms of Use',
-                    style: GoogleFonts.montserrat(
+                    style: GoogleFonts.lato(
                         fontSize: 14.0, color: DEFAULT_COLOR),
                   ),
                 ),
@@ -168,7 +215,7 @@ class _SelectionPageState extends State<SelectionPage> {
                   },
                   child: Text(
                     'Help Center',
-                    style: GoogleFonts.montserrat(
+                    style: GoogleFonts.lato(
                         fontSize: 14.0, color: DEFAULT_COLOR),
                   ),
                 ),
@@ -181,7 +228,7 @@ class _SelectionPageState extends State<SelectionPage> {
                   },
                   child: Text(
                     'About Us',
-                    style: GoogleFonts.montserrat(
+                    style: GoogleFonts.lato(
                         fontSize: 14.0, color: DEFAULT_COLOR),
                   ),
                 ),

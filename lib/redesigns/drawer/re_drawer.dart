@@ -1,52 +1,73 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:worka/employer_page/employer_settings.dart';
+import 'package:worka/employer_page/plan_price.dart';
+import 'package:worka/employer_page/plan_price_android.dart';
+import 'package:worka/interfaces/login_interface.dart';
+import 'package:worka/redesigns/employer/re_company_profile.dart';
+import 'package:worka/redesigns/employer/redesign_home_page.dart';
+import 'package:worka/screens/help_center.dart';
+import 'package:worka/screens/selection_page.dart';
+
+import '../../employer_page/controller/empContoller.dart';
+import '../../phoenix/Controller.dart';
 import '../../phoenix/model/Constant.dart';
 
 class ReDrawer extends StatelessWidget {
-  const ReDrawer({Key? key}) : super(key: key);
+  final GlobalKey<ScaffoldState> scaffold;
+  const ReDrawer(this.scaffold, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width - 110,
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      width: MediaQuery.of(context).size.width - 100,
       height: MediaQuery.of(context).size.height,
       color: Colors.white,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const SizedBox(
+            height: 30.0,
+          ),
           Row(
             children: [
               CircleAvatar(
                 backgroundColor: DEFAULT_COLOR.withOpacity(.03),
-                radius: 30,
-                child: Image.network(
-                  '',
-                  width: 20.0,
-                  height: 20.0,
-                  fit: BoxFit.contain,
+                radius: 35,
+                backgroundImage: NetworkImage(
+                  '${context.watch<Controller>().avatar}',
                 ),
               ),
               const SizedBox(
-                width: 25.0,
+                width: 20.0,
               ),
               Flexible(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Clinton Okeowo',
+                      '${context.watch<Controller>().userNames}',
                       style: GoogleFonts.lato(
                           fontSize: 17.0,
                           color: Colors.black87,
-                          fontWeight: FontWeight.w500),
+                          fontWeight: FontWeight.w600),
                     ),
-                    Text(
-                      'Info@FkliyNetwork.inc,',
-                      style: GoogleFonts.lato(
-                          fontSize: 16.0,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500),
+                    const SizedBox(
+                      height: 5.0,
+                    ),
+                    FittedBox(
+                      child: Text(
+                        '${context.watch<Controller>().email}',
+                        style: GoogleFonts.lato(
+                            fontSize: 14.0,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w400),
+                      ),
                     ),
                   ],
                 ),
@@ -54,40 +75,66 @@ class ReDrawer extends StatelessWidget {
             ],
           ),
           const SizedBox(
-            height: 20.0,
+            height: 50.0,
           ),
           Expanded(
               child: Column(
             children: [
-              items(),
-              const SizedBox(height: 10.0),
-              items(icons: Icons.shopping_bag, text: 'Jobs'),
-              const SizedBox(height: 10.0),
-              items(icons: Icons.laptop, text: 'Interviews'),
-              const SizedBox(height: 10.0),
-              items(icons: Icons.settings, text: 'Settings'),
-              const SizedBox(height: 10.0),
-              items(icons: Icons.headphones, text: 'Help Center'),
+              items(callBack: () =>  Get.to(() => ReCompanyProfile())),
+              const SizedBox(height: 20.0),
+              items(icons: Icons.shopping_bag, text: 'Jobs', callBack: () => Get.to(() => ReHomePage())),
+              const SizedBox(height: 20.0),
+              items(icons: Icons.laptop, text: 'Interviews', callBack: () {}),
+              const SizedBox(height: 20.0),
+              items(
+                  icons: Icons.money,
+                  text: 'Plans',
+                  callBack: () {
+                    if (Platform.isIOS)
+                      Get.to(() => PlanPrice());
+                    else
+                      Get.to(() => AndroidPlanPrice());
+                  }),
+              const SizedBox(height: 20.0),
+              items(
+                  icons: Icons.settings,
+                  text: 'Settings',
+                  callBack: () => Get.to(() => EmployerSettings())),
+              const SizedBox(height: 20.0),
+              items(
+                  icons: Icons.headphones,
+                  text: 'Help Center',
+                  callBack: () => Get.to(() => Help_Center())),
             ],
           )),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.logout_sharp,
-                color: DEFAULT_COLOR,
-                size: 16.0,
-              ),
-              Text('Sign Out',
-                  style:
-                      GoogleFonts.lato(fontSize: 14.0, color: Colors.black54))
-            ],
+          InkWell(
+            onTap: () {
+              ILogin()
+                  .logout()
+                  .whenComplete(() => {Get.offAll(() => SelectionPage())});
+              context.read<EmpController>().signOut();
+              context.read<Controller>().logout();
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.logout_sharp,
+                  color: DEFAULT_COLOR,
+                  size: 16.0,
+                ),
+                Text('Sign Out',
+                    style:
+                        GoogleFonts.lato(fontSize: 14.0, color: Colors.black54))
+              ],
+            ),
           ),
           const SizedBox(
-            height: 8.0,
+            height: 10.0,
           ),
           Text('Version 1.0.2021',
-              style: GoogleFonts.lato(fontSize: 13.0, color: Colors.black54))
+              style: GoogleFonts.lato(fontSize: 13.0, color: Colors.black54)),
+          const SizedBox(height: 20.0)
         ],
       ),
     );
@@ -98,23 +145,29 @@ Widget items({icons = Icons.person, text = 'Company Profile', callBack}) {
   return InkWell(
     onTap: () => callBack(),
     child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.black12.withOpacity(.6),
-              offset: Offset(0.0, 1.0),
-              blurRadius: 9.0,
-              spreadRadius: 1.0
-            )
+                color: Colors.black12.withOpacity(.2),
+                offset: Offset(0.0, 1.0),
+                blurRadius: 10.0,
+                spreadRadius: 1.0)
           ]),
-          child: Row(children: [
-            Icon(icons, size: 18.0, color: DEFAULT_COLOR,),
-            const SizedBox(width: 18.0,),
-            Text('$text', style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54))
-          ]),
+      child: Row(children: [
+        Icon(
+          icons,
+          size: 18.0,
+          color: DEFAULT_COLOR,
+        ),
+        const SizedBox(
+          width: 18.0,
+        ),
+        Text('$text',
+            style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54))
+      ]),
     ),
   );
 }

@@ -162,7 +162,7 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
                                   : Colors.transparent)),
                       child: Center(
                           child: Text(
-                        'Contact Infomation',
+                        'Contact Information',
                         style: GoogleFonts.montserrat(
                             fontSize: 12.0, fontWeight: FontWeight.w500),
                       )),

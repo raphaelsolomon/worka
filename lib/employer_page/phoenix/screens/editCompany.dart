@@ -13,7 +13,6 @@ import 'package:worka/models/compModel.dart';
 import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/CustomScreens.dart';
 import 'package:worka/phoenix/GeneralButtonContainer.dart';
-import 'package:worka/phoenix/Resusable.dart';
 import 'package:http/http.dart' as http;
 import 'package:worka/phoenix/model/Constant.dart';
 
@@ -71,7 +70,7 @@ class _EditCompanyState extends State<EditCompany> {
         child: Column(
           children: [
             const SizedBox(height: 5.0),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Row(children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 7.0),
                 child: IconButton(
@@ -81,8 +80,8 @@ class _EditCompanyState extends State<EditCompany> {
                 ),
               ),
               Text('Edit Profile',
-                  style: GoogleFonts.montserrat(
-                      fontSize: 18, color: Color(0xff0D30D9))),
+                  style:
+                      GoogleFonts.lato(fontSize: 15.0, color: Colors.black87)),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 7.0),
                 child: IconButton(
@@ -106,33 +105,40 @@ class _EditCompanyState extends State<EditCompany> {
                     } on MissingPluginException {}
                   }),
                   const SizedBox(height: 25.0),
-                  CustomTextForm(
-                      fname, 'First Name', 'First Name', TextInputType.text,
-                      read: false),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child:
+                          getCardForm('First Name', 'First name', ctl: fname)),
                   SizedBox(height: 7.0),
-                  CustomTextForm(
-                      lname, 'Last Name', 'Last Name', TextInputType.text,
-                      read: false),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: getCardForm('Last Name', 'Last name', ctl: lname)),
                   SizedBox(height: 7.0),
-                  CustomTextForm(
-                      name, 'Company Name', 'Company Name', TextInputType.text,
-                      read: false),
-                  SizedBox(height: 7.0),
-                  CustomTextForm(email, 'E-mail Address', 'E-mail Address',
-                      TextInputType.text,
-                      read: true),
-                  SizedBox(height: 10.0),
-                  buildCSC(),
-                  SizedBox(height: 7.0),
-                  CustomTextForm(phone, 'Phone Number', 'Phone Number',
-                      TextInputType.phone, read: false, format: [
-                    MaskTextInputFormatter(mask: '+(###) ### ### ####')
-                  ]),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: getCardForm('Company Name', 'Company Name',
+                          ctl: name)),
                   SizedBox(height: 7.0),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: buildPaddingDropdown(
-                        INDUSTRY_ITEMS, '${widget.compModel.industry}',
+                    child: getCardForm('E-mail Address', 'E-mail Address',
+                        ctl: email, read: true),
+                  ),
+                  SizedBox(height: 10.0),
+                  buildCSC(),
+                  SizedBox(height: 7.0),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: getCardForm('Phone Number', 'Phone Number',
+                          ctl: phone,
+                          formater: [
+                            MaskTextInputFormatter(mask: '+(###) ### ### ####')
+                          ])),
+                  SizedBox(height: 7.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: getCardDropForm('Industries', INDUSTRY_ITEMS,
+                        '${widget.compModel.industry}',
                         callBack: (s) => {
                               setState(() {
                                 industries = s;
@@ -140,14 +146,15 @@ class _EditCompanyState extends State<EditCompany> {
                             }),
                   ),
                   SizedBox(height: 7.0),
-                  CustomTextForm(website, 'Company Website', 'Company Website',
-                      TextInputType.text,
-                      read: false),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: getCardForm('Company Website', 'Company Website',
+                          ctl: website)),
                   SizedBox(height: 7.0),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: buildPaddingDropdown(
-                        POSITIONITEM, '${widget.compModel.position}',
+                    child: getCardDropForm('Position', POSITIONITEM,
+                        '${widget.compModel.position}',
                         callBack: (s) => {
                               setState(() {
                                 position = s;
@@ -157,8 +164,8 @@ class _EditCompanyState extends State<EditCompany> {
                   SizedBox(height: 7.0),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: buildPaddingDropdown(
-                        BUSINESSSCALE, '${widget.compModel.businessScale}',
+                    child: getCardDropForm('Business Scale', BUSINESSSCALE,
+                        '${widget.compModel.businessScale}',
                         callBack: (s) => {
                               setState(() {
                                 businessScale = s;
@@ -166,17 +173,21 @@ class _EditCompanyState extends State<EditCompany> {
                             }),
                   ),
                   SizedBox(height: 7.0),
-                  CustomRichTextForm(cprofile, 'Company Profile',
-                      'Company Profile', TextInputType.multiline, 20,
-                      onChange: () => null),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: getCardRichForm(
+                          'Company Profile', 'Company Profile',
+                          ctl: cprofile)),
                   SizedBox(height: 7.0),
-                  CustomRichTextForm(cAddress, 'Address', 'Address',
-                      TextInputType.multiline, null),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child:
+                          getCardRichForm('Address', 'Address', ctl: cAddress)),
                   SizedBox(height: 35.0),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: isLoading
-                        ? Center(child: CircularProgressIndicator())
+                        ? Center(child: CircularProgressIndicator(color: DEFAULT_COLOR,))
                         : GeneralButtonContainer(
                             name: 'Update Bio',
                             color: DEFAULT_COLOR,
@@ -298,6 +309,134 @@ class _EditCompanyState extends State<EditCompany> {
                   .toList(),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  getCardForm(label, hint, {ctl, read = false, formater}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10.0),
+          Container(
+            height: 48.0,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: DEFAULT_COLOR.withOpacity(.05)),
+            child: TextField(
+              controller: ctl,
+              readOnly: read,
+              inputFormatters: formater,
+              style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+              maxLines: 1,
+              decoration: InputDecoration(
+                  hintText: hint,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  hintStyle:
+                      GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+                  border: OutlineInputBorder(borderSide: BorderSide.none)),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  getCardDropForm(label, List<String> list, init, {callBack}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10.0),
+          Container(
+            height: 48.0,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: DEFAULT_COLOR.withOpacity(.05)),
+            child: FormBuilderDropdown(
+              name: 'skill',
+              icon: const Icon(
+                Icons.keyboard_arrow_down,
+                color: Colors.black,
+              ),
+              decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 9.9, vertical: 5.0),
+                border: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                    borderSide: BorderSide.none),
+              ),
+              hint: Text(
+                init,
+                style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black45)
+              ),
+              onChanged: (s) => callBack(s),
+              items: list
+                  .map((s) => DropdownMenuItem(
+                        value: s,
+                        child: Text(
+                          s,
+                          style:GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  getCardRichForm(label, hint, {ctl}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10.0),
+          Container(
+            height: 48.0,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: DEFAULT_COLOR.withOpacity(.05)),
+            child: TextField(
+              controller: ctl,
+              keyboardType: TextInputType.multiline,
+              style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+              maxLines: null,
+              decoration: InputDecoration(
+                  hintText: hint,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  hintStyle:
+                      GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+                  border: OutlineInputBorder(borderSide: BorderSide.none)),
+            ),
+          )
         ],
       ),
     );

@@ -6,11 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../phoenix/Controller.dart';
 import '../phoenix/CustomScreens.dart';
-import '../phoenix/GeneralButtonContainer.dart';
 import 'package:http/http.dart' as http;
 import '../phoenix/dashboard_work/Success.dart';
 import '../phoenix/model/Constant.dart';
-import '../reuseables/general_password_textfield.dart';
 
 class ResetPassword extends StatefulWidget {
   @override
@@ -42,7 +40,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       body: SafeArea(
         child: Column(
           children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Row(children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 7.0),
                 child: IconButton(
@@ -51,9 +49,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                   onPressed: () => Get.back(),
                 ),
               ),
-              Text('Reset Password',
+              Text('Create New Password',
                   style: GoogleFonts.montserrat(
-                      fontSize: 18, color: Color(0xff0D30D9))),
+                      fontSize: 15.0, color: Colors.black87)),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 7.0),
                 child: IconButton(
@@ -65,65 +63,106 @@ class _ResetPasswordState extends State<ResetPassword> {
             ]),
             Expanded(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset('assets/emailsent.png'),
-                  Form(
-                      key: formKey,
-                      child: Column(
-                        children: [
-                          GeneralPasswordTextField(
-                            passwordController: oldPassword,
-                            input1: 'Current Password',
-                            input2: 'Current Password',
-                          ),
-                          const SizedBox(
-                            height: 15.0,
-                          ),
-                          GeneralPasswordTextField(
-                            passwordController: newPassword,
-                            input1: 'New Password',
-                            input2: 'New Password',
-                          ),
-                          const SizedBox(
-                            height: 15.0,
-                          ),
-                          GeneralPasswordTextField(
-                            passwordController: confirmPassword,
-                            input1: 'Confirm Password',
-                            input2: 'Confirm Password',
-                          ),
-                        ],
-                      )),
-                  GeneralButtonContainer(
-                    name: 'Continue',
-                    color: Colors.red,
-                    textColor: Colors.white,
-                    onPress: () {
-                      if (oldPassword.text.trim().isEmpty) {
-                        CustomSnack('Error', 'Enter old password');
-                        return;
-                      }
-
-                      if (newPassword.text.trim().isEmpty) {
-                        CustomSnack('Error', 'Enter new password');
-                        return;
-                      }
-
-                      if (confirmPassword.text.trim().isEmpty) {
-                        CustomSnack('Error', 'Confirm new password');
-                        return;
-                      }
-                      setState(() {
-                        isLoading = true;
-                      });
-                      execute();
-                    },
-                    paddingBottom: 3,
-                    paddingLeft: 30,
-                    paddingRight: 30,
-                    paddingTop: 25,
+                  const SizedBox(
+                    height: 20.0,
                   ),
+                  Container(
+                      padding: const EdgeInsets.all(15.0),
+                      margin: const EdgeInsets.symmetric(horizontal: 50.0),
+                      decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(.06),
+                          borderRadius: BorderRadius.circular(20.0),
+                          border: Border.all(
+                              width: .5, color: DEFAULT_COLOR.withOpacity(.5))),
+                      child: Image.asset(
+                        'assets/forget.png',
+                        width: MediaQuery.of(context).size.width,
+                      )),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: getCardFormPassword(
+                      'Old Password',
+                      'Old Password',
+                      true,
+                      ctl: oldPassword,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: getCardFormPassword(
+                      'New Password',
+                      'New Password',
+                      true,
+                      ctl: newPassword,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: getCardFormPassword(
+                      'Confirm New Password',
+                      'Confirm New Password',
+                      true,
+                      ctl: confirmPassword,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 45.0,
+                  ),
+                  isLoading
+                      ? SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                            child:
+                                CircularProgressIndicator(color: DEFAULT_COLOR),
+                          ),
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            if (oldPassword.text.trim().isEmpty) {
+                              CustomSnack('Error', 'Enter old password');
+                              return;
+                            }
+
+                            if (newPassword.text.trim().isEmpty) {
+                              CustomSnack('Error', 'Enter new password');
+                              return;
+                            }
+
+                            if (confirmPassword.text.trim().isEmpty) {
+                              CustomSnack('Error', 'Confirm new password');
+                              return;
+                            }
+                            setState(() {
+                              isLoading = true;
+                            });
+                            execute();
+                          },
+                          child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              padding: const EdgeInsets.all(15.0),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 40.0),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  color: DEFAULT_COLOR),
+                              child: Center(
+                                child: Text(
+                                  'Submit',
+                                  style: GoogleFonts.lato(
+                                      fontSize: 15.0, color: Colors.white),
+                                ),
+                              )),
+                        ),
                 ],
               ),
             ),
@@ -156,5 +195,54 @@ class _ResetPasswordState extends State<ResetPassword> {
         isLoading = false;
       });
     }
+  }
+
+  getCardFormPassword(label, hint, hidePassword, {ctl}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10.0),
+          Container(
+            height: 48.0,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: DEFAULT_COLOR.withOpacity(.05)),
+            child: TextField(
+              controller: ctl,
+              style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+              maxLines: 1,
+              obscureText: hidePassword,
+              keyboardType: TextInputType.visiblePassword,
+              decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    onPressed: () => setState(() {
+                      hidePassword = !hidePassword;
+                    }),
+                    color: Colors.black,
+                    icon: Icon(
+                      hidePassword ? Icons.visibility_off : Icons.visibility,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  hintText: hint,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  hintStyle:
+                      GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+                  border: OutlineInputBorder(borderSide: BorderSide.none)),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
