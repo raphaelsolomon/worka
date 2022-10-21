@@ -66,7 +66,7 @@ Widget imageView(String avatar, {callBack}) => Container(
                 borderRadius: BorderRadius.circular(100),
                 color: Colors.transparent,
                 border: Border.all(
-                    color: Color(0xff0D30D9).withOpacity(.15), width: 1.5)),
+                    color: Colors.transparent, width: 1.5)),
             child: CircleAvatar(
               backgroundImage: NetworkImage('$avatar'),
               radius: 45,
@@ -81,7 +81,7 @@ Widget imageView(String avatar, {callBack}) => Container(
               child: IconButton(
                   onPressed: () => callBack(),
                   icon: Icon(
-                    Icons.photo_camera,
+                    Icons.edit,
                     color: Color(0xff0D30D9),
                     size: 28,
                   )))

@@ -29,7 +29,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
           child: Container(
         child: Column(children: [
           SizedBox(height: 5.0),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Row(children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0.0),
               child: IconButton(
@@ -38,10 +38,12 @@ class _CompanyProfileState extends State<CompanyProfile> {
                 onPressed: () => Get.back(),
               ),
             ),
+            const SizedBox(
+                width: 20.0,
+              ),
             Text('Company profile',
-                style: GoogleFonts.montserrat(
-                    fontSize: 18, color: Color(0xff0D30D9)),
-                textAlign: TextAlign.center),
+                style: GoogleFonts.lato(
+                    fontSize: 15.0, color: Colors.black87)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0.0),
               child: IconButton(

@@ -10,7 +10,7 @@ import 'package:worka/phoenix/model/AlertNotification.dart';
 class EmployerAlertPage extends StatefulWidget {
   @override
   State<EmployerAlertPage> createState() => _EmployerAlertPageState();
-}
+} 
 
 class _EmployerAlertPageState extends State<EmployerAlertPage> {
   final c = RefreshController();
@@ -23,7 +23,7 @@ class _EmployerAlertPageState extends State<EmployerAlertPage> {
             controller: c,
             onRefresh: () => context
                 .read<EmpController>()
-                .fetchNotifications(context, ctl: c),
+                .fetchNotifications(context, c),
             child: Container(
               child: Column(
                 children: [

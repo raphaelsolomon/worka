@@ -11,13 +11,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:worka/employer_page/EmployerPostJob.dart';
 import 'package:worka/employer_page/phoenix/screens/companyProfile.dart';
 import 'package:worka/models/MyPosted.dart';
 import 'package:worka/models/login/user_model.dart';
 import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/CustomScreens.dart';
 import 'package:worka/phoenix/model/Constant.dart';
+import 'package:worka/redesigns/drawer/re_drawer.dart';
+import 'package:worka/redesigns/employer/redesign_post_job.dart';
 import 'package:worka/reuseables/general_container.dart';
 
 import '../models/HotAlert.dart';
@@ -41,12 +42,17 @@ class _EmployerDashboardState extends State<EmployerDashboard> {
   String name = '';
   String type = '';
   bool isFavorite = true;
+  List<MyPosted> postedJobs = [];
   AsyncMemoizer _asyncMemoizer = AsyncMemoizer();
 
   @override
   void initState() {
-    context.read<EmpController>().fetchNotifications(context);
-    context.read<EmpController>().getPostedJobs(context);
+    context
+        .read<EmpController>()
+        .getPostedJobs(context)
+        .then((value) => setState(() {
+              postedJobs = value;
+            }));
     execute();
     super.initState();
   }
@@ -68,126 +74,132 @@ class _EmployerDashboardState extends State<EmployerDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffold,
-      drawer: getDrawer2(context, scaffold),
+      drawer: ReDrawer(scaffold),
       body: SafeArea(
         child: SmartRefresher(
           controller: _controller,
           onRefresh: () => context
               .read<EmpController>()
-              .getPostedJobs(context, controller: _controller),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Row(
+              .getPostedJobs(context)
+              .then((value) => setState(() {
+                    postedJobs = value;
+                  })),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(15, 10.0, 0, 0),
+                      child: GestureDetector(
+                        onTap: () => scaffold.currentState!.openDrawer(),
+                        child: Container(
+                            padding: const EdgeInsets.all(4.0),
+                            decoration: BoxDecoration(
+                                color: DEFAULT_COLOR.withOpacity(.0),
+                                borderRadius: BorderRadius.circular(3.0)),
+                            child: Icon(
+                              Icons.menu_rounded,
+                              color: DEFAULT_COLOR,
+                            )),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(10, 0, 15, 0),
+                      child: CircleAvatar(
+                        maxRadius: 28.0,
+                        backgroundColor: Color(0xff1B6DF9),
+                        backgroundImage: NetworkImage(
+                            '${context.watch<Controller>().avatar}'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                child: RichText(
+                  text: TextSpan(
+                      text: 'Hire the Best',
+                      style: GoogleFonts.montserrat(
+                          color: Colors.black,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1),
+                      children: [
+                        TextSpan(
+                            text: '\nTalents.',
+                            style: GoogleFonts.montserrat(
+                                color: Color(0xff0039A5),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1)),
+                      ]),
+                ),
+              ),
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+                  child: context.watch<Controller>().hotAlert.isNotEmpty
+                      ? CarouselSlider(
+                          options: CarouselOptions(
+                              height: 100.0,
+                              viewportFraction: 1,
+                              enlargeCenterPage: true,
+                              autoPlay: true,
+                              reverse: true,
+                              autoPlayCurve: Curves.linear),
+                          items: context
+                              .watch<Controller>()
+                              .hotAlert
+                              .map((e) => Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0),
+                                    child: Builder(
+                                      builder: (context) => carousel(e),
+                                    ),
+                                  ))
+                              .toList(),
+                        )
+                      : carouselEmpty()),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                    child: GestureDetector(
-                      onTap: () => scaffold.currentState!.openDrawer(),
-                      child: Container(
-                          padding: const EdgeInsets.all(4.0),
-                          decoration: BoxDecoration(
-                              color: DEFAULT_COLOR.withOpacity(.0),
-                              borderRadius: BorderRadius.circular(3.0)),
-                          child: Icon(
-                            Icons.menu_rounded,
-                            color: DEFAULT_COLOR,
-                          )),
+                    padding: EdgeInsets.fromLTRB(20, 14, 0, 0),
+                    child: Text(
+                      'Job Posting',
+                      style: GoogleFonts.montserrat(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff3F3F3F)),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(10, 0, 15, 0),
-                    child: CircleAvatar(
-                      maxRadius: 18.0,
-                      backgroundColor: Color(0xff1B6DF9),
-                      backgroundImage:
-                          NetworkImage('${context.watch<Controller>().avatar}'),
-                    ),
+                  GeneralContainer(
+                    name: 'Post Jobs',
+                    onPress: () => Get.to(() => RePostJobs()),
+                    paddingLeft: 10,
+                    paddingTop: 10,
+                    paddingRight: 30,
+                    paddingBottom: 0,
+                    width: 50,
+                    bcolor: const Color(0xffFFFFFF),
+                    stroke: 0,
+                    height: 30,
+                    size: 12,
                   ),
                 ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-              child: RichText(
-                text: TextSpan(
-                    text: 'Hire the Best',
-                    style: GoogleFonts.montserrat(
-                        color: Colors.black,
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1),
-                    children: [
-                      TextSpan(
-                          text: '\n Talents.',
-                          style: GoogleFonts.montserrat(
-                              color: Color(0xff0039A5),
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1)),
-                    ]),
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-                child: context.watch<Controller>().hotAlert.isNotEmpty
-                    ? CarouselSlider(
-                        options: CarouselOptions(
-                            height: 100.0,
-                            viewportFraction: 1,
-                            enlargeCenterPage: true,
-                            autoPlay: true,
-                            reverse: true,
-                            autoPlayCurve: Curves.linear),
-                        items: context
-                            .watch<Controller>()
-                            .hotAlert
-                            .map((e) => Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  child: Builder(
-                                    builder: (context) => carousel(e),
-                                  ),
-                                ))
-                            .toList(),
-                      )
-                    : carouselEmpty()),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 14, 0, 0),
-                  child: Text(
-                    'Job Posting',
-                    style: GoogleFonts.montserrat(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff3F3F3F)),
-                  ),
-                ),
-                GeneralContainer(
-                  name: 'Post Jobs',
-                  onPress: () => Get.to(() => EmployerPostJob(type: true)),
-                  paddingLeft: 10,
-                  paddingTop: 10,
-                  paddingRight: 30,
-                  paddingBottom: 0,
-                  width: 50,
-                  bcolor: const Color(0xffFFFFFF),
-                  stroke: 0,
-                  height: 30,
-                  size: 12,
-                ),
-              ],
-            ),
-            const SizedBox(height: 15),
-            FutureBuilder(
-              future: _fechData(),
-              builder: (ctx, snap) => _container(snap),
-            )
-          ]),
+              const SizedBox(height: 15),
+              FutureBuilder(
+                future: _fechData(),
+                builder: (ctx, snap) => _container(snap),
+              )
+            ]),
+          ),
         ),
       ),
     );
@@ -208,7 +220,7 @@ class _EmployerDashboardState extends State<EmployerDashboard> {
         child: Container(
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(8.0),
               color: const Color(0xff0039A5),
               boxShadow: [
                 const BoxShadow(
@@ -405,7 +417,7 @@ class _EmployerDashboardState extends State<EmployerDashboard> {
                   textColor: Colors.white,
                   onPress: () {
                     Get.to(
-                      () => EmployerPostJob(),
+                      () => RePostJobs(),
                     );
                   },
                   paddingBottom: 3,
@@ -442,7 +454,7 @@ class _EmployerDashboardState extends State<EmployerDashboard> {
           height: 100,
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(8.0),
               color: const Color(0xff0039A5),
               boxShadow: [
                 const BoxShadow(

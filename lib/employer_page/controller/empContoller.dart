@@ -32,22 +32,18 @@ class EmpController extends ChangeNotifier {
   Map<String?, dynamic> objAnswers = {};
 
   //==================done========================
-  Future<List<MyPosted>> getPostedJobs(BuildContext c, {controller}) async {
+  Future<List<MyPosted>> getPostedJobs(BuildContext c, ) async {
     try {
       final res = await Dio().get('${ROOT}get_posted_jobs/',
           options: Options(headers: {
             'Authorization': 'TOKEN ${c.read<Controller>().token}'
           }));
       if (res.statusCode == 200) {
-        postedJobs =
-            res.data.map<MyPosted>((json) => MyPosted.fromMap(json)).toList();
+        postedJobs = res.data.map<MyPosted>((json) => MyPosted.fromMap(json)).toList();
         notifyListeners();
       }
     } on SocketException {
     } on Exception {
-    } finally {
-      c.read<Controller>().getHotAlert();
-      if (controller != null) controller.refreshCompleted();
     }
     return postedJobs;
   }
@@ -71,7 +67,6 @@ class EmpController extends ChangeNotifier {
       CustomSnack('Error', 'Could not submit job. Please try again');
       return 'error';
     } finally {
-      getPostedJobs(c);
     }
   }
 
@@ -140,7 +135,7 @@ class EmpController extends ChangeNotifier {
   }
 
   //==================done========================
-  fetchNotifications(BuildContext c, {ctl}) async {
+  Future<List<AlertNotification>> fetchNotifications(BuildContext c, ctl) async {
     try {
       final res = await Dio().get('${ROOT}fetch_notifications/',
           options: Options(headers: {
@@ -150,13 +145,14 @@ class EmpController extends ChangeNotifier {
         alertList = res.data
             .map<AlertNotification>((json) => AlertNotification.fromJson(json))
             .toList();
-        notifyListeners();
+        return alertList;
       }
+      return [];
     } on SocketException {
       CustomSnack('Error', 'Check Internet Connection..');
       return [];
     } on Exception {
-      CustomSnack('Error', 'Could not submit job. Please try again');
+      CustomSnack('Error', 'Could Not Fetch Notification. Please try again');
       return [];
     } finally {
       c.read<Controller>().getHotAlert();

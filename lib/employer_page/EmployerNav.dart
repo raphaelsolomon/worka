@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:worka/redesigns/employer/re_notification.dart';
+import 'package:worka/redesigns/employer/redesign_home_page.dart';
 import '../phoenix/dashboard_work/inbox_screen.dart';
 import 'EmployerDashboard.dart';
-import 'EmployerPostJob.dart';
-import 'phoenix/screens/alertList.dart';
 
 class EmployerNav extends StatefulWidget {
   const EmployerNav({Key? key}) : super(key: key);
@@ -25,9 +25,9 @@ class _EmployerNavState extends State<EmployerNav> {
 
   final List<Widget> _pages = [
     EmployerDashboard(),
-    EmployerPostJob(),
+    ReHomePage(),
     InboxScreen(),
-    EmployerAlertPage(),
+    ReNotification(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -40,11 +40,9 @@ class _EmployerNavState extends State<EmployerNav> {
             selectedItemColor: const Color(0xff0039A5),
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-              BottomNavigationBarItem(icon: Icon(Icons.work), label: 'Post Jobs'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.mail_outline), label: 'Inbox'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.add_alert), label: 'Alerts')
+              BottomNavigationBarItem(icon: Icon(Icons.shopping_bag), label: 'Jobs'),
+              BottomNavigationBarItem(icon: Icon(Icons.mail_lock_outlined), label: 'Inbox'),
+              BottomNavigationBarItem(icon: Icon(Icons.add_alert), label: 'Alerts')
             ]),
         body: _pages[_selectedIndex],
       ),
