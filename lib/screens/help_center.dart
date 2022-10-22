@@ -204,7 +204,7 @@ class _Help_CenterState extends State<Help_Center> {
                           scheme: 'tel',
                           path: '+2348113553190',
                         );
-                        await launch(launchUri.toString());
+                        await launchUrlString(launchUri.toString());
                       },
                       child: Text(
                         '+2348113553190',

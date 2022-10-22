@@ -25,7 +25,7 @@ class _EmployerPostJobState extends State<EmployerPostJob> {
   String position = 'Select Position';
   String industries = "Select Industries";
   String jobCategory = 'Job Category';
-  var jobTypeItem = ['Job Type', 'Full Time', 'Part Time ', 'Contract'];
+  var jobTypeItem = ['Job Type', 'Full Time', 'Part Time', 'Contract'];
   var jobCategoryItem = [
     "Heritage, culture and libraries",
     "Transport, distribution and logistics",

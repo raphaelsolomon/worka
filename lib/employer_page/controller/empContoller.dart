@@ -66,8 +66,8 @@ class EmpController extends ChangeNotifier {
     } on Exception {
       CustomSnack('Error', 'Could not submit job. Please try again');
       return 'error';
-    } finally {
     }
+    return 'error';
   }
 
   //==================done========================
