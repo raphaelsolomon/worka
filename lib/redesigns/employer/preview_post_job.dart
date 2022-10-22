@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:worka/employer_page/EmployerNav.dart';
+import 'package:worka/employer_page/controller/empContoller.dart';
+import 'package:worka/models/compModel.dart';
 import 'package:worka/phoenix/model/Constant.dart';
-import 'package:worka/redesigns/employer/redesign_home_page.dart';
+import 'package:worka/redesigns/employer/re_company_profile.dart';
 
 import '../../controllers/constants.dart';
 
 class RePostJobsPreview extends StatefulWidget {
-  const RePostJobsPreview({super.key});
+  final Map<String, String> data;
+  const RePostJobsPreview(this.data, {super.key});
 
   @override
   State<RePostJobsPreview> createState() => _RePostJobsPreviewState();
@@ -15,9 +21,27 @@ class RePostJobsPreview extends StatefulWidget {
 
 class _RePostJobsPreviewState extends State<RePostJobsPreview> {
   bool isJobDesc = true;
+  CompModel? compModel = null;
+  bool isLoading = true;
+
+  fetchProfile(BuildContext context) async {
+    return await context.read<EmpController>().getEmployerDetails(context);
+  }
+
+  @override
+  void initState() {
+    fetchProfile(context).then((value) {
+      setState(() {
+        compModel = value;
+        isLoading = false;
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print(widget.data);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -35,10 +59,8 @@ class _RePostJobsPreviewState extends State<RePostJobsPreview> {
                 children: [
                   GestureDetector(
                       onTap: () => Get.back(),
-                      child: Icon(
-                        Icons.keyboard_backspace,
-                        color: DEFAULT_COLOR
-                      )),
+                      child:
+                          Icon(Icons.keyboard_backspace, color: DEFAULT_COLOR)),
                   Container(
                     padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
@@ -74,18 +96,14 @@ class _RePostJobsPreviewState extends State<RePostJobsPreview> {
                           CircleAvatar(
                             backgroundColor: DEFAULT_COLOR.withOpacity(.1),
                             radius: 40,
-                            child: Image.network(
-                              '',
-                              width: 20.0,
-                              height: 20.0,
-                              fit: BoxFit.contain,
-                            ),
+                            backgroundImage:
+                                NetworkImage('${compModel!.companyLogo}'),
                           ),
                           const SizedBox(
                             height: 10.0,
                           ),
                           Text(
-                            'Production Manager',
+                            '${compModel!.position}'.capitalize!,
                             style: GoogleFonts.lato(
                                 fontSize: 19.0,
                                 color: Colors.black,
@@ -97,28 +115,32 @@ class _RePostJobsPreviewState extends State<RePostJobsPreview> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                'Lagos, Nigeria',
-                                style: GoogleFonts.lato(
-                                    fontSize: 16.0,
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.w500),
+                              Flexible(
+                                child: Text(
+                                  '${compModel!.location}',
+                                  style: GoogleFonts.lato(
+                                      fontSize: 16.0,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w500),
+                                ),
                               ),
                               const SizedBox(
                                 width: 15.0,
                               ),
-                              Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    color: DEFAULT_COLOR.withOpacity(.1)),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0, vertical: 4.0),
-                                child: Text(
-                                  'Full Time Role',
-                                  style: GoogleFonts.lato(
-                                      fontSize: 15.0,
-                                      color: DEFAULT_COLOR,
-                                      fontWeight: FontWeight.bold),
+                              Flexible(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      color: DEFAULT_COLOR.withOpacity(.1)),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 4.0),
+                                  child: Text(
+                                    '${widget.data['job_type']}'.capitalize!,
+                                    style: GoogleFonts.lato(
+                                        fontSize: 15.0,
+                                        color: DEFAULT_COLOR,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ),
                             ],
@@ -137,7 +159,7 @@ class _RePostJobsPreviewState extends State<RePostJobsPreview> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Posted May 2021',
+                                'Posted ${DateFormat('MMM, yyyy').format(DateTime.now())}',
                                 style: GoogleFonts.lato(
                                     fontSize: 14.0, color: Colors.black54),
                               ),
@@ -145,16 +167,11 @@ class _RePostJobsPreviewState extends State<RePostJobsPreview> {
                                 width: 15.0,
                               ),
                               Text(
-                                '#250 - 400k',
+                                '${widget.data['budget']}',
                                 style: GoogleFonts.lato(
                                     fontSize: 14.0,
                                     color: DEFAULT_COLOR,
                                     fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                ' Monthly',
-                                style: GoogleFonts.lato(
-                                    fontSize: 13.0, color: Colors.black54),
                               ),
                             ],
                           ),
@@ -189,8 +206,9 @@ class _RePostJobsPreviewState extends State<RePostJobsPreview> {
                                 borderRadius: BorderRadius.circular(10.0),
                                 child: Divider(
                                   thickness: isJobDesc ? 5.0 : 2.0,
-                                  color:
-                                      isJobDesc ? DEFAULT_COLOR : Colors.black26,
+                                  color: isJobDesc
+                                      ? DEFAULT_COLOR
+                                      : Colors.black26,
                                 ),
                               )
                             ],
@@ -198,7 +216,9 @@ class _RePostJobsPreviewState extends State<RePostJobsPreview> {
                         )),
                         Flexible(
                             child: GestureDetector(
-                          onTap: () => setState(() => isJobDesc = false),
+                          onTap: () => setState(() {
+                            Get.to(() => ReCompanyProfile());
+                          }),
                           child: Column(
                             children: [
                               Text(
@@ -225,13 +245,34 @@ class _RePostJobsPreviewState extends State<RePostJobsPreview> {
                     const SizedBox(
                       height: 18.0,
                     ),
-                    isJobDesc ? getJobDescription() : getAboutCompany(),
+                    isJobDesc
+                        ? getJobDescription(widget.data)
+                        : getAboutCompany(compModel!),
                     const SizedBox(
                       height: 25.0,
                     ),
-                    GestureDetector(
+                    isLoading ? SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Center(child: CircularProgressIndicator(color: DEFAULT_COLOR,))) : GestureDetector(
                       onTap: () async {
-                        Get.to(() => ReHomePage());
+                        setState(() {
+                          isLoading = true;
+                        });
+                        context
+                            .read<EmpController>()
+                            .postJobs(context, widget.data)
+                            .then((v) {
+                          if (v == 'success') {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            Get.offAll(() => EmployerNav());
+                          } else {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
+                        });
                       },
                       child: Container(
                           width: MediaQuery.of(context).size.width,
@@ -261,7 +302,7 @@ class _RePostJobsPreviewState extends State<RePostJobsPreview> {
   }
 }
 
-Widget getAboutCompany() => Column(children: [
+Widget getAboutCompany(CompModel compModel) => Column(children: [
       Text('Job Description:',
           style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
       const SizedBox(
@@ -287,7 +328,9 @@ Widget getAboutCompany() => Column(children: [
       const SizedBox(
         height: 10.0,
       ),
-      ...List.generate(3, (i) => Row(
+      ...List.generate(
+          3,
+          (i) => Row(
                 children: [
                   Icon(
                     Icons.shield_outlined,
@@ -332,7 +375,7 @@ Widget getAboutCompany() => Column(children: [
               ))),
     ]);
 
-Widget getJobDescription() =>
+Widget getJobDescription(Map data) =>
     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text('Job Description:',
           style: GoogleFonts.lato(
@@ -342,7 +385,7 @@ Widget getJobDescription() =>
       const SizedBox(
         height: 10.0,
       ),
-      Text(TERM1,
+      Text('${data['description']}',
           style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
       const SizedBox(
         height: 18.0,
@@ -355,7 +398,20 @@ Widget getJobDescription() =>
       const SizedBox(
         height: 10.0,
       ),
-      Text(TERM1,
+      Text('${data['requirement']}',
+          style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+      const SizedBox(
+        height: 18.0,
+      ),
+      Text('Qualification:',
+          style: GoogleFonts.lato(
+              fontSize: 19.0,
+              color: Colors.black,
+              fontWeight: FontWeight.bold)),
+      const SizedBox(
+        height: 10.0,
+      ),
+      Text('${data['qualification']}',
           style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
       const SizedBox(
         height: 18.0,
@@ -368,22 +424,24 @@ Widget getJobDescription() =>
       const SizedBox(
         height: 10.0,
       ),
-      ...List.generate(
-          3,
-          (index) => Row(
-                children: [
-                  Icon(
-                    Icons.shield_outlined,
-                    color: DEFAULT_COLOR,
-                  ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Text('Health Insurance',
-                      style: GoogleFonts.lato(
-                          fontSize: 16.0, color: Colors.black54))
-                ],
-              )),
+      ...List.generate(1, (i) {
+        return Row(
+          children: [
+            Icon(
+              Icons.shield_outlined,
+              color: DEFAULT_COLOR,
+            ),
+            const SizedBox(
+              width: 10.0,
+            ),
+            Flexible(
+              child: Text('${data['benefit']}',
+                  style:
+                      GoogleFonts.lato(fontSize: 16.0, color: Colors.black54)),
+            )
+          ],
+        );
+      }),
       const SizedBox(
         height: 18.0,
       ),
@@ -396,25 +454,27 @@ Widget getJobDescription() =>
         height: 10.0,
       ),
       Wrap(spacing: 12.0, children: [
-      ...List.generate(
-          3,
-          (i) => Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-              margin: const EdgeInsets.symmetric(vertical: 5.0),
-              decoration: BoxDecoration(
-                  color: DEFAULT_COLOR.withOpacity(.2),
-                  borderRadius: BorderRadius.circular(5.0),
-                  border: Border.all(width: .5, color: DEFAULT_COLOR)),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('Production',
-                      style: GoogleFonts.lato(
-                          fontSize: 15.0, color: DEFAULT_COLOR)),
-                  const SizedBox(width: 15.0),
-                  Text('x',
-                      style: GoogleFonts.lato(
-                          fontSize: 16.0, color: DEFAULT_COLOR)),
-                ],
-              ))),])
+        ...List.generate(
+            3,
+            (i) => Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                margin: const EdgeInsets.symmetric(vertical: 5.0),
+                decoration: BoxDecoration(
+                    color: DEFAULT_COLOR.withOpacity(.2),
+                    borderRadius: BorderRadius.circular(5.0),
+                    border: Border.all(width: .5, color: DEFAULT_COLOR)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Production',
+                        style: GoogleFonts.lato(
+                            fontSize: 15.0, color: DEFAULT_COLOR)),
+                    const SizedBox(width: 15.0),
+                    Text('x',
+                        style: GoogleFonts.lato(
+                            fontSize: 16.0, color: DEFAULT_COLOR)),
+                  ],
+                ))),
+      ])
     ]);

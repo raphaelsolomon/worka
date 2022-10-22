@@ -13,11 +13,13 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:worka/employer_page/phoenix/screens/companyProfile.dart';
 import 'package:worka/models/MyPosted.dart';
+import 'package:worka/models/compModel.dart';
 import 'package:worka/models/login/user_model.dart';
 import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/CustomScreens.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/redesigns/drawer/re_drawer.dart';
+import 'package:worka/redesigns/employer/reViewApplicants.dart';
 import 'package:worka/redesigns/employer/redesign_post_job.dart';
 import 'package:worka/reuseables/general_container.dart';
 
@@ -44,6 +46,12 @@ class _EmployerDashboardState extends State<EmployerDashboard> {
   bool isFavorite = true;
   List<MyPosted> postedJobs = [];
   AsyncMemoizer _asyncMemoizer = AsyncMemoizer();
+  CompModel? compModel = null;
+  bool isLoading = true;
+
+  fetchData(BuildContext context) async {
+    return await context.read<EmpController>().getEmployerDetails(context);
+  }
 
   @override
   void initState() {
@@ -52,6 +60,12 @@ class _EmployerDashboardState extends State<EmployerDashboard> {
         .getPostedJobs(context)
         .then((value) => setState(() {
               postedJobs = value;
+            }))
+        .whenComplete(() => fetchData(context).then((value) {
+              setState(() {
+                compModel = value;
+                isLoading = false;
+              });
             }));
     execute();
     super.initState();
@@ -83,6 +97,7 @@ class _EmployerDashboardState extends State<EmployerDashboard> {
               .getPostedJobs(context)
               .then((value) => setState(() {
                     postedJobs = value;
+                    _controller.refreshCompleted();
                   })),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -121,7 +136,7 @@ class _EmployerDashboardState extends State<EmployerDashboard> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: RichText(
                   text: TextSpan(
                       text: 'Hire the Best',
@@ -193,7 +208,7 @@ class _EmployerDashboardState extends State<EmployerDashboard> {
                   ),
                 ],
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 7),
               FutureBuilder(
                 future: _fechData(),
                 builder: (ctx, snap) => _container(snap),
@@ -434,9 +449,156 @@ class _EmployerDashboardState extends State<EmployerDashboard> {
           child: SingleChildScrollView(
             child: Column(
               children: myList
-                  .map((e) => hotListingMethod(e, '${e.jobKey}', '${e.title}',
-                      '${e.budget}', '${e.location}'))
+                  .map(
+                    (e) => InkWell(
+                      onTap: () => Get.to(() => JobDetailsEmp(e)),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 15.0),
+                            margin: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 15.0),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.0),
+                            border: Border.all(
+                                width: 1.5,
+                                color: '${e.access}' == 'open'
+                                    ? DEFAULT_COLOR.withOpacity(.8)
+                                    : Colors.transparent)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: DEFAULT_COLOR.withOpacity(.03),
+                                  radius: 28.0,
+                                  backgroundImage: NetworkImage(
+                                      '${context.watch<Controller>().avatar}'),
+                                ),
+                                const SizedBox(
+                                  width: 20.0,
+                                ),
+                                Flexible(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${compModel!.companyName}',
+                                        style: GoogleFonts.lato(
+                                            fontSize: 18.0,
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(
+                                        height: 2.0,
+                                      ),
+                                      Text(
+                                        '${compModel!.companyEmail}',
+                                        style: GoogleFonts.lato(
+                                            fontSize: 13.0,
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 6.0,
+                            ),
+                            Text(
+                              '${e.title}'.capitalize!,
+                              style: GoogleFonts.lato(
+                                  fontSize: 18.0,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              height: 6.0,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.location_on,
+                                          size: 17.0, color: Colors.black26),
+                                      Text(
+                                        '${compModel!.location}',
+                                        style: GoogleFonts.lato(
+                                            fontSize: 14.0,
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5.0,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 1.0, color: Colors.green),
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      color: Colors.green.withOpacity(.1)),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 2.5),
+                                  child: Text(
+                                    '${e.access}',
+                                    style: GoogleFonts.lato(
+                                        fontSize: 12.5,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 5.0,
+                            ),
+                            Divider(
+                              color: Colors.black54,
+                              thickness: .5,
+                            ),
+                            const SizedBox(
+                              height: 3.0,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '${e.applications} Applicants',
+                                  style: GoogleFonts.lato(
+                                      fontSize: 13.0, color: Colors.black54),
+                                ),
+                                InkWell(
+                                  onTap: () => Get.to(
+                                      () => ReViewApplicant(e, compModel!)),
+                                  child: Text(
+                                    'View all',
+                                    style: GoogleFonts.lato(
+                                        fontSize: 13.0, color: DEFAULT_COLOR),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 5.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
                   .toList(),
+              // children: myList
+              //     .map((e) => hotListingMethod(e, '${e.jobKey}', '${e.title}',
+              //         '${e.budget}', '${e.location}'))
+              //     .toList(),
             ),
           ),
         );

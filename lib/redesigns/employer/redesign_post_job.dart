@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:worka/controllers/constants.dart';
-import 'package:worka/employer_page/EmployerNav.dart';
 import 'package:worka/employer_page/controller/empContoller.dart';
 import 'package:worka/models/compModel.dart';
 import 'package:worka/phoenix/model/Constant.dart';
@@ -30,9 +29,23 @@ class _RePostJobsState extends State<RePostJobs> {
   String budget = '';
   String jobType = '';
   String categories = '';
-  String currency = '';
+  String currency = 'USD';
   String stringStart = '';
   var jobTypeItem = ['Job Type', 'Full Time', 'Part Time', 'Contract'];
+  var SALARY = [
+    '1.5M - 2M Annually',
+    '950K - 1.5M Annually',
+    '500K - 950K Annually',
+    '300k - 500k Monthly',
+    '150k - 300k Monthly',
+    '100K - 150k Monthly',
+    '50K - 80K Bi-Weekly',
+    '30K - 50K Bi-Weekly',
+    '15K - 30K Bi-Weekly',
+    '1K - 2k /hr',
+    '500 - 1k /hr',
+    '300 - 500 /hr'
+  ];
   var jobCategoryItem = [
     "Heritage, culture and libraries",
     "Transport, distribution and logistics",
@@ -213,7 +226,7 @@ class _RePostJobsState extends State<RePostJobs> {
                   const SizedBox(
                     height: 25.0,
                   ),
-                  inputDropDown(['Boy', 'Girl'],
+                  inputDropDown(SALARY,
                       text: 'Choose Budget',
                       icons: Icons.shopping_bag,
                       hint: '100k - 450k Monthly', callBack: (s) {
@@ -291,7 +304,7 @@ class _RePostJobsState extends State<RePostJobs> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      Get.to(() => RePostJobsPreview());
+                      executeData();
                     },
                     child: Container(
                         width: MediaQuery.of(context).size.width,
@@ -329,24 +342,13 @@ class _RePostJobsState extends State<RePostJobs> {
       'requirement': '${jobReqirement.text.trim()}',
       'budget': '${budget.trim()}',
       'benefit': '${jobBenfits.text.trim()}',
-      'salary_type': '$budget'.split(' ')[2].toLowerCase(),
+      'salary_type': '$budget'.split(' ')[3].toLowerCase(),
       'currency': '$currency'.toLowerCase(),
       'is_remote': '${false}',
       'expiry': '$stringStart',
       'location': compModel!.location
     };
-    context.read<EmpController>().postJobs(context, data).then((v) {
-      if (v == 'success') {
-        setState(() {
-          isLoading = false;
-        });
-        Get.offAll(() => EmployerNav());
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    });
+    Get.to(() => RePostJobsPreview(Map.from(data)));
   }
 
   Widget inputWidget(
@@ -433,16 +435,15 @@ class _RePostJobsState extends State<RePostJobs> {
             lastDate: DateTime(2100),
             dateLabelText: 'Expire date',
             decoration: InputDecoration(
-              labelStyle: GoogleFonts.lato(
-                fontSize: 15.0,
-                color: Colors.black54,
-              ),
-              hintStyle:
-                  GoogleFonts.montserrat(fontSize: 15.0, color: Colors.grey),
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 9.9, vertical: 9.9),
-              border: OutlineInputBorder(borderSide: BorderSide.none)
-            ),
+                labelStyle: GoogleFonts.lato(
+                  fontSize: 15.0,
+                  color: Colors.black54,
+                ),
+                hintStyle:
+                    GoogleFonts.montserrat(fontSize: 15.0, color: Colors.grey),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 9.9, vertical: 9.9),
+                border: OutlineInputBorder(borderSide: BorderSide.none)),
             onChanged: (val) => stringStart = val,
           ),
         )

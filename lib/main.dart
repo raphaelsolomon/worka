@@ -36,7 +36,8 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider<EmpController>(
                 create: (_) => EmpController())
           ],
-          child: GetMaterialApp(
+          child: 
+          GetMaterialApp(
             title: 'Worka',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(

@@ -25,9 +25,10 @@ const CONTENT =
 
 Map<String, Map<String, dynamic>> PLAN_PRICE = {
   'Free': {
-    'price': '0.00',
+    'price': '',
     'plan': '20220322',
-    'color': Colors.black,
+    'intro': 'Perfect for starters',
+    'color': Colors.black87.withOpacity(.6),
     'duration': 'Annually',
     'features': [
       'Access to five(5) shortlisted staff',
@@ -38,10 +39,11 @@ Map<String, Map<String, dynamic>> PLAN_PRICE = {
     ]
   },
   'Silver Premium': {
-    'price': '5000.00',
+    'price': 'N5000.00',
     'plan': '32282003',
+    'intro': 'Best fit for companies',
     'ID': '_worka_silver_plan',
-    'color': Color(0xFFC0C0C0),
+    'color': Color(0xFF0039A5),
     'duration': 'Annually',
     'features': [
       'Access to ten(10) shortlisted staff',
@@ -52,10 +54,11 @@ Map<String, Map<String, dynamic>> PLAN_PRICE = {
     ]
   },
   'Gold Premium': {
-    'price': '10000.00',
+    'price': 'N10000.00',
     'plan': '12900320',
+    'intro': 'Perfect for companies',
     'ID': '_worka_gold_plan',
-    'color': Color(0xFFFFD700),
+    'color': Color(0xFFFF6B01),
     'duration': 'Annually',
     'features': [
       'Access to twenty(20) shortlisted staffs',
@@ -66,10 +69,11 @@ Map<String, Map<String, dynamic>> PLAN_PRICE = {
     ]
   },
   'Diamond': {
-    'price': '20000.00',
+    'price': 'N20000.00',
     'plan': '40151001',
+    'intro': 'Perfect for companies',
     'ID': '_worka_diamond_plan',
-    'color': Color(0xFFB9F2FF),
+    'color': Color(0xFFFF6B01),
     'duration': 'Annually',
     'features': [
       'Unlimited access to shortlisted staffs',

@@ -1,11 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:worka/employer_page/controller/empContoller.dart';
+import 'package:worka/models/JobAppModel.dart';
+import 'package:worka/models/MyPosted.dart';
+import 'package:worka/models/compModel.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/redesigns/employer/re_application_details.dart';
+import 'package:worka/redesigns/employer/re_notification.dart';
+import 'package:worka/redesigns/employer/re_payment_design.dart';
 
-class ReViewApplicant extends StatelessWidget {
-  const ReViewApplicant({super.key});
+class ReViewApplicant extends StatefulWidget {
+  final MyPosted postedJob;
+  final CompModel compModel;
+  const ReViewApplicant(this.postedJob, this.compModel, {super.key});
+
+  @override
+  State<ReViewApplicant> createState() => _ReViewApplicantState();
+}
+
+class _ReViewApplicantState extends State<ReViewApplicant> {
+  JobAppModel? job = null;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    context
+        .read<EmpController>()
+        .jobApplicationList(context, widget.postedJob.jobKey)
+        .then((value) => setState(() {
+              job = value;
+              isLoading = false;
+            }));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +62,7 @@ class ReViewApplicant extends StatelessWidget {
                     Row(
                       children: [
                         GestureDetector(
-                            onTap: () => Get.back(),
+                            onTap: () => Get.to(() => ReNotification()),
                             child: Icon(
                               Icons.notification_important_outlined,
                               color: DEFAULT_COLOR,
@@ -42,12 +71,8 @@ class ReViewApplicant extends StatelessWidget {
                         CircleAvatar(
                           backgroundColor: DEFAULT_COLOR.withOpacity(.1),
                           radius: 30,
-                          child: Image.network(
-                            '',
-                            width: 20.0,
-                            height: 20.0,
-                            fit: BoxFit.contain,
-                          ),
+                          backgroundImage:
+                              NetworkImage('${widget.compModel.companyLogo}'),
                         ),
                       ],
                     )
@@ -55,10 +80,10 @@ class ReViewApplicant extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: 15.0,
+                height: 8.0,
               ),
               Expanded(
-                  child: Padding(
+                  child: isLoading? Center(child: CircularProgressIndicator(color: DEFAULT_COLOR,)) : Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: SingleChildScrollView(
                           child: Column(children: [
@@ -77,7 +102,7 @@ class ReViewApplicant extends StatelessWidget {
                                 Text(
                                   'Applicants',
                                   style: GoogleFonts.lato(
-                                      fontSize: 18.0,
+                                      fontSize: 16.0,
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -86,6 +111,7 @@ class ReViewApplicant extends StatelessWidget {
                                 ),
                                 Icon(
                                   Icons.search_outlined,
+                                  size: 18.0,
                                   color: Colors.black54,
                                 ),
                               ],
@@ -93,7 +119,7 @@ class ReViewApplicant extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(
-                          height: 25.0,
+                          height: 7.0,
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -115,20 +141,16 @@ class ReViewApplicant extends StatelessWidget {
                                           backgroundColor:
                                               DEFAULT_COLOR.withOpacity(.03),
                                           radius: 30,
-                                          child: Image.network(
-                                            '',
-                                            width: 20.0,
-                                            height: 20.0,
-                                            fit: BoxFit.contain,
-                                          ),
+                                          backgroundImage: NetworkImage(
+                                              '${widget.compModel.companyLogo}'),
                                         ),
                                         const SizedBox(
                                           width: 25.0,
                                         ),
                                         Text(
-                                          'Fkliy Network inc,',
+                                          '${widget.compModel.companyName}',
                                           style: GoogleFonts.lato(
-                                              fontSize: 16.0,
+                                              fontSize: 15.0,
                                               color: Colors.black54,
                                               fontWeight: FontWeight.w400),
                                         ),
@@ -143,9 +165,9 @@ class ReViewApplicant extends StatelessWidget {
                                             BorderRadius.circular(5.0),
                                         color: Colors.green.withOpacity(.1)),
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0, vertical: 4.0),
+                                        horizontal: 8.0, vertical: 2.5),
                                     child: Text(
-                                      'Approved',
+                                      '${widget.postedJob.access}',
                                       style: GoogleFonts.lato(
                                           fontSize: 15.0,
                                           color: Colors.green,
@@ -158,7 +180,7 @@ class ReViewApplicant extends StatelessWidget {
                                 height: 6.0,
                               ),
                               Text(
-                                'Regional Manager',
+                                '${widget.postedJob.title}'.capitalize!,
                                 style: GoogleFonts.lato(
                                     fontSize: 20.0,
                                     color: Colors.black,
@@ -171,18 +193,20 @@ class ReViewApplicant extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Icon(Icons.location_on,
-                                          color: Colors.black26),
-                                      Text(
-                                        'Lagos, Nigeria',
-                                        style: GoogleFonts.lato(
-                                            fontSize: 14.0,
-                                            color: Colors.black87,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ],
+                                  Flexible(
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.location_on,
+                                            size: 17.0, color: Colors.black26),
+                                        Text(
+                                          '${widget.compModel.location}',
+                                          style: GoogleFonts.lato(
+                                              fontSize: 13.0,
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   const SizedBox(
                                     width: 15.0,
@@ -197,12 +221,15 @@ class ReViewApplicant extends StatelessWidget {
                                         ),
                                         const SizedBox(width: 5.0),
                                         Flexible(
-                                          child: Text(
-                                            'Posted a week ago',
-                                            style: GoogleFonts.lato(
-                                                fontSize: 14.0,
-                                                color: Colors.black87,
-                                                fontWeight: FontWeight.w500),
+                                          child: InkWell(
+                                            onTap: () => Get.to(() => RePaymentAndroid()),
+                                            child: Text(
+                                              '${widget.postedJob.budget}',
+                                              style: GoogleFonts.lato(
+                                                  fontSize: 13.0,
+                                                  color: DEFAULT_COLOR,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -220,11 +247,8 @@ class ReViewApplicant extends StatelessWidget {
                               const SizedBox(
                                 height: 10.0,
                               ),
-                              ...List.generate(
-                                  5,
-                                  (i) => Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
+                              ...List.generate(job!.applications!.length, (i) => Container(
+                                        width: MediaQuery.of(context).size.width,
                                         child: Column(
                                           children: [
                                             Row(
@@ -235,8 +259,8 @@ class ReViewApplicant extends StatelessWidget {
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           12.0),
-                                                  child: Image.asset(
-                                                    'assets/alert.png',
+                                                  child: Image.network(
+                                                    '${job!.applications![i].applicant!.displayPicture}',
                                                     width: 50.0,
                                                     height: 50.0,
                                                     fit: BoxFit.contain,
@@ -252,16 +276,16 @@ class ReViewApplicant extends StatelessWidget {
                                                             .start,
                                                     children: [
                                                       Text(
-                                                        'Lizzy Abidemi',
+                                                        '${job!.applications![i].applicant!.firstName} ${job!.applications![i].applicant!.lastName}',
                                                         style: GoogleFonts.lato(
-                                                            fontSize: 17.0,
+                                                            fontSize: 15.0,
                                                             color: Colors.black,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w500),
                                                       ),
                                                       const SizedBox(
-                                                        height: 8.0,
+                                                        height: 4.0,
                                                       ),
                                                       Row(
                                                         children: [
@@ -273,9 +297,9 @@ class ReViewApplicant extends StatelessWidget {
                                                           const SizedBox(
                                                               width: 10.0),
                                                           Text(
-                                                            'Production Manager',
+                                                            '${job!.applications![i].applicant!.location}',
                                                             style: GoogleFonts.lato(
-                                                                fontSize: 17.0,
+                                                                fontSize: 14.0,
                                                                 color: Colors
                                                                     .black54,
                                                                 fontWeight:
@@ -285,14 +309,14 @@ class ReViewApplicant extends StatelessWidget {
                                                         ],
                                                       ),
                                                       const SizedBox(
-                                                        height: 8.0,
+                                                        height: 4.0,
                                                       ),
                                                       InkWell(
-                                                        onTap: () => Get.to(() => ReApplicationDetails()),
+                                                        onTap: () => Get.to(() => ReApplicationDetails(job!.applications![i], widget.postedJob.jobKey!)),
                                                         child: Text(
                                                           'View Application',
                                                           style: GoogleFonts.lato(
-                                                              fontSize: 15.0,
+                                                              fontSize: 13.0,
                                                               color:
                                                                   DEFAULT_COLOR,
                                                               fontWeight:
@@ -301,7 +325,7 @@ class ReViewApplicant extends StatelessWidget {
                                                         ),
                                                       ),
                                                       const SizedBox(
-                                                        height: 10.0,
+                                                        height: 5.0,
                                                       ),
                                                     ],
                                                   ),
