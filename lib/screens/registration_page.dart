@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -13,7 +14,6 @@ import 'package:worka/phoenix/Resusable.dart';
 import 'package:provider/provider.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/reuseables/general_container.dart';
-import 'package:worka/reuseables/general_password_textfield.dart';
 import 'package:worka/screens/login_screen.dart';
 
 import '../phoenix/CustomScreens.dart';
@@ -116,11 +116,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
       child: Scaffold(
         body: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 5.0),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Row(children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: IconButton(
                     icon: Icon(Icons.keyboard_backspace),
                     color: Color(0xff0D30D9),
@@ -129,7 +130,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 ),
                 Text('Sign Up Information',
                     style: GoogleFonts.montserrat(
-                        fontSize: 18, color: Color(0xff0D30D9)),
+                        fontSize: 15, color: Colors.black54),
                     textAlign: TextAlign.center),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 0.0),
@@ -156,40 +157,48 @@ class _RegistrationPageState extends State<RegistrationPage> {
               Form(
                 key: _formKey,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
-                    CustomAuthForm('Firstname', 'Firstname', TextInputType.text,
+                    getCardForm('Firstname', 'Firstname',
                         ctl: firstNameController),
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
-                    CustomAuthForm(
-                        'Middle name', 'Middle name', TextInputType.text,
+                    getCardForm('Middle name', 'Middle name',
                         ctl: middleNameController),
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
-                    CustomAuthForm('Surname', 'Surname', TextInputType.text,
-                        ctl: surNameController),
+                    getCardForm('Surname', 'Surname', ctl: surNameController),
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: Text(
+                          'Date of Birth',
+                          style: GoogleFonts.lato(
+                              fontSize: 15.0,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w600),
+                        )),
+                    const SizedBox(height: 0.0),
                     CustomDatePicker(
                         dateOfBirth == DateTime.now()
                             ? 'Date Of Birth'
-                            : DateFormat('yyyy-MM-dd').format(dateOfBirth),
-                        cB: () {
+                            : DateFormat('dd EEEE, MMM, yyyy')
+                                .format(dateOfBirth), cB: () {
                       selectDateOfBirth(context);
                     },
                         border: Border.all(
                             color: Color(0xFF1B6DF9).withOpacity(.2))),
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
-                    CustomAuthForm('Email', 'Email', TextInputType.text,
-                        ctl: emailController),
+                    getCardForm('Email', 'Email', ctl: emailController),
                     GeneralContainer(
                         name: 'Contact Information',
                         onPress: () {},
@@ -205,12 +214,34 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     const SizedBox(
                       height: 10,
                     ),
-                    buildCSC(),
-                    const SizedBox(
-                      height: 10,
-                    ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: Text(
+                          'Country, State and City',
+                          style: GoogleFonts.lato(
+                              fontSize: 15.0,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w600),
+                        )),
+                    const SizedBox(height: 10.0),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: buildCSC()),
+
+                    const SizedBox(
+                      height: 15,
+                    ),
+                     Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: Text(
+                          'Gender',
+                          style: GoogleFonts.lato(
+                              fontSize: 15.0,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w600),
+                        )),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
                       child: Row(
                         children: [
                           Row(
@@ -221,12 +252,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                           ? true
                                           : false,
                                   toggleable: true,
+                                  activeColor: DEFAULT_COLOR,
                                   groupValue: true,
                                   onChanged: (b) {
                                     context.read<Helper>().setGender('Male');
                                   }),
                               Text('Male',
-                                  style: GoogleFonts.montserrat(fontSize: 12))
+                                  style: GoogleFonts.lato(fontSize: 12))
                             ],
                           ),
                           SizedBox(
@@ -240,12 +272,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                           ? true
                                           : false,
                                   toggleable: true,
+                                  activeColor: DEFAULT_COLOR,
                                   groupValue: true,
                                   onChanged: (b) {
                                     context.read<Helper>().setGender('Female');
                                   }),
                               Text('Female',
-                                  style: GoogleFonts.montserrat(fontSize: 12))
+                                  style: GoogleFonts.lato(fontSize: 12))
                             ],
                           )
                         ],
@@ -257,51 +290,25 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     // CustomAuthForm(
                     //     'Contact Info', 'Contact Info', TextInputType.text,
                     //     ctl: contactController),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 48,
-                      margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: InternationalPhoneNumberInput(
-                          selectorConfig: SelectorConfig(showFlags: true),
-                          onInputValidated: (b) {
-                            phoneValidate = b;
-                          },
-                          textFieldController: contactController,
-                          inputDecoration: InputDecoration(
-                            hintText: 'phone number',
-                            hintStyle: GoogleFonts.montserrat(
-                                fontSize: 14.0, color: Colors.grey),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
-                              borderSide: BorderSide(
-                                  color: Color(0xFF1B6DF9).withOpacity(.2)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
-                              borderSide: BorderSide(
-                                  color: Color(0xFF1B6DF9).withOpacity(.2)),
-                            ),
-                          ),
-                          onInputChanged: (phone) {
-                            contact = phone.phoneNumber;
-                          }),
+                   getCardFormPhone('Mobile Number', 'Mobile Number'),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    getCardFormPassword(
+                      'Confirm Password',
+                      'Confirm Password',
+                      false,
+                      ctl: passwordController,
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 15.0,
                     ),
-                    GeneralPasswordTextField(
-                        passwordController: passwordController,
-                        input1: 'Password',
-                        input2: 'password'),
-                    const SizedBox(
-                      height: 5.0,
+                    getCardFormPassword(
+                      'Confirm Password',
+                      'Confirm Password',
+                      false,
+                      ctl: confirmPasswordController,
                     ),
-                    GeneralPasswordTextField(
-                        passwordController: confirmPasswordController,
-                        input1: 'Confirm Password',
-                        input2: 'confirm password'),
                     const SizedBox(
                       height: 15.0,
                     ),
@@ -425,15 +432,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
         currentCity: 'Acton',
         flagState: CountryFlag.DISABLE,
         dropdownDecoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-            color: Colors.white,
-            border:
-                Border.all(color: Color(0xFF1B6DF9).withOpacity(.2), width: 1)),
+            borderRadius: BorderRadius.all(Radius.circular(5.0)),
+            color: DEFAULT_COLOR.withOpacity(.05),
+            border: Border.all(color: Colors.transparent, width: 1)),
         disabledDropdownDecoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10)),
             color: Colors.white,
-            border:
-                Border.all(color: Color(0xFF1B6DF9).withOpacity(.2), width: 1)),
+            border: Border.all(color: Colors.transparent, width: 1)),
 
         countrySearchPlaceholder: "Country",
         stateSearchPlaceholder: "State",
@@ -486,5 +491,188 @@ class _RegistrationPageState extends State<RegistrationPage> {
         dateOfBirth = selectedDate;
       });
     }
+  }
+
+  getCardForm(label, hint, {ctl}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10.0),
+          Container(
+            height: 48.0,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: DEFAULT_COLOR.withOpacity(.05)),
+            child: TextField(
+              controller: ctl,
+              style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+              maxLines: 1,
+              decoration: InputDecoration(
+                  hintText: hint,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  hintStyle:
+                      GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+                  border: OutlineInputBorder(borderSide: BorderSide.none)),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  getCardFormPhone(label, hint, {ctl}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10.0),
+          Container(
+              height: 48.0,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5.0),
+                  color: DEFAULT_COLOR.withOpacity(.05)),
+              child: InternationalPhoneNumberInput(
+                  selectorConfig: SelectorConfig(showFlags: true),
+                  onInputValidated: (b) {
+                    phoneValidate = b;
+                  },
+                  textFieldController: contactController,
+                  inputDecoration: InputDecoration(
+                    fillColor: Colors.white,
+                    hintText: 'phone number',
+                    hintStyle: GoogleFonts.montserrat(
+                        fontSize: 14.0, color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(0.0)),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  onInputChanged: (phone) {
+                    contact = phone.phoneNumber;
+                  }))
+        ],
+      ),
+    );
+  }
+
+  Widget inputDropDown(List<String> list,
+      {text = 'Benefits', hint = 'Insurance', callBack}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$text',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(
+            height: 10.0,
+          ),
+          Container(
+            height: 45.0,
+            decoration: BoxDecoration(
+              color: DEFAULT_COLOR.withOpacity(.08),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: FormBuilderDropdown(
+              name: 'dropDown',
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                color: Colors.black,
+              ),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(horizontal: 15.0),
+                border: OutlineInputBorder(borderSide: BorderSide.none),
+              ),
+              // initialValue: 'Male',
+              onChanged: (s) => callBack(s),
+              hint: Text('$hint',
+                  style:
+                      GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+              items: list
+                  .map((s) => DropdownMenuItem(
+                        value: s,
+                        child: Text(
+                          '$s',
+                          style: GoogleFonts.lato(
+                              fontSize: 15.0, color: Colors.black54),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  getCardFormPassword(label, hint, hidePassword, {ctl}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10.0),
+          Container(
+            height: 48.0,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: DEFAULT_COLOR.withOpacity(.05)),
+            child: TextField(
+              controller: ctl,
+              style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+              maxLines: 1,
+              obscureText: hidePassword,
+              keyboardType: TextInputType.visiblePassword,
+              decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    onPressed: () => setState(() {
+                      hidePassword = !hidePassword;
+                    }),
+                    color: Colors.black,
+                    icon: Icon(
+                      hidePassword ? Icons.visibility_off : Icons.visibility,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  hintText: hint,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  hintStyle:
+                      GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+                  border: OutlineInputBorder(borderSide: BorderSide.none)),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

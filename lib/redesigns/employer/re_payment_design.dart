@@ -1,8 +1,18 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:worka/controllers/constants.dart';
+import 'package:worka/phoenix/Controller.dart';
+import 'package:worka/phoenix/CustomScreens.dart';
+import 'package:worka/phoenix/dashboard_work/Success.dart';
 import 'package:worka/phoenix/model/Constant.dart';
+import 'package:worka/phoenix/model/UserResponse.dart';
 
 class RePaymentAndroid extends StatefulWidget {
   const RePaymentAndroid({super.key});
@@ -12,9 +22,21 @@ class RePaymentAndroid extends StatefulWidget {
 }
 
 class _RePaymentAndroidState extends State<RePaymentAndroid> {
+  String reference = '';
+  bool isLoading = false;
+  bool isScrolled = false;
+  String plan = '';
+  final plugin = PaystackPlugin();
+
   @override
   void initState() {
+    plugin.initialize(publicKey: PUBLIC_KEY);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -148,7 +170,8 @@ class _RePaymentAndroidState extends State<RePaymentAndroid> {
                                                 child: Text(
                                               '${PLAN_PRICE[e.key]!['features'][i]}',
                                               style: GoogleFonts.lato(
-                                                  fontSize: 12.0, color: Colors.black54),
+                                                  fontSize: 12.0,
+                                                  color: Colors.black54),
                                             ))
                                           ],
                                         ),
@@ -158,25 +181,34 @@ class _RePaymentAndroidState extends State<RePaymentAndroid> {
                             const SizedBox(
                               height: 20.0,
                             ),
-                            Container(
-                                width: MediaQuery.of(context).size.width,
-                                padding: const EdgeInsets.all(15.0),
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                      width: 1.0,
-                                      color: DEFAULT_COLOR,
+                            GestureDetector(
+                              onTap: () => selectButton(
+                                  context,
+                                  '${PLAN_PRICE[e.key]!['plan']}',
+                                  '${PLAN_PRICE[e.key]!['price']}',
+                                  PLAN_PRICE[e.key]!['details']),
+                              child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  padding: const EdgeInsets.all(15.0),
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 1.0,
+                                        color: DEFAULT_COLOR,
+                                      ),
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      color: DEFAULT_COLOR.withOpacity(.06)),
+                                  child: Center(
+                                    child: Text(
+                                      'Choose Plan',
+                                      style: GoogleFonts.lato(
+                                          fontSize: 15.0,
+                                          color: DEFAULT_COLOR,
+                                          fontWeight: FontWeight.w700),
                                     ),
-                                    borderRadius: BorderRadius.circular(6.0),
-                                    color: DEFAULT_COLOR.withOpacity(.06)),
-                                child: Center(
-                                  child: Text(
-                                    'Choose Plan',
-                                    style: GoogleFonts.lato(
-                                        fontSize: 15.0, color: DEFAULT_COLOR, fontWeight: FontWeight.w700),
-                                  ),
-                                )),
+                                  )),
+                            ),
                             const SizedBox(
                               height: 20.0,
                             ),
@@ -190,5 +222,88 @@ class _RePaymentAndroidState extends State<RePaymentAndroid> {
         ),
       ),
     );
+  }
+
+  selectButton(BuildContext context, plan, price, detils) {
+    this.plan = plan;
+    if (plan.toLowerCase() == 'free') {
+      updatePlan(plan, _getReference()!, context);
+      return;
+    }
+    chargeCard(context, price, context.read<Controller>().email);
+  }
+
+  void _verifyOnServer(ref) async {
+    String url = 'https://api.paystack.co/transaction/verify/$ref';
+    try {
+      final response = await http.get(Uri.parse(url),
+          headers: {"Authorization": "Bearer $SECRET_KEY"});
+      if (response.statusCode == 200) {
+        final parsed = jsonDecode(response.body);
+        if (parsed['message'] == "Verification successful") {
+          updatePlan(plan, ref, context);
+        }
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  void updatePlan(String plan, String ref, BuildContext context) async {
+    try {
+      final response = await http.Client()
+          .get(Uri.parse('${ROOT}plan_upgrade/$plan/$ref'), headers: {
+        "Authorization": 'TOKEN ${context.read<Controller>().token}'
+      });
+      if (response.statusCode == 200) {
+        final parsed = json.decode(response.body);
+        var p = Plan.fromMap(parsed);
+        Get.off(() => Success('Plan upgrade sucessfully', callBack: () async {
+              var prefs = await SharedPreferences.getInstance();
+              prefs.setString(PLAN, json.encode(p.toMap()));
+              Get.back();
+            }));
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  String? _getReference() {
+    String platform;
+    if (Platform.isIOS) {
+      platform = 'iOS';
+    } else {
+      platform = 'Android';
+    }
+    return 'ChargedFrom${platform}_${DateTime.now().millisecondsSinceEpoch}';
+  }
+
+  chargeCard(BuildContext context, String price, String email) async {
+    Charge charge = Charge()
+      ..amount = double.tryParse('${price}')!.toInt() * 100
+      ..reference = _getReference()
+      //..accessCode = await _fetchAccessCodeFrmServer(email, '${price}00')
+      ..email = email;
+    CheckoutResponse response = await plugin.checkout(
+      context,
+      method: CheckoutMethod.card, // Defaults to CheckoutMethod.selectable
+      charge: charge,
+      fullscreen: false,
+      logo: Image.asset(
+        'assets/logo.png',
+        width: 50,
+        height: 50,
+        fit: BoxFit.cover,
+      ),
+    );
+    final reference = response.reference;
+
+    // Checking if the transaction is successful
+    if (response.status) {
+      _verifyOnServer(reference);
+    } else {
+      CustomSnack('Error', response.message);
+    }
   }
 }

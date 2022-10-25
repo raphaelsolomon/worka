@@ -49,6 +49,7 @@ const tags = [
   "performances"
 ];
 const DEFAULT_COLOR = Color(0xFF0039A5);
+const DEFAULT_COLOR_1 = Color(0xFFFF6B01);
 const SUB_HEAD = Color(0xFF8E8E8E);
 const SUB_HEAD_1 = Colors.black87;
 const ROOT = 'https://api.workanetworks.com/';

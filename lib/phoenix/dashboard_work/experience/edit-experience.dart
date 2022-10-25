@@ -88,7 +88,7 @@ class _EditExperienceState extends State<EditExperience> {
                 )
               ]),
               const SizedBox(height: 8.0),
-              imageView('${context.watch<Controller>().avatar}'),
+              imageView('${context.watch<Controller>().avatar}', context),
               const SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),

@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,9 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:worka/employer_page/employer_settings.dart';
 import 'package:worka/employer_page/phoenix/screens/EmpInterviews.dart';
 import 'package:worka/interfaces/login_interface.dart';
+import 'package:worka/redesigns/applicant/re_design_profile.dart';
 import 'package:worka/redesigns/employer/re_company_profile.dart';
-import 'package:worka/redesigns/employer/re_payment_design.dart';
-import 'package:worka/redesigns/employer/re_payment_design_ios.dart';
 import 'package:worka/redesigns/employer/redesign_home_page.dart';
 import 'package:worka/screens/help_center.dart';
 import 'package:worka/screens/selection_page.dart';
@@ -18,9 +16,9 @@ import '../../employer_page/controller/empContoller.dart';
 import '../../phoenix/Controller.dart';
 import '../../phoenix/model/Constant.dart';
 
-class ReDrawer extends StatelessWidget {
+class ReDrawerApplicant extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffold;
-  const ReDrawer(this.scaffold, {Key? key}) : super(key: key);
+  const ReDrawerApplicant(this.scaffold, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -81,21 +79,11 @@ class ReDrawer extends StatelessWidget {
           Expanded(
               child: Column(
             children: [
-              items(callBack: () =>  Get.to(() => ReCompanyProfile())),
+              items(callBack: () =>  Get.to(() => ReApplicantProfile())),
               const SizedBox(height: 20.0),
-              items(icons: Icons.shopping_bag, text: 'Jobs', callBack: () => Get.to(() => ReHomePage())),
+              items(icons: Icons.shopping_bag, text: 'My Jobs', callBack: () => Get.to(() => ReHomePage())),
               const SizedBox(height: 20.0),
               items(icons: Icons.laptop, text: 'Interviews', callBack: () => Get.to(() => EmpInterview())),
-              const SizedBox(height: 20.0),
-              items(
-                  icons: Icons.money,
-                  text: 'Plans',
-                  callBack: () {
-                    if (Platform.isIOS)
-                      Get.to(() => RePaymentiOS());
-                    else
-                      Get.to(() => RePaymentAndroid());
-                  }),
               const SizedBox(height: 20.0),
               items(
                   icons: Icons.settings,
@@ -142,7 +130,7 @@ class ReDrawer extends StatelessWidget {
   }
 }
 
-Widget items({icons = Icons.person, text = 'Company Profile', callBack}) {
+Widget items({icons = Icons.person, text = 'Profile', callBack}) {
   return InkWell(
     onTap: () => callBack(),
     child: Container(
@@ -161,7 +149,7 @@ Widget items({icons = Icons.person, text = 'Company Profile', callBack}) {
         Icon(
           icons,
           size: 18.0,
-          color: DEFAULT_COLOR,
+          color: DEFAULT_COLOR_1,
         ),
         const SizedBox(
           width: 18.0,

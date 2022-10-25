@@ -1,15 +1,11 @@
 import 'dart:io';
-import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/src/provider.dart';
-import 'package:worka/controllers/constants.dart';
-import 'package:worka/models/compModel.dart';
 import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/CustomScreens.dart';
 import 'package:worka/phoenix/GeneralButtonContainer.dart';
@@ -18,47 +14,24 @@ import 'package:worka/phoenix/model/Constant.dart';
 
 import '../../../phoenix/dashboard_work/Success.dart';
 
-class EditCompany extends StatefulWidget {
-  final CompModel compModel;
-  const EditCompany(this.compModel, {Key? key}) : super(key: key);
+class ReApplicantProfileEdit extends StatefulWidget {
+  const ReApplicantProfileEdit({Key? key}) : super(key: key);
 
   @override
-  _EditCompanyState createState() => _EditCompanyState();
+  _ReApplicantProfileEditState createState() => _ReApplicantProfileEditState();
 }
 
-class _EditCompanyState extends State<EditCompany> {
+class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
   final fname = TextEditingController();
   final lname = TextEditingController();
   final name = TextEditingController();
-  final email = TextEditingController();
-  final phone = TextEditingController();
-  final cprofile = TextEditingController();
-  final website = TextEditingController();
-  final cAddress = TextEditingController();
-  String position = '';
-  String? address0 = "";
-  String? address1 = "";
-  String? address2 = "";
-  String businessScale = '';
-  String industries = '';
   bool isLoading = false;
 
   @override
   void initState() {
-    fname.text = widget.compModel.firstName!;
-    lname.text = widget.compModel.lastName!;
-    name.text = widget.compModel.companyName!;
-    email.text = widget.compModel.companyEmail!;
-    industries = widget.compModel.industry!;
-    address2 = widget.compModel.location!.split(',')[0];
-    address1 = widget.compModel.location!.split(',')[1];
-    address0 = widget.compModel.location!.split(',')[2];
-    phone.text = widget.compModel.phone!;
-    position = widget.compModel.position!;
-    businessScale = widget.compModel.businessScale!;
-    website.text = widget.compModel.companyWebsite!;
-    cprofile.text = widget.compModel.companyProfile!;
-    cAddress.text = widget.compModel.address!;
+    fname.text = '';
+    lname.text = '';
+    name.text = '';
     super.initState();
   }
 
@@ -81,7 +54,7 @@ class _EditCompanyState extends State<EditCompany> {
               ),
               Text('Edit Profile',
                   style:
-                      GoogleFonts.lato(fontSize: 15.0, color: Colors.black87)),
+                      GoogleFonts.lato(fontSize: 15.0, color: Colors.black87, fontWeight: FontWeight.w600)),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 7.0),
                 child: IconButton(
@@ -106,90 +79,31 @@ class _EditCompanyState extends State<EditCompany> {
                   }),
                   const SizedBox(height: 25.0),
                   Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Divider(),
+                  ),
+                  const SizedBox(height: 25.0),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
                       child:
                           getCardForm('First Name', 'First name', ctl: fname)),
-                  SizedBox(height: 7.0),
+                  SizedBox(height: 19.0),
                   Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
                       child: getCardForm('Last Name', 'Last name', ctl: lname)),
-                  SizedBox(height: 7.0),
+                  SizedBox(height: 19.0),
                   Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: getCardForm('Company Name', 'Company Name',
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: getCardForm('Role Title', 'Role Title',
                           ctl: name)),
-                  SizedBox(height: 7.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: getCardForm('E-mail Address', 'E-mail Address',
-                        ctl: email, read: true),
-                  ),
-                  SizedBox(height: 10.0),
-                  buildCSC(),
-                  SizedBox(height: 7.0),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: getCardForm('Phone Number', 'Phone Number',
-                          ctl: phone,
-                          formater: [
-                            MaskTextInputFormatter(mask: '+(###) ### ### ####')
-                          ])),
-                  SizedBox(height: 7.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: getCardDropForm('Industries', INDUSTRY_ITEMS,
-                        '${widget.compModel.industry}',
-                        callBack: (s) => {
-                              setState(() {
-                                industries = s;
-                              })
-                            }),
-                  ),
-                  SizedBox(height: 7.0),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: getCardForm('Company Website', 'Company Website',
-                          ctl: website)),
-                  SizedBox(height: 7.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: getCardDropForm('Position', POSITIONITEM,
-                        '${widget.compModel.position}',
-                        callBack: (s) => {
-                              setState(() {
-                                position = s;
-                              })
-                            }),
-                  ),
-                  SizedBox(height: 7.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: getCardDropForm('Business Scale', BUSINESSSCALE,
-                        '${widget.compModel.businessScale}',
-                        callBack: (s) => {
-                              setState(() {
-                                businessScale = s;
-                              })
-                            }),
-                  ),
-                  SizedBox(height: 7.0),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: getCardRichForm(
-                          'Company Profile', 'Company Profile',
-                          ctl: cprofile)),
-                  SizedBox(height: 7.0),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child:
-                          getCardRichForm('Address', 'Address', ctl: cAddress)),
+                  
                   SizedBox(height: 35.0),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: isLoading
                         ? Center(child: CircularProgressIndicator(color: DEFAULT_COLOR,))
                         : GeneralButtonContainer(
-                            name: 'Update Bio',
+                            name: 'Save',
                             color: DEFAULT_COLOR,
                             textColor: Colors.white,
                             onPress: () => validate(),
@@ -208,61 +122,6 @@ class _EditCompanyState extends State<EditCompany> {
       ),
     ));
   }
-
-  Widget buildCSC() => Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: CSCPicker(
-        flagState: CountryFlag.DISABLE,
-        dropdownDecoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-            color: Colors.white,
-            border:
-                Border.all(color: Color(0xFF1B6DF9).withOpacity(.2), width: 1)),
-        disabledDropdownDecoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            color: Colors.white,
-            border:
-                Border.all(color: Color(0xFF1B6DF9).withOpacity(.2), width: 1)),
-
-        countrySearchPlaceholder: "Country",
-        stateSearchPlaceholder: "State",
-        citySearchPlaceholder: "City",
-
-        ///labels for dropdown
-        countryDropdownLabel: "${address0}",
-        stateDropdownLabel: "${address1}",
-        cityDropdownLabel: "${address2}",
-
-        selectedItemStyle: TextStyle(
-          color: Colors.grey,
-          fontSize: 14,
-        ),
-
-        dropdownHeadingStyle: TextStyle(
-            color: Colors.grey, fontSize: 17, fontWeight: FontWeight.bold),
-
-        dropdownItemStyle: TextStyle(
-          color: Colors.black,
-          fontSize: 14,
-        ),
-        dropdownDialogRadius: 10.0,
-        searchBarRadius: 10.0,
-        onCountryChanged: (value) {
-          setState(() {
-            address0 = value;
-          });
-        },
-        onStateChanged: (value) {
-          setState(() {
-            address1 = value;
-          });
-        },
-        onCityChanged: (value) {
-          setState(() {
-            address2 = value;
-          });
-        },
-      ));
 
   Padding buildPaddingDropdown(List<String> data, String data1, {callBack}) {
     return Padding(
@@ -325,7 +184,7 @@ class _EditCompanyState extends State<EditCompany> {
             style: GoogleFonts.lato(
                 fontSize: 15.0,
                 color: Colors.black87,
-                fontWeight: FontWeight.w600),
+                fontWeight: FontWeight.w400),
           ),
           const SizedBox(height: 10.0),
           Container(
@@ -443,17 +302,13 @@ class _EditCompanyState extends State<EditCompany> {
   }
 
   void validate() {
-    if (address2 == "") {
+    if (fname.text.trim() == "") {
       CustomSnack('Error', 'Please select a city.');
       return;
     }
 
-    if (address1 == "") {
+    if (lname.text.trim() == "") {
       CustomSnack('Error', 'Please select a state.');
-      return;
-    }
-    if (address0 == "") {
-      CustomSnack('Error', 'Please select a country.');
       return;
     }
 
@@ -462,20 +317,6 @@ class _EditCompanyState extends State<EditCompany> {
       return;
     }
 
-    if (phone.text.trim().isEmpty) {
-      CustomSnack('Error', 'Please enter phone number.');
-      return;
-    }
-
-    if (cprofile.text.trim().isEmpty) {
-      CustomSnack('Error', 'Description about the company.');
-      return;
-    }
-
-    if (cAddress.text.trim().isEmpty) {
-      CustomSnack('Error', 'Enter address.');
-      return;
-    }
     executeData();
   }
 
@@ -489,14 +330,6 @@ class _EditCompanyState extends State<EditCompany> {
         'first_name': '${fname.text.trim()}',
         'last_name': '${lname.text.trim()}',
         'company_name': name.text.trim(),
-        'position': position.toLowerCase(),
-        'company_profile': cprofile.text.trim(),
-        'location': '${address2}, ${address1}, ${address0}',
-        'phone': phone.text.trim(),
-        'industry': industries.toLowerCase(),
-        'business_scale': businessScale.toLowerCase(),
-        'company_website': website.text.trim(),
-        'address': cAddress.text.trim(),
       }, headers: {
         'Authorization': 'TOKEN ${context.read<Controller>().token}'
       });

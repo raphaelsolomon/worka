@@ -77,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       )
                     ]),
                 const SizedBox(height: 5.0),
-                imageView('${context.watch<Controller>().avatar}',
+                imageView('${context.watch<Controller>().avatar}', context,
                     callBack: () async {
                   try {
                     final file = await ImagePicker()

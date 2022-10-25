@@ -64,7 +64,7 @@ class _InterviewProfileState extends State<InterviewProfile>
 
   Widget _container(ViewAppModel item) => Container(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        imageView(widget.display),
+        imageView(widget.display, context),
         SizedBox(height: 15.0),
         Container(
             margin: EdgeInsets.symmetric(horizontal: 10.0),

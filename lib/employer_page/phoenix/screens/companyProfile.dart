@@ -93,7 +93,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            imageView('${compModel.companyLogo}'),
+            imageView('${compModel.companyLogo}', context),
             SizedBox(height: 20.0),
             Container(
                 margin: EdgeInsets.symmetric(horizontal: 13.0),

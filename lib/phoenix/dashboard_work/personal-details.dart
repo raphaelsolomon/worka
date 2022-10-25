@@ -85,7 +85,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  imageView('${context.watch<Controller>().avatar}'),
+                  imageView('${context.watch<Controller>().avatar}', context),
                   SizedBox(height: 15.0),
                   Row(
                     children: [

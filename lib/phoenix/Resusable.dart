@@ -792,7 +792,7 @@ Widget CustomAuthForm(hintText, String label, input,
       ),
     );
 
-Widget CustomDatePicker(label, {right = 20.0, left = 20.0, cB, border}) =>
+Widget CustomDatePicker(label, {right = 30.0, left = 30.0, cB, border}) =>
     Padding(
       padding: EdgeInsets.only(right: right, left: left, bottom: 5.0, top: 5.0),
       child: Column(
@@ -803,9 +803,9 @@ Widget CustomDatePicker(label, {right = 20.0, left = 20.0, cB, border}) =>
             child: Container(
                 height: 45.0,
                 decoration: BoxDecoration(
-                  color: Color(0xFFFFFFFF),
-                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                  border: border),
+                  color: DEFAULT_COLOR.withOpacity(.05),
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  ),
                 margin: const EdgeInsets.only(top: 5.0),
                 child: Align(
                     alignment: Alignment.centerLeft,
@@ -813,7 +813,7 @@ Widget CustomDatePicker(label, {right = 20.0, left = 20.0, cB, border}) =>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10.9, vertical: 5.0),
                       child: Text(label,
-                          style: GoogleFonts.montserrat(
+                          style: GoogleFonts.lato(
                               fontSize: 14.0, color: Colors.grey)),
                     ))),
           ),

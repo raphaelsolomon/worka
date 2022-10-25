@@ -9,7 +9,6 @@ import 'package:worka/models/compModel.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/redesigns/employer/re_application_details.dart';
 import 'package:worka/redesigns/employer/re_notification.dart';
-import 'package:worka/redesigns/employer/re_payment_design.dart';
 
 class ReViewApplicant extends StatefulWidget {
   final MyPosted postedJob;
@@ -221,15 +220,12 @@ class _ReViewApplicantState extends State<ReViewApplicant> {
                                         ),
                                         const SizedBox(width: 5.0),
                                         Flexible(
-                                          child: InkWell(
-                                            onTap: () => Get.to(() => RePaymentAndroid()),
-                                            child: Text(
-                                              '${widget.postedJob.budget}',
-                                              style: GoogleFonts.lato(
-                                                  fontSize: 13.0,
-                                                  color: DEFAULT_COLOR,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
+                                          child: Text(
+                                            '${widget.postedJob.budget}',
+                                            style: GoogleFonts.lato(
+                                                fontSize: 13.0,
+                                                color: DEFAULT_COLOR,
+                                                fontWeight: FontWeight.w500),
                                           ),
                                         ),
                                       ],

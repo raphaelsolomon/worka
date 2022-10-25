@@ -49,16 +49,14 @@ class _SelectionPageState extends State<SelectionPage> {
             const SizedBox(
               height: 15.0,
             ),
-            Text(
-              'Worka.',
-              style: GoogleFonts.lato(
-                  fontSize: 14.0,
-                  color: DEFAULT_COLOR,
-                  fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(
-              height: 45.0,
-            ),
+            Image.asset(
+                  'assets/black.png',
+                  width: 260.0,
+                  height: 100.0,
+                  fit: BoxFit.contain,
+                ),
+              const SizedBox(height: 10.0,),
+           
             Text(
               'Select your profile type.',
               style: GoogleFonts.lato(
@@ -72,7 +70,7 @@ class _SelectionPageState extends State<SelectionPage> {
             Text(
               'Hire Talents or Get job Interview',
               style: GoogleFonts.lato(
-                  fontSize: 14.0,
+                  fontSize: 13.0,
                   color: Colors.black87,
                   fontWeight: FontWeight.w600),
             ),
@@ -135,12 +133,13 @@ class _SelectionPageState extends State<SelectionPage> {
                   )),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 18, bottom: 18.0),
+              padding: const EdgeInsets.only(top: 10, bottom: 18.0),
               child: Text('Choose an option to proceed',
                   style:
                       GoogleFonts.lato(color: Colors.black87, fontSize: 13.0),
                   textAlign: TextAlign.center),
             ),
+            const SizedBox(height: 30.0,),
             GestureDetector(
               onTap: () {
                 if (context.read<Controller>().selectionPage == "Employee") {
@@ -174,11 +173,10 @@ class _SelectionPageState extends State<SelectionPage> {
                 child: RichText(
                   text: TextSpan(
                       text: 'Already have an account?',
-                      style: GoogleFonts.montserrat(
-                          color: Colors.black87,
+                      style: GoogleFonts.lato(
+                          color: Colors.black54,
                           fontSize: 13.5,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 1),
+                          fontWeight: FontWeight.w400),
                       children: [
                         TextSpan(
                             text: ' Login',

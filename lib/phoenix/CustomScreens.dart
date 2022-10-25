@@ -25,6 +25,8 @@ import 'package:worka/phoenix/GeneralButtonContainer.dart';
 import 'package:worka/phoenix/Resusable.dart';
 import 'package:worka/phoenix/dashboard_work/profile.dart';
 import 'package:worka/phoenix/model/MySkill.dart';
+import 'package:worka/redesigns/employer/re_payment_design.dart';
+import 'package:worka/redesigns/employer/re_payment_design_ios.dart';
 import 'package:worka/screens/login_screen.dart';
 import 'package:worka/screens/selection_page.dart';
 import '../employer_page/plan_price.dart';
@@ -55,7 +57,7 @@ class Work_Experience extends StatelessWidget {
 var pages;
 bool isready = false;
 
-Widget imageView(String avatar, {callBack}) => Container(
+Widget imageView(String avatar, context, {callBack}) => Container(
     width: double.infinity,
     child: Stack(children: [
       Align(
@@ -65,26 +67,36 @@ Widget imageView(String avatar, {callBack}) => Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
                 color: Colors.transparent,
-                border: Border.all(
-                    color: Colors.transparent, width: 1.5)),
+                border: Border.all(color: Colors.transparent, width: 1.5)),
             child: CircleAvatar(
+              backgroundColor: DEFAULT_COLOR.withOpacity(.03),
               backgroundImage: NetworkImage('$avatar'),
-              radius: 45,
+              radius: 60,
             ),
           )),
       callBack != null
-          ? Positioned(
-              bottom: 0,
-              left: 60,
-              right: 0,
-              top: 70,
-              child: IconButton(
-                  onPressed: () => callBack(),
-                  icon: Icon(
+          ? Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding:  EdgeInsets.only(right: MediaQuery.of(context).size.width / 2.6, top: 98.0),
+              child: GestureDetector(
+                onTap: () => callBack(),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: DEFAULT_COLOR,
+                    borderRadius: BorderRadius.circular(100.0)
+                  ),
+                  width: 28.0,
+                  height: 28.0,
+                  child: Icon(
                     Icons.edit,
-                    color: Color(0xff0D30D9),
-                    size: 28,
-                  )))
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                ),
+              ),
+            ),
+          )
           : Container()
     ]));
 
@@ -117,7 +129,7 @@ Widget skills(BuildContext context, {callBack}) => Column(
           )
         ]),
         const SizedBox(height: 8.0),
-        imageView('${context.watch<Controller>().avatar}'),
+        imageView('${context.watch<Controller>().avatar}', context),
         const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -209,7 +221,7 @@ Widget selectLanguage(BuildContext context, TextEditingController c) => Column(
           ),
         ]),
         const SizedBox(height: 20.0),
-        imageView('${context.watch<Controller>().avatar}'),
+        imageView('${context.watch<Controller>().avatar}', context),
         const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -256,7 +268,7 @@ Widget _selectAvailablity(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 12),
-        imageView('${context.watch<Controller>().avatar}'),
+        imageView('${context.watch<Controller>().avatar}', context),
         const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -298,7 +310,7 @@ Widget _additionalInformation(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 12),
-        imageView('${context.watch<Controller>().avatar}'),
+        imageView('${context.watch<Controller>().avatar}', context),
         const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -3351,7 +3363,10 @@ upgradePop(BuildContext c) => showDialog(
                         textColor: Colors.white,
                         onPress: () {
                           Navigator.pop(c);
-                          Get.to(() => PlanPrice());
+                          if (Platform.isIOS)
+                            Get.to(() => RePaymentiOS());
+                          else
+                            Get.to(() => RePaymentAndroid());
                         },
                         paddingBottom: 3,
                         paddingLeft: 30,
