@@ -7,7 +7,6 @@ import 'package:worka/employer_page/employer_settings.dart';
 import 'package:worka/employer_page/phoenix/screens/EmpInterviews.dart';
 import 'package:worka/interfaces/login_interface.dart';
 import 'package:worka/redesigns/applicant/re_design_profile.dart';
-import 'package:worka/redesigns/employer/re_company_profile.dart';
 import 'package:worka/redesigns/employer/redesign_home_page.dart';
 import 'package:worka/screens/help_center.dart';
 import 'package:worka/screens/selection_page.dart';

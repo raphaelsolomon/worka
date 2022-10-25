@@ -4,14 +4,14 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 
-class RedesignExperience extends StatefulWidget {
-  const RedesignExperience({super.key});
+class RedesignSkills extends StatefulWidget {
+  const RedesignSkills({super.key});
 
   @override
-  State<RedesignExperience> createState() => _RedesignExperienceState();
+  State<RedesignSkills> createState() => _RedesignSkillsState();
 }
 
-class _RedesignExperienceState extends State<RedesignExperience> {
+class _RedesignSkillsState extends State<RedesignSkills> {
   final searchController = TextEditingController();
   List<String> skills = [];
 
