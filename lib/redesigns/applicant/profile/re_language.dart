@@ -12,9 +12,9 @@ class RedesignLanguage extends StatefulWidget {
 }
 
 class _RedesignLanguageState extends State<RedesignLanguage> {
-  String language = '';
+  final language = TextEditingController();
   String proficiency = '';
-  List<String> skills = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _RedesignLanguageState extends State<RedesignLanguage> {
                   GestureDetector(
                       onTap: () => Get.back(),
                       child: Icon(
-                        Icons.menu,
+                        Icons.keyboard_backspace,
                         color: DEFAULT_COLOR,
                       )),
                   const SizedBox(
@@ -60,8 +60,7 @@ class _RedesignLanguageState extends State<RedesignLanguage> {
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
                 children: [
-                  inputDropDown(['English US', 'Arabic', 'French'],
-                      callBack: (s) => language = s),
+                  getCardForm('select Language', 'Language', ctl: language),
                   const SizedBox(
                     height: 12.0,
                   ),
@@ -73,22 +72,29 @@ class _RedesignLanguageState extends State<RedesignLanguage> {
                   const SizedBox(
                     height: 30.0,
                   ),
-                  GestureDetector(
-                    onTap: () async {},
-                    child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        padding: const EdgeInsets.all(15.0),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: DEFAULT_COLOR),
-                        child: Center(
-                          child: Text(
-                            'Submit',
-                            style: GoogleFonts.lato(
-                                fontSize: 15.0, color: Colors.white),
-                          ),
-                        )),
-                  ),
+                  isLoading
+                      ? SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            color: DEFAULT_COLOR,
+                          )))
+                      : GestureDetector(
+                          onTap: () async {},
+                          child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              padding: const EdgeInsets.all(15.0),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  color: DEFAULT_COLOR),
+                              child: Center(
+                                child: Text(
+                                  'Submit',
+                                  style: GoogleFonts.lato(
+                                      fontSize: 15.0, color: Colors.white),
+                                ),
+                              )),
+                        ),
                   const SizedBox(
                     height: 25.0,
                   ),
@@ -102,53 +108,92 @@ class _RedesignLanguageState extends State<RedesignLanguage> {
   }
 
   Widget inputDropDown(List<String> list,
-      {text = 'Language', hint = 'Language', callBack}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '$text',
-          style: GoogleFonts.lato(
-              fontSize: 15.0,
-              color: Colors.black54,
-              fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(
-          height: 10.0,
-        ),
-        Container(
-          height: 45.0,
-          decoration: BoxDecoration(
-            color: DEFAULT_COLOR.withOpacity(.08),
-            borderRadius: BorderRadius.circular(10.0),
+      {text = 'Select certificate', hint = 'Certificate', callBack}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$text',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600),
           ),
-          child: FormBuilderDropdown(
-            name: 'dropDown',
-            icon: Icon(
-              Icons.keyboard_arrow_down,
-              color: Colors.black,
-            ),
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(horizontal: 15.0),
-              border: OutlineInputBorder(borderSide: BorderSide.none),
-            ),
-            // initialValue: 'Male',
-            onChanged: (s) => callBack(s),
-            hint: Text('$hint',
-                style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
-            items: list
-                .map((s) => DropdownMenuItem(
-                      value: s,
-                      child: Text(
-                        '$s',
-                        style: GoogleFonts.lato(
-                            fontSize: 15.0, color: Colors.black54),
-                      ),
-                    ))
-                .toList(),
+          const SizedBox(
+            height: 10.0,
           ),
-        )
-      ],
+          Container(
+            height: 45.0,
+            decoration: BoxDecoration(
+              color: DEFAULT_COLOR.withOpacity(.05),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: FormBuilderDropdown(
+              name: 'dropDown',
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                color: Colors.black,
+              ),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(horizontal: 15.0),
+                border: OutlineInputBorder(borderSide: BorderSide.none),
+              ),
+              // initialValue: 'Male',
+              onChanged: (s) => callBack(s),
+              hint: Text('$hint',
+                  style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+              items: list
+                  .map((s) => DropdownMenuItem(
+                        value: s,
+                        child: Text(
+                          '$s',
+                          style: GoogleFonts.lato(
+                              fontSize: 15.0, color: Colors.black54),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  getCardForm(label, hint, {ctl}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10.0),
+          Container(
+            height: 48.0,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: DEFAULT_COLOR.withOpacity(.05)),
+            child: TextField(
+              controller: ctl,
+              style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+              maxLines: 1,
+              decoration: InputDecoration(
+                  hintText: hint,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  hintStyle:
+                      GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+                  border: OutlineInputBorder(borderSide: BorderSide.none)),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

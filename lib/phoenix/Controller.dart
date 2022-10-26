@@ -360,18 +360,21 @@ class Controller extends ChangeNotifier {
   }
 
   //=====================GET My JOB===========================================
-  getMyJobs() async {
+  Future<List<MyJobsModel>> getMyJobs() async {
+    List<MyJobsModel> myJobs = [];
     try {
       final res = await Dio().get('${ROOT}get_my_job/',
           options: Options(headers: {'Authorization': 'TOKEN $token'}));
       if (res.statusCode == 200) {
-        return res.data
+        myJobs = res.data
             .map<MyJobsModel>((json) => MyJobsModel.fromJson(json))
             .toList();
+        return myJobs;
       }
     } on SocketException {
-      return [];
+      return myJobs;
     }
+    return myJobs;
   }
 
   userLogin(String email, password) async {
@@ -572,7 +575,7 @@ class Controller extends ChangeNotifier {
     } on Exception {}
   }
 
-  uploadCV(String path, BuildContext  c) async {
+  uploadCV(String path, BuildContext c) async {
     try {
       setCvLoading(true);
       form_data.FormData form = form_data.FormData.fromMap({

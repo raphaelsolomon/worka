@@ -9,7 +9,7 @@ import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/Helper.dart';
 import 'package:worka/phoenix/ProfileController.dart';
 import 'package:provider/provider.dart';
-import 'package:worka/redesigns/applicant/re_design_profile.dart';
+import 'package:worka/redesigns/applicant/re_app_progress.dart';
 import 'employer_page/controller/empContoller.dart';
 
 Future<void> main() async {
@@ -43,6 +43,6 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.blue,
             ),
             //home: const WelcomeScreen(),
-            home: const ReApplicantProfile(),
+            home: const ReAppProgress(),
           ));
 }

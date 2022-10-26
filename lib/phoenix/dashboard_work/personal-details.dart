@@ -106,7 +106,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                             final result = await FilePicker.platform.pickFiles(
                               allowMultiple: false,
                               type: FileType.custom,
-                              allowedExtensions: ['pdf'],
+                              allowedExtensions: ['pdf', 'doc'],
                             );
                             if (result != null) {
                               execution.uploadCV(

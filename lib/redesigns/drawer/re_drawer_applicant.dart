@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:worka/employer_page/employer_settings.dart';
 import 'package:worka/employer_page/phoenix/screens/EmpInterviews.dart';
 import 'package:worka/interfaces/login_interface.dart';
+import 'package:worka/redesigns/applicant/re_app_applicant.dart';
 import 'package:worka/redesigns/applicant/re_design_profile.dart';
-import 'package:worka/redesigns/employer/redesign_home_page.dart';
 import 'package:worka/screens/help_center.dart';
 import 'package:worka/screens/selection_page.dart';
 
@@ -80,7 +80,7 @@ class ReDrawerApplicant extends StatelessWidget {
             children: [
               items(callBack: () =>  Get.to(() => ReApplicantProfile())),
               const SizedBox(height: 20.0),
-              items(icons: Icons.shopping_bag, text: 'My Jobs', callBack: () => Get.to(() => ReHomePage())),
+              items(icons: Icons.shopping_bag, text: 'My Jobs', callBack: () => Get.to(() => ReApplicationApplicant())),
               const SizedBox(height: 20.0),
               items(icons: Icons.laptop, text: 'Interviews', callBack: () => Get.to(() => EmpInterview())),
               const SizedBox(height: 20.0),

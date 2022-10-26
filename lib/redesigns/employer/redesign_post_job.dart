@@ -127,61 +127,6 @@ class _RePostJobsState extends State<RePostJobs> {
             ],
           ),
           const SizedBox(
-            height: 20.0,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Row(
-              children: [
-                Flexible(
-                    child: GestureDetector(
-                  onTap: () => setState(() => isJobDesc = true),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Step 1',
-                        style: GoogleFonts.lato(
-                            fontSize: 16.0,
-                            color: isJobDesc ? DEFAULT_COLOR : Colors.black54),
-                      ),
-                      const SizedBox(
-                        height: 5.0,
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Divider(
-                          thickness: isJobDesc ? 5.0 : 2.0,
-                          color: isJobDesc ? DEFAULT_COLOR : Colors.black26,
-                        ),
-                      )
-                    ],
-                  ),
-                )),
-                Flexible(
-                    child: GestureDetector(
-                  onTap: () => setState(() => isJobDesc = false),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Step 2',
-                        style: GoogleFonts.lato(
-                            fontSize: 16.0,
-                            color: !isJobDesc ? DEFAULT_COLOR : Colors.black54),
-                      ),
-                      const SizedBox(
-                        height: 5.0,
-                      ),
-                      Divider(
-                        thickness: !isJobDesc ? 5.0 : 2.0,
-                        color: !isJobDesc ? DEFAULT_COLOR : Colors.black26,
-                      )
-                    ],
-                  ),
-                )),
-              ],
-            ),
-          ),
-          const SizedBox(
             height: 25.0,
           ),
           Expanded(

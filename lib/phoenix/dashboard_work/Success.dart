@@ -28,7 +28,7 @@ class Success extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10.0),
                   border: Border.all(
                       width: 1.0, color: Colors.blue.withOpacity(.2))),
-              child: Image.asset('assets/succ.png'),
+              child: Image.asset('assets/success.png'),
             ),
             SizedBox(height: 20.0),
             Text('${text}',

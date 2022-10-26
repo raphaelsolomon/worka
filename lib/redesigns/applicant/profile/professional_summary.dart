@@ -1,6 +1,13 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:worka/phoenix/Controller.dart';
+import 'package:worka/phoenix/CustomScreens.dart';
+import 'package:worka/phoenix/dashboard_work/Success.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 
 class ProfessionalSummary extends StatefulWidget {
@@ -12,6 +19,7 @@ class ProfessionalSummary extends StatefulWidget {
 
 class _ProfessionalSummaryState extends State<ProfessionalSummary> {
   final controller = TextEditingController();
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -35,7 +43,7 @@ class _ProfessionalSummaryState extends State<ProfessionalSummary> {
                   GestureDetector(
                       onTap: () => Get.back(),
                       child: Icon(
-                        Icons.menu,
+                        Icons.keyboard_backspace,
                         color: DEFAULT_COLOR,
                       )),
                   const SizedBox(
@@ -75,22 +83,34 @@ class _ProfessionalSummaryState extends State<ProfessionalSummary> {
                   const SizedBox(
                     height: 30.0,
                   ),
-                  GestureDetector(
-                    onTap: () async {},
-                    child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        padding: const EdgeInsets.all(15.0),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: DEFAULT_COLOR),
-                        child: Center(
-                          child: Text(
-                            'Submit',
-                            style: GoogleFonts.lato(
-                                fontSize: 15.0, color: Colors.white),
-                          ),
-                        )),
-                  ),
+                  isLoading
+                      ? SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                              child: CircularProgressIndicator(
+                                  color: DEFAULT_COLOR)))
+                      : GestureDetector(
+                          onTap: () async {
+                            if (controller.text.trim().isEmpty) {
+                              CustomSnack('Error', 'Required field is empty');
+                              return;
+                            }
+                            executeThis();
+                          },
+                          child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              padding: const EdgeInsets.all(15.0),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  color: DEFAULT_COLOR),
+                              child: Center(
+                                child: Text(
+                                  'Submit',
+                                  style: GoogleFonts.lato(
+                                      fontSize: 15.0, color: Colors.white),
+                                ),
+                              )),
+                        ),
                   const SizedBox(
                     height: 25.0,
                   ),
@@ -103,15 +123,40 @@ class _ProfessionalSummaryState extends State<ProfessionalSummary> {
     );
   }
 
+  void executeThis() async {
+    setState(() {
+        isLoading = true;
+      });
+    try {
+      final res = await Dio().post('${ROOT}employeedetails/',
+          data: {'uid': ''},
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Professional Summary Added.',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+    } on Exception {
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   Widget inputWidgetRich({hint = 'Type here', ctl}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          height: MediaQuery.of(context).size.height - 90,
+          height: MediaQuery.of(context).size.height / 1.4,
           decoration: BoxDecoration(
-            color: DEFAULT_COLOR.withOpacity(.08),
-            borderRadius: BorderRadius.circular(10.0),
+            color: DEFAULT_COLOR.withOpacity(.05),
+            borderRadius: BorderRadius.circular(5.0),
           ),
           child: TextFormField(
             controller: ctl,

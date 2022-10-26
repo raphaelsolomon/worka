@@ -35,7 +35,7 @@ class _AdditionalInformationState extends State<AdditionalInformation> {
                   GestureDetector(
                       onTap: () => Get.back(),
                       child: Icon(
-                        Icons.menu,
+                        Icons.keyboard_backspace,
                         color: DEFAULT_COLOR,
                       )),
                   const SizedBox(
@@ -119,10 +119,10 @@ class _AdditionalInformationState extends State<AdditionalInformation> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          height: MediaQuery.of(context).size.height - 90,
+          height: MediaQuery.of(context).size.height / 1.4,
           decoration: BoxDecoration(
-            color: DEFAULT_COLOR.withOpacity(.08),
-            borderRadius: BorderRadius.circular(10.0),
+            color: DEFAULT_COLOR.withOpacity(.05),
+            borderRadius: BorderRadius.circular(5.0),
           ),
           child: TextFormField(
             controller: ctl,

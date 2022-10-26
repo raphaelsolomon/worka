@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -121,6 +122,31 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
         ),
       ),
     ));
+  }
+
+  void executeThis() async {
+    setState(() {
+        isLoading = true;
+      });
+    try {
+      final res = await Dio().post('${ROOT}employeedetails/',
+          data: {'uid': ''},
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Details Updated',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+    } on Exception {
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Padding buildPaddingDropdown(List<String> data, String data1, {callBack}) {
