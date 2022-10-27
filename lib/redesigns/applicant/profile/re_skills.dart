@@ -65,9 +65,7 @@ class _RedesignSkillsState extends State<RedesignSkills> {
                       context,
                       'Add Skills',
                       'skills',
-                      searchController,
-                      LanguageClass.getLocalOccupation(
-                          searchController.text.trim())),
+                      searchController),
                   const SizedBox(
                     height: 10.0,
                   ),
@@ -85,7 +83,7 @@ class _RedesignSkillsState extends State<RedesignSkills> {
                                 margin:
                                     const EdgeInsets.symmetric(vertical: 5.0),
                                 decoration: BoxDecoration(
-                                    color: DEFAULT_COLOR.withOpacity(.2),
+                                    color: DEFAULT_COLOR.withOpacity(.09),
                                     borderRadius: BorderRadius.circular(5.0),
                                     border: Border.all(
                                         width: .5, color: DEFAULT_COLOR)),
@@ -149,7 +147,7 @@ class _RedesignSkillsState extends State<RedesignSkills> {
     );
   }
 
-  Widget CustomAutoGeneral(BuildContext context, hint, label, ctl, function) =>
+  Widget CustomAutoGeneral(BuildContext context, hint, label, ctl) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 9.0, vertical: 5.0),
         child: Column(

@@ -14,6 +14,20 @@ class LanguageClass {
             element.toLowerCase().contains(search.toString().toLowerCase()))
         .toList();
   }
+
+  static Iterable<String?> getLocalBenefit(search) {
+    return BENEFIT
+        .where((element) =>
+            element.toLowerCase().contains(search.toString().toLowerCase()))
+        .toList();
+  }
+
+  static Iterable<String?> getLocalRequiredSkills(search) {
+    return REQUIRED_SKILLS
+        .where((element) =>
+            element.toLowerCase().contains(search.toString().toLowerCase()))
+        .toList();
+  }
 }
 
 const PUBLIC_KEY = 'pk_live_73c691bec0868b49d857291fba4c7f33d261f5f8';
@@ -21,7 +35,6 @@ const SECRET_KEY = 'sk_live_634abcc18eb8da28c043d80b3d74c1461df4e62b';
 
 const CONTENT =
     'You are on a  free trial, choose a plan that\'s right for you to explore all of our features';
-
 
 Map<String, Map<String, dynamic>> PLAN_PRICE = {
   'Free': {
@@ -508,6 +521,122 @@ const LANGUAGES = [
   'Zhuang, Chuang',
   'Chinese',
   'Zulu '
+];
+
+const REQUIRED_SKILLS = [
+  'Computer proficiency',
+  'Leadership',
+  'Organizational',
+  'Collaboration',
+  'Problem-solving abilities',
+  'Adaptability',
+  'Attention to detail',
+  'Creativity',
+  'Customer service',
+  'Decision making',
+  'Empathy',
+  'Multitasking',
+  'Positivity',
+  'Self-motivation',
+  'Work ethic',
+  'Accounting',
+  'bookkeeping',
+  'Data privacy',
+  'Enterprise resource planning',
+  'Human resources',
+  'Mathematics',
+  'Multilingualism',
+  'Process automation',
+  'Product design',
+  'Research',
+  'Software proficiency',
+  'Typing',
+  'Writing and editing ',
+  'Dedication',
+  'Innovation',
+  'Trust',
+  'Responsibility',
+  'Dedication to Excellence',
+  'Microsoft Excel',
+  'Enterprise resource planning software',
+  'Business',
+  'Verbal',
+  'Data analytics',
+  'Revenue recognition',
+  'Risk and compliance',
+  'Data entry',
+  'Attentive listening',
+  'empathy',
+  'Troubleshooting',
+  'research',
+  'Patience',
+  'Speed and efficiency',
+  'Positive attitude',
+  'Diplomacy',
+  'Communication skills',
+  'Business acumen',
+  'Data mining',
+  'Client relations',
+  'Strategic thinking',
+  'Verbal and presentation skills',
+  'Project management',
+  'Collaboration',
+  'Critical thinking',
+  'Problem solving',
+  'Content creation',
+  'Market research',
+  'Web analytics',
+  'SEO and SEM',
+  'Critical thinking',
+  'Project management',
+  'Content management systems',
+  'Social media',
+  'programming languages',
+  'Troubleshooting and testing skills',
+  'Operating systems',
+  'Database software',
+  'UX and UI design',
+  'Web frameworks',
+  'API design',
+  'Teamwork',
+  'Design principles',
+  'Brand development',
+  'Storytelling',
+  'Commitment to deadlines',
+  'Time management'
+];
+
+const BENEFIT = [
+  'Life insurance',
+  'Retirement plan',
+  'Disability insurance',
+  'Digital coaching',
+  'Mental health prevention services',
+  'Gym reimbursement',
+  'Tuition reimbursement',
+  'Company equity',
+  'Paid time off',
+  'Paid vacation time',
+  'Paid sick leave',
+  'Workers compensation',
+  'Living stipends',
+  'Student loan repayment',
+  'Paid training and development',
+  'Continuing education allowances',
+  'Travel and spending expenses',
+  'Company equipment',
+  'Company transportation',
+  'Remote work flexibility',
+  'Investment opportunities',
+  'Health insurance',
+  'Flexible work schedule',
+  'Dental insurance',
+  'Vision insurance',
+  'Paid family leave',
+  'Career development training',
+  'Personal development training',
+  'Complimentary lunch',
+  'Work-from-home option available'
 ];
 
 const OCCUPATION = [

@@ -636,7 +636,7 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
           Container(
             height: 45.0,
             decoration: BoxDecoration(
-              color: DEFAULT_COLOR.withOpacity(.08),
+              color: DEFAULT_COLOR.withOpacity(.03),
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: FormBuilderDropdown(

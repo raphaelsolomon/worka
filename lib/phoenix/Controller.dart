@@ -242,20 +242,19 @@ class Controller extends ChangeNotifier {
     return '${sharedPreferences.getString(TYPE) ?? ''}';
   }
 
-  getprofileReview() async {
+  Future<ProfileModel?> getprofileReview() async {
     try {
       final res = await Dio().get('${ROOT}profile_details/',
           options: Options(headers: {'Authorization': 'TOKEN $token'}));
       if (res.statusCode == 200) {
         profileModel = ProfileModel.fromMap(res.data);
-        setUserName(
-            '${profileModel!.firstName} ${profileModel!.lastName} ${profileModel!.otherName}');
-        notifyListeners();
+        setUserName('${profileModel!.firstName} ${profileModel!.lastName} ${profileModel!.otherName}');
         return profileModel;
       }
     } on SocketException {
       CustomSnack('Error', 'Check Internet Connection....');
     }
+    return profileModel;
   }
 
   getSearch(search) async {
@@ -306,7 +305,6 @@ class Controller extends ChangeNotifier {
           options: Options(headers: {'Authorization': 'TOKEN $token'}));
       if (res.statusCode == 200) {
         jobDetails = JobDetails.fromJson(res.data);
-        notifyListeners();
       }
     } on SocketException {
       CustomSnack('Error', 'Check Internet Connection....');

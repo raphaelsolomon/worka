@@ -38,7 +38,7 @@ class _InterviewProfileState extends State<InterviewProfile>
                     onPressed: () => Get.back(),
                   ),
                 ),
-                Text('Profile',
+                Text('Applicant Profile',
                     style: GoogleFonts.montserrat(
                         fontSize: 18, color: Color(0xff0D30D9)),
                     textAlign: TextAlign.center),

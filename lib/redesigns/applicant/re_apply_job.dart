@@ -2,10 +2,15 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/model/Constant.dart';
+import 'package:worka/phoenix/model/ProfileModel.dart';
 
 class ReApplyJob extends StatefulWidget {
-  const ReApplyJob({super.key});
+  final String jobKey;
+  const ReApplyJob(this.jobKey, {super.key});
 
   @override
   State<ReApplyJob> createState() => _ReApplyJobState();
@@ -13,15 +18,26 @@ class ReApplyJob extends StatefulWidget {
 
 class _ReApplyJobState extends State<ReApplyJob> {
   bool isLoading = false;
+  bool pageLoading = true;
   bool isUpload = false;
+  ProfileModel? profileModel = null;
+  final refresh = RefreshController();
   final coverLetter = TextEditingController();
   final jobReqirement = TextEditingController();
   final email = TextEditingController();
   final fname = TextEditingController();
   final lastname = TextEditingController();
 
+  _fetchProfile() async {
+    return await context.read<Controller>().getprofileReview();
+  }
+
   @override
   void initState() {
+    _fetchProfile().then((value) => setState(() {
+          profileModel = value;
+          pageLoading = false;
+        }));
     super.initState();
   }
 
@@ -50,7 +66,7 @@ class _ReApplyJobState extends State<ReApplyJob> {
                 width: 20.0,
               ),
               Text(
-                'Post a Job',
+                'Apply Job',
                 style: GoogleFonts.lato(fontSize: 17.0, color: Colors.black54),
               )
             ],
@@ -59,126 +75,143 @@ class _ReApplyJobState extends State<ReApplyJob> {
             height: 25.0,
           ),
           Expanded(
-              child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  inputWidget(
-                      text: 'First name',
-                      icons: Icons.shopping_basket,
-                      hint: 'First name',
-                      ctl: fname),
-                  const SizedBox(
-                    height: 25.0,
-                  ),
-                  inputWidgetRich(
-                      text: 'Last name',
-                      icons: Icons.shopping_basket,
-                      hint: 'Last name',
-                      ctl: lastname),
-                  const SizedBox(
-                    height: 25.0,
-                  ),
-                  inputWidgetRich(
-                      text: 'E-mail Address',
-                      icons: Icons.school_outlined,
-                      hint: 'E-mail Address',
-                      ctl: email),
-                  const SizedBox(
-                    height: 25.0,
-                  ),
-                  inputWidgetRich(
-                      text: 'Add Cover Letter',
-                      icons: Icons.school_outlined,
-                      hint: 'Cover letter',
-                      ctl: coverLetter),
-                  const SizedBox(
-                    height: 25.0,
-                  ),
-                  isUpload
-                      ? GestureDetector(
-                          onTap: () async {},
-                          child: Container(
-                            padding: const EdgeInsets.all(15.0),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.redAccent.withOpacity(.1)),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.file_open,
-                                  color: Colors.redAccent,
-                                ),
-                                const SizedBox(
-                                  width: 20.0,
-                                ),
-                                Flexible(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Attach File.pdf',
-                                        style: GoogleFonts.lato(
-                                            color: Colors.black54,
-                                            fontSize: 15.0),
+              child: pageLoading
+                  ? Center(
+                      child: CircularProgressIndicator(color: DEFAULT_COLOR))
+                  : SmartRefresher(
+                      controller: refresh,
+                      header: WaterDropHeader(),
+                      onRefresh: () =>
+                          _fetchProfile().then((value) => setState(() {
+                                profileModel = value;
+                                refresh.refreshCompleted();
+                              })),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              inputWidget(
+                                  text: 'First name',
+                                  icons: Icons.shopping_basket,
+                                  hint: 'First name',
+                                  ctl: fname),
+                              const SizedBox(
+                                height: 25.0,
+                              ),
+                              inputWidgetRich(
+                                  text: 'Last name',
+                                  icons: Icons.shopping_basket,
+                                  hint: 'Last name',
+                                  ctl: lastname),
+                              const SizedBox(
+                                height: 25.0,
+                              ),
+                              inputWidgetRich(
+                                  text: 'E-mail Address',
+                                  icons: Icons.school_outlined,
+                                  hint: 'E-mail Address',
+                                  ctl: email),
+                              const SizedBox(
+                                height: 25.0,
+                              ),
+                              inputWidgetRich(
+                                  text: 'Add Cover Letter',
+                                  icons: Icons.school_outlined,
+                                  hint: 'Cover letter',
+                                  ctl: coverLetter),
+                              const SizedBox(
+                                height: 25.0,
+                              ),
+                              isUpload
+                                  ? GestureDetector(
+                                      onTap: () async {},
+                                      child: Container(
+                                        padding: const EdgeInsets.all(15.0),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            color: Colors.redAccent
+                                                .withOpacity(.1)),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.file_open,
+                                              color: Colors.redAccent,
+                                            ),
+                                            const SizedBox(
+                                              width: 20.0,
+                                            ),
+                                            Flexible(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'Attach File.pdf',
+                                                    style: GoogleFonts.lato(
+                                                        color: Colors.black54,
+                                                        fontSize: 15.0),
+                                                  ),
+                                                  Text(
+                                                    '199Kb',
+                                                    style: GoogleFonts.lato(
+                                                        color: Colors.black54,
+                                                        fontSize: 12.0),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Icon(
+                                              Icons.cancel_outlined,
+                                              color: Colors.redAccent,
+                                            ),
+                                            const SizedBox(
+                                              width: 20.0,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      Text(
-                                        '199Kb',
-                                        style: GoogleFonts.lato(
-                                            color: Colors.black54,
-                                            fontSize: 12.0),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.cancel_outlined,
-                                  color: Colors.redAccent,
-                                ),
-                                const SizedBox(
-                                  width: 20.0,
-                                ),
-                              ],
-                            ),
+                                    )
+                                  : inputWidgetCV(),
+                              const SizedBox(
+                                height: 40.0,
+                              ),
+                              isLoading
+                                  ? SizedBox(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Center(
+                                          child: CircularProgressIndicator(
+                                              color: DEFAULT_COLOR)))
+                                  : GestureDetector(
+                                      onTap: () async {
+                                        executeData();
+                                      },
+                                      child: Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          padding: const EdgeInsets.all(15.0),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                              color: DEFAULT_COLOR),
+                                          child: Center(
+                                            child: Text(
+                                              'Submit',
+                                              style: GoogleFonts.lato(
+                                                  fontSize: 15.0,
+                                                  color: Colors.white),
+                                            ),
+                                          )),
+                                    ),
+                              const SizedBox(
+                                height: 25.0,
+                              ),
+                            ],
                           ),
-                        )
-                      : inputWidgetCV(),
-                  const SizedBox(
-                    height: 40.0,
-                  ),
-                  isLoading
-                      ? SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Center(
-                              child: CircularProgressIndicator(
-                                  color: DEFAULT_COLOR)))
-                      : GestureDetector(
-                          onTap: () async {
-                            executeData();
-                          },
-                          child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              padding: const EdgeInsets.all(15.0),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  color: DEFAULT_COLOR),
-                              child: Center(
-                                child: Text(
-                                  'Submit',
-                                  style: GoogleFonts.lato(
-                                      fontSize: 15.0, color: Colors.white),
-                                ),
-                              )),
                         ),
-                  const SizedBox(
-                    height: 25.0,
-                  ),
-                ],
-              ),
-            ),
-          ))
+                      ),
+                    ))
         ],
       )),
     );
@@ -296,7 +329,7 @@ class _ReApplyJobState extends State<ReApplyJob> {
         ),
         Container(
           decoration: BoxDecoration(
-            color: DEFAULT_COLOR.withOpacity(.08),
+            color: DEFAULT_COLOR.withOpacity(.03),
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: TextFormField(
@@ -403,7 +436,7 @@ class _ReApplyJobState extends State<ReApplyJob> {
         Container(
           height: 180.0,
           decoration: BoxDecoration(
-            color: DEFAULT_COLOR.withOpacity(.08),
+            color: DEFAULT_COLOR.withOpacity(.03),
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: TextFormField(

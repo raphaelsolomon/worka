@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:worka/phoenix/dashboard_work/JobDetailsScreen.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 
 class ReAppProgress extends StatefulWidget {
@@ -50,6 +51,9 @@ class _ReAppProgressState extends State<ReAppProgress> {
               ),
             ),
             const SizedBox(
+              height: 20.0,
+            ),
+            const SizedBox(
               height: 25.0,
             ),
             Expanded(
@@ -74,7 +78,7 @@ class _ReAppProgressState extends State<ReAppProgress> {
                           CircleAvatar(
                             backgroundImage: NetworkImage(''),
                             radius: 30.0,
-                            backgroundColor: DEFAULT_COLOR.withOpacity(.08),
+                            backgroundColor: DEFAULT_COLOR.withOpacity(.03),
                           ),
                           const SizedBox(width: 20.0),
                           Flexible(
@@ -178,6 +182,144 @@ class _ReAppProgressState extends State<ReAppProgress> {
               ),
             ))
           ],
+        ),
+      ),
+    );
+  }
+
+  Padding hotListingMethod(String avatar, String job, String salary, String location, String key) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
+      child: InkWell(
+        splashColor: Colors.blue.withOpacity(.2),
+        borderRadius: BorderRadius.circular(12.0),
+        onTap: () async {
+          //if (context.read<Controller>().type == 'employee')
+          Get.to(() => JobDetailsScreen(key));
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.0),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: DEFAULT_COLOR.withOpacity(.1),
+                offset: Offset(0.0, 4.0),
+                spreadRadius: 1.0,
+                blurRadius: 9.0
+              )
+            ]
+          ),
+          child: SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundColor: DEFAULT_COLOR.withOpacity(.03),
+                            backgroundImage: NetworkImage('$avatar'),
+                          ),
+                          const SizedBox(width: 20.0,), 
+                          Flexible(
+                                child: Text(
+                                  'Worka Networks inc,',
+                                  maxLines: 1,
+                                  style: GoogleFonts.lato(
+                                      fontSize: 17,
+                                      color: Colors.black87.withOpacity(.7),
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        // if (see.isLike) {
+                        //   see.isLike = await disLike(see.jobKey);
+                        // } else {
+                        //   see.isLike = await isLike(see.jobKey);
+                        // }
+                        // setState(() {});
+                      },
+                     
+                      icon: Icon(
+                        // see.isLike ? Icons.favorite : Icons.favorite_border,
+                        Icons.bookmark_outline,
+                        size: 28.0,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 8.0),
+                  child: Text(
+                    job,
+                    style: const TextStyle(
+                        fontFamily: 'Lato',
+                        fontSize: 20,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 3, 0, 0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.location_on_outlined, color: DEFAULT_COLOR_1.withOpacity(.8), size: 17.0 ),
+                            const SizedBox(width: 10.0),
+                            Flexible(
+                              child: Text(
+                                '$location',
+                                maxLines: 1,
+                                style: GoogleFonts.lato(
+                                  color: Colors.black45,
+                                    fontSize: 14, fontWeight: FontWeight.w400),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 20.0,),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 3, 8, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(Icons.timelapse_outlined, color: DEFAULT_COLOR_1.withOpacity(.8), size: 17.0 ),
+                          const SizedBox(width: 10.0),
+                          Text(
+                            'Full-time',
+                            maxLines: 1,
+                            style: GoogleFonts.montserrat(
+                                fontSize: 12,
+                                color: Colors.black54,
+                                fontWeight: FontWeight.w400),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

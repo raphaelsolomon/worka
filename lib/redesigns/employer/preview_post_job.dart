@@ -424,7 +424,7 @@ Widget getJobDescription(Map data) =>
       const SizedBox(
         height: 10.0,
       ),
-      ...List.generate(1, (i) {
+      ...List.generate(data['benefit'].toString().split(', ').length, (i) {
         return Row(
           children: [
             Icon(
@@ -435,7 +435,7 @@ Widget getJobDescription(Map data) =>
               width: 10.0,
             ),
             Flexible(
-              child: Text('${data['benefit']}',
+              child: Text('${data['benefit'].toString().split(', ')[i]}',
                   style:
                       GoogleFonts.lato(fontSize: 16.0, color: Colors.black54)),
             )
@@ -453,28 +453,22 @@ Widget getJobDescription(Map data) =>
       const SizedBox(
         height: 10.0,
       ),
-      Wrap(spacing: 12.0, children: [
-        ...List.generate(
-            3,
-            (i) => Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                margin: const EdgeInsets.symmetric(vertical: 5.0),
-                decoration: BoxDecoration(
-                    color: DEFAULT_COLOR.withOpacity(.2),
-                    borderRadius: BorderRadius.circular(5.0),
-                    border: Border.all(width: .5, color: DEFAULT_COLOR)),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('Production',
-                        style: GoogleFonts.lato(
-                            fontSize: 15.0, color: DEFAULT_COLOR)),
-                    const SizedBox(width: 15.0),
-                    Text('x',
-                        style: GoogleFonts.lato(
-                            fontSize: 16.0, color: DEFAULT_COLOR)),
-                  ],
-                ))),
-      ])
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Wrap(spacing: 12.0, children: [
+          ...List.generate(
+              data['skills'].toString().split(', ').length,
+              (i) => Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                  margin: const EdgeInsets.symmetric(vertical: 5.0),
+                  decoration: BoxDecoration(
+                      color: DEFAULT_COLOR.withOpacity(.2),
+                      borderRadius: BorderRadius.circular(5.0),
+                      border: Border.all(width: .5, color: DEFAULT_COLOR)),
+                  child: Text('${data['skills'].toString().split(', ')}',
+                      style: GoogleFonts.lato(
+                          fontSize: 15.0, color: DEFAULT_COLOR)))),
+        ]),
+      )
     ]);

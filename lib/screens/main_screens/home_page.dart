@@ -20,7 +20,6 @@ import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/phoenix/model/SeeMore.dart';
 import 'package:http/http.dart' as http;
 import 'package:worka/reuseables/general_container.dart';
-import 'package:readmore/readmore.dart';
 import 'package:worka/screens/see_more/see_more.dart' as page;
 
 import '../../phoenix/dashboard_work/interview/interviewScreen.dart';
@@ -48,11 +47,10 @@ class _HomePageState extends State<HomePage> {
     context.read<Controller>().viewSkills();
     context.read<Controller>().getMyJobs();
     context.read<Controller>().getHotAlert();
-    execute('').then((value) => {
-          setState(() {
-            type = value;
-          })
-        });
+    execute('').then((value) => setState(() {
+        type = value;
+      })
+    );
     super.initState();
   }
 
@@ -181,7 +179,7 @@ class _HomePageState extends State<HomePage> {
                                         .toLowerCase()
                                         .contains(
                                             textController.text.toLowerCase()))
-                                    .map((e) => listItem(context, e))
+                                    .map((e) => moreJobItems(e))
                                     .toList()
                                     .isEmpty
                                 ? Column(
@@ -211,7 +209,7 @@ class _HomePageState extends State<HomePage> {
                                                 .toLowerCase()
                                                 .contains(textController.text
                                                     .toLowerCase()))
-                                            .map((e) => listItem(context, e))
+                                            .map((e) => moreJobItems(e))
                                             .toList()),
                                   ))
                         : context.watch<Controller>().homePage <= 0
@@ -545,8 +543,7 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
-  Padding hotListingMethod(String avatar, String job, String salary,
-      String location, String key, SeeMore see) {
+   Padding hotListingMethod(String avatar, String job, String salary, String location, String key, SeeMore see) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
       child: InkWell(
@@ -554,15 +551,14 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(12.0),
         onTap: () async {
           if (context.read<Controller>().type == 'employee')
-            Get.to(() => JobDetailsScreen(key));
+              Get.to(() => JobDetailsScreen(key));
         },
         child: Container(
-          width: 250,
-          height: 110,
-          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+          width: 270.0,
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: DEFAULT_COLOR.withOpacity(.4), width: .3),
+            border: Border.all(color: Colors.black54.withOpacity(.1), width: 1.4),
           ),
           child: SingleChildScrollView(
             physics: NeverScrollableScrollPhysics(),
@@ -573,10 +569,27 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleAvatar(
-                      radius: 16,
-                      backgroundColor: DEFAULT_COLOR,
-                      backgroundImage: NetworkImage('$avatar'),
+                    Flexible(
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundColor: DEFAULT_COLOR.withOpacity(.03),
+                            backgroundImage: NetworkImage('$avatar'),
+                          ),
+                          const SizedBox(width: 10.0,), 
+                          Flexible(
+                                child: Text(
+                                  '',
+                                  maxLines: 1,
+                                  style: GoogleFonts.lato(
+                                      fontSize: 18,
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ),
+                        ],
+                      ),
                     ),
                     IconButton(
                       onPressed: () async {
@@ -587,22 +600,23 @@ class _HomePageState extends State<HomePage> {
                         }
                         setState(() {});
                       },
-                      iconSize: 18,
+                     
                       icon: Icon(
-                        see.isLike ? Icons.favorite : Icons.favorite_border,
-                        color: DEFAULT_COLOR,
+                          see.isLike ? Icons.bookmark : Icons.bookmark_outline,
+                        color: Colors.black87,
                       ),
                     ),
                   ],
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0, vertical: 5.0),
+                      horizontal: 8.0, vertical: 8.0),
                   child: Text(
                     job,
                     style: const TextStyle(
                         fontFamily: 'Lato',
-                        fontSize: 12,
+                        fontSize: 19,
+                        color: Colors.black54,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -612,25 +626,181 @@ class _HomePageState extends State<HomePage> {
                     Flexible(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(8.0, 3, 0, 0),
-                        child: Text(
-                          '${see.currency!.toUpperCase()} ${see.budget}/${see.salaryType.toString().capitalizeFirst}',
-                          maxLines: 1,
-                          style: GoogleFonts.montserrat(
-                              fontSize: 10, fontWeight: FontWeight.bold),
+                        child: Row(
+                          children: [
+                            Icon(Icons.location_on_outlined, color: DEFAULT_COLOR_1.withOpacity(.8), size: 17.0 ),
+                            const SizedBox(width: 10.0),
+                            Flexible(
+                              child: Text(
+                                '$location',
+                                maxLines: 1,
+                                style: GoogleFonts.lato(
+                                  color: Colors.black54,
+                                    fontSize: 13, fontWeight: FontWeight.w400),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
+                    const SizedBox(width: 20.0,),
                     Flexible(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(8.0, 3, 8, 0),
-                        child: Text(
-                          location,
-                          maxLines: 1,
-                          style: GoogleFonts.montserrat(
-                              fontSize: 12,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.normal),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(Icons.timelapse_outlined, color: DEFAULT_COLOR_1.withOpacity(.8), size: 17.0 ),
+                            const SizedBox(width: 10.0),
+                            Flexible(
+                              child: FittedBox(
+                                child: Text(
+                                  see.jobType!,
+                                  maxLines: 1,
+                                  style: GoogleFonts.montserrat(
+                                      fontSize: 12,
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding moreJobItems(SeeMore see) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 8.0, 15, 8.0),
+      child: InkWell(
+        splashColor: Colors.blue.withOpacity(.2),
+        borderRadius: BorderRadius.circular(12.0),
+        onTap: () async {
+          Get.to(() => JobDetailsScreen(see.jobKey!));
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.0),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: DEFAULT_COLOR.withOpacity(.1),
+                offset: Offset(0.0, 4.0),
+                spreadRadius: 1.0,
+                blurRadius: 9.0
+              )
+            ]
+          ),
+          child: SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundColor: DEFAULT_COLOR.withOpacity(.03),
+                            backgroundImage: NetworkImage('${see.employer_logo}'),
+                          ),
+                          const SizedBox(width: 20.0,), 
+                          Flexible(
+                                child: Text(
+                                  'Worka Networks inc,',
+                                  maxLines: 1,
+                                  style: GoogleFonts.lato(
+                                      fontSize: 17,
+                                      color: Colors.black87.withOpacity(.7),
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        if (see.isLike) {
+                          see.isLike = await disLike(see.jobKey);
+                        } else {
+                          see.isLike = await isLike(see.jobKey);
+                        }
+                        setState(() {});
+                      },
+                      icon: Icon(
+                         see.isLike ? Icons.bookmark : Icons.bookmark_outline,
+                        size: 28.0,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 8.0),
+                  child: Text(
+                    see.title!,
+                    style: const TextStyle(
+                        fontFamily: 'Lato',
+                        fontSize: 20,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 3, 0, 0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.location_on_outlined, color: DEFAULT_COLOR_1.withOpacity(.8), size: 17.0 ),
+                            const SizedBox(width: 10.0),
+                            Flexible(
+                              child: Text(
+                                '${see.location}',
+                                maxLines: 1,
+                                style: GoogleFonts.lato(
+                                  color: Colors.black45,
+                                    fontSize: 14, fontWeight: FontWeight.w400),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 20.0,),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 3, 8, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(Icons.timelapse_outlined, color: DEFAULT_COLOR_1.withOpacity(.8), size: 17.0 ),
+                          const SizedBox(width: 10.0),
+                          Text(
+                            '${see.jobType}',
+                            maxLines: 1,
+                            style: GoogleFonts.montserrat(
+                                fontSize: 12,
+                                color: Colors.black54,
+                                fontWeight: FontWeight.w400),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -663,8 +833,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   ...List.generate(
                       context.watch<Controller>().see.length,
-                      (index) => listItem(
-                          context, context.watch<Controller>().see[index]))
+                      (index) => moreJobItems(context.watch<Controller>().see[index]))
                 ],
               ),
       ),
@@ -823,138 +992,138 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
-  Widget listItem(ctx, SeeMore? see) => Container(
-        width: MediaQuery.of(ctx).size.width,
-        padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-        decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(.01),
-          //borderRadius: BorderRadius.circular(10),
-          // border: Border.all(color: DEFAULT_COLOR.withOpacity(.2)),
-        ),
-        margin: const EdgeInsets.symmetric(vertical: 0.0),
-        child: InkWell(
-          splashColor: Colors.blue.withOpacity(.1),
-          borderRadius: BorderRadius.circular(7.0),
-          onTap: () async {
-            if (context.read<Controller>().type == 'employee')
-              Get.to(() => JobDetailsScreen('${see!.jobKey}'));
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 0.0, 4, 0.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: AutoSizeText(
-                        '${see!.title}'.capitalizeFirst!,
-                        minFontSize: 12.0,
-                        maxFontSize: 18.0,
-                        maxLines: 1,
-                        style: GoogleFonts.montserrat(
-                            fontSize: 15, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () async {
-                        if (see.isLike) {
-                          see.isLike = await disLike(see.jobKey);
-                        } else {
-                          see.isLike = await isLike(see.jobKey);
-                        }
-                        setState(() {});
-                      },
-                      color: DEFAULT_COLOR,
-                      icon: Icon(
-                          see.isLike ? Icons.favorite : Icons.favorite_border),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Container(
-                  padding: const EdgeInsets.all(5.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(9.0),
-                    color: Colors.blue.withOpacity(.1),
-                  ),
-                  child: Text(
-                    '${see.currency!.toUpperCase()} ${see.budget}/${see.salaryType.toString().capitalizeFirst}',
-                    style: GoogleFonts.montserrat(
-                        color: Colors.black87,
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.normal),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: ReadMoreText(
-                  '${see.description}',
-                  trimLines: 1,
-                  colorClickableText: DEFAULT_COLOR,
-                  trimMode: TrimMode.Line,
-                  style: GoogleFonts.montserrat(
-                    color: Colors.black,
-                    fontSize: 12,
-                  ),
-                  trimCollapsedText: '\nShow more',
-                  trimExpandedText: '\nShow less',
-                  moreStyle: GoogleFonts.montserrat(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.blue),
-                  lessStyle: GoogleFonts.montserrat(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.blue),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(8.0, 3, 0, 0),
-                    child: Text(
-                      '${see.jobType}',
-                      style: GoogleFonts.montserrat(
-                          fontSize: 13.5, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(8.0, 3, 8, 0),
-                    child: '${see.isRemote}' == 'true'
-                        ? Text(
-                            'Remote,${see.location}',
-                            maxLines: 1,
-                            style: GoogleFonts.montserrat(
-                                fontSize: 13,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.normal),
-                          )
-                        : Text(
-                            '${see.location}',
-                            maxLines: 1,
-                            style: GoogleFonts.montserrat(
-                                fontSize: 13,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.normal),
-                          ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10.0),
-              Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 1.0,
-                  color: Colors.blueAccent.withOpacity(.3))
-            ],
-          ),
-        ),
-      );
+  // Widget listItem(ctx, SeeMore? see) => Container(
+  //       width: MediaQuery.of(ctx).size.width,
+  //       padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+  //       decoration: BoxDecoration(
+  //         color: Colors.grey.withOpacity(.01),
+  //         //borderRadius: BorderRadius.circular(10),
+  //         // border: Border.all(color: DEFAULT_COLOR.withOpacity(.2)),
+  //       ),
+  //       margin: const EdgeInsets.symmetric(vertical: 0.0),
+  //       child: InkWell(
+  //         splashColor: Colors.blue.withOpacity(.1),
+  //         borderRadius: BorderRadius.circular(7.0),
+  //         onTap: () async {
+  //           if (context.read<Controller>().type == 'employee')
+  //             Get.to(() => JobDetailsScreen('${see!.jobKey}'));
+  //         },
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             Padding(
+  //               padding: const EdgeInsets.fromLTRB(8.0, 0.0, 4, 0.0),
+  //               child: Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   Flexible(
+  //                     child: AutoSizeText(
+  //                       '${see!.title}'.capitalizeFirst!,
+  //                       minFontSize: 12.0,
+  //                       maxFontSize: 18.0,
+  //                       maxLines: 1,
+  //                       style: GoogleFonts.montserrat(
+  //                           fontSize: 15, fontWeight: FontWeight.w600),
+  //                     ),
+  //                   ),
+  //                   IconButton(
+  //                     onPressed: () async {
+  //                       if (see.isLike) {
+  //                         see.isLike = await disLike(see.jobKey);
+  //                       } else {
+  //                         see.isLike = await isLike(see.jobKey);
+  //                       }
+  //                       setState(() {});
+  //                     },
+  //                     color: DEFAULT_COLOR,
+  //                     icon: Icon(
+  //                         see.isLike ? Icons.favorite : Icons.favorite_border),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //             Padding(
+  //               padding: EdgeInsets.symmetric(horizontal: 8.0),
+  //               child: Container(
+  //                 padding: const EdgeInsets.all(5.0),
+  //                 decoration: BoxDecoration(
+  //                   borderRadius: BorderRadius.circular(9.0),
+  //                   color: Colors.blue.withOpacity(.1),
+  //                 ),
+  //                 child: Text(
+  //                   '${see.currency!.toUpperCase()} ${see.budget}/${see.salaryType.toString().capitalizeFirst}',
+  //                   style: GoogleFonts.montserrat(
+  //                       color: Colors.black87,
+  //                       fontSize: 12.5,
+  //                       fontWeight: FontWeight.normal),
+  //                 ),
+  //               ),
+  //             ),
+  //             Padding(
+  //               padding: EdgeInsets.all(8.0),
+  //               child: ReadMoreText(
+  //                 '${see.description}',
+  //                 trimLines: 1,
+  //                 colorClickableText: DEFAULT_COLOR,
+  //                 trimMode: TrimMode.Line,
+  //                 style: GoogleFonts.montserrat(
+  //                   color: Colors.black,
+  //                   fontSize: 12,
+  //                 ),
+  //                 trimCollapsedText: '\nShow more',
+  //                 trimExpandedText: '\nShow less',
+  //                 moreStyle: GoogleFonts.montserrat(
+  //                     fontSize: 13,
+  //                     fontWeight: FontWeight.w400,
+  //                     color: Colors.blue),
+  //                 lessStyle: GoogleFonts.montserrat(
+  //                     fontSize: 13,
+  //                     fontWeight: FontWeight.w400,
+  //                     color: Colors.blue),
+  //               ),
+  //             ),
+  //             Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 Padding(
+  //                   padding: EdgeInsets.fromLTRB(8.0, 3, 0, 0),
+  //                   child: Text(
+  //                     '${see.jobType}',
+  //                     style: GoogleFonts.montserrat(
+  //                         fontSize: 13.5, fontWeight: FontWeight.bold),
+  //                   ),
+  //                 ),
+  //                 Padding(
+  //                   padding: EdgeInsets.fromLTRB(8.0, 3, 8, 0),
+  //                   child: '${see.isRemote}' == 'true'
+  //                       ? Text(
+  //                           'Remote,${see.location}',
+  //                           maxLines: 1,
+  //                           style: GoogleFonts.montserrat(
+  //                               fontSize: 13,
+  //                               color: Colors.grey,
+  //                               fontWeight: FontWeight.normal),
+  //                         )
+  //                       : Text(
+  //                           '${see.location}',
+  //                           maxLines: 1,
+  //                           style: GoogleFonts.montserrat(
+  //                               fontSize: 13,
+  //                               color: Colors.grey,
+  //                               fontWeight: FontWeight.normal),
+  //                         ),
+  //                 ),
+  //               ],
+  //             ),
+  //             const SizedBox(height: 10.0),
+  //             Container(
+  //                 width: MediaQuery.of(context).size.width,
+  //                 height: 1.0,
+  //                 color: Colors.blueAccent.withOpacity(.3))
+  //           ],
+  //         ),
+  //       ),
+  //     );
 
   isLike(job_uid) async {
     try {
