@@ -1,11 +1,21 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:worka/phoenix/Controller.dart';
+import 'package:worka/phoenix/CustomScreens.dart';
+import 'package:worka/phoenix/dashboard_work/Success.dart';
 import 'package:worka/phoenix/model/Constant.dart';
+import 'package:worka/phoenix/model/ProfileModel.dart';
 
 class RedesignLanguage extends StatefulWidget {
-  const RedesignLanguage({super.key});
+  final bool isEdit;
+  final Language? eModel;
+  const RedesignLanguage({super.key, required this.isEdit, this.eModel});
 
   @override
   State<RedesignLanguage> createState() => _RedesignLanguageState();
@@ -13,11 +23,18 @@ class RedesignLanguage extends StatefulWidget {
 
 class _RedesignLanguageState extends State<RedesignLanguage> {
   final language = TextEditingController();
-  String proficiency = '';
+  String proficiency = 'Language Proficiency';
+
   bool isLoading = false;
+  bool isUpdate = false;
+  bool isDelete = false;
 
   @override
   void initState() {
+    if (widget.isEdit) {
+      language.text = widget.eModel!.language!;
+      proficiency = widget.eModel!.level!;
+    }
     super.initState();
   }
 
@@ -67,7 +84,7 @@ class _RedesignLanguageState extends State<RedesignLanguage> {
                   inputDropDown(
                       ['Fluent', 'Native', 'Beginner', 'Conversational'],
                       text: 'Language Proficiency',
-                      hint: 'Language Proficiency',
+                      hint: '$proficiency',
                       callBack: (s) => proficiency = s),
                   const SizedBox(
                     height: 30.0,
@@ -107,6 +124,88 @@ class _RedesignLanguageState extends State<RedesignLanguage> {
     );
   }
 
+  void addCertification(data) async {
+    setState(() {
+      isLoading = false;
+    });
+    try {
+      final res = await Dio().post('${ROOT}add/',
+      data: data,
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Language Added...',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+      CustomSnack('Error', 'Check Internet Connection..');
+    } on Exception {
+      CustomSnack('Error', 'Unable to update language');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void delete(id) async {
+    setState(() {
+      isDelete = false;
+    });
+    try {
+      final res = await Dio().delete(
+          '${ROOT}languagedetails/${widget.eModel!.id}',
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Language Deleted...',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+      CustomSnack('Error', 'Check Internet Connection..');
+    } on Exception {
+      CustomSnack('Error', 'Unable to update language');
+    } finally {
+      setState(() {
+        isDelete = false;
+      });
+    }
+  }
+
+  void updateData(Map data) async {
+    setState(() {
+      isUpdate = true;
+    });
+    try {
+      final res = await Dio().post(
+          '${ROOT}languagedetails/${widget.eModel!.id}',
+          data: data,
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Language Updated...',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+      CustomSnack('Error', 'Check Internet Connection..');
+    } on Exception {
+      CustomSnack('Error', 'Unable to update language');
+    } finally {
+      setState(() {
+        isUpdate = false;
+      });
+    }
+  }
+
   Widget inputDropDown(List<String> list,
       {text = 'Select certificate', hint = 'Certificate', callBack}) {
     return Padding(
@@ -143,7 +242,8 @@ class _RedesignLanguageState extends State<RedesignLanguage> {
               // initialValue: 'Male',
               onChanged: (s) => callBack(s),
               hint: Text('$hint',
-                  style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+                  style:
+                      GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
               items: list
                   .map((s) => DropdownMenuItem(
                         value: s,

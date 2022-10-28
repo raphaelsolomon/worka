@@ -9,7 +9,7 @@ import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/Helper.dart';
 import 'package:worka/phoenix/ProfileController.dart';
 import 'package:provider/provider.dart';
-import 'package:worka/redesigns/employer/redesign_post_job.dart';
+import 'package:worka/screens/welcome_screen.dart';
 import 'employer_page/controller/empContoller.dart';
 
 Future<void> main() async {
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),
-            //home: const WelcomeScreen(),
-            home: const RePostJobs(),
+            home: const WelcomeScreen(),
+            //home: const RePostJobs(),
           ));
 }

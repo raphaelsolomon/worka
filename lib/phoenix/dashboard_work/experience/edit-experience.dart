@@ -50,8 +50,7 @@ class _EditExperienceState extends State<EditExperience> {
     company.text = widget.eModel.companyName!;
     desc.text = widget.eModel.description!;
     isChecked = widget.eModel.current!;
-    stringStart = DateFormat('yyyy-MM-dd').format(widget.eModel.startDate);
-    stringStop = DateFormat('yyyy-MM-dd').format(widget.eModel.endDate);
+    stringStart = DateFormat('yyyy-MM-dd').format(DateTime.parse(widget.eModel.startDate!));
     super.initState();
   }
 
@@ -147,26 +146,11 @@ class _EditExperienceState extends State<EditExperience> {
                         type: DateTimePickerType.date,
                         dateMask: 'd MMM, yyyy',
                         initialValue: stringStart,
-                        firstDate: widget.eModel.startDate,
+                        firstDate:DateTime.parse(widget.eModel.startDate!),
                         lastDate: DateTime(2100),
                         dateLabelText: 'Start Date',
                         onChanged: (val) => setState(() {
                           stringStart = val;
-                        }),
-                      ),
-                    )),
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: DateTimePicker(
-                        type: DateTimePickerType.date,
-                        dateMask: 'd MMM, yyyy',
-                        initialValue: stringStop,
-                        firstDate: widget.eModel.endDate,
-                        lastDate: DateTime(2100),
-                        dateLabelText: 'End Date',
-                        onChanged: (val) => setState(() {
-                          stringStop = val;
                         }),
                       ),
                     )),

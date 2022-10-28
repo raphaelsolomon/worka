@@ -11,7 +11,8 @@ import 'package:worka/phoenix/dashboard_work/Success.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 
 class ProfessionalSummary extends StatefulWidget {
-  const ProfessionalSummary({super.key});
+  final String data;
+  const ProfessionalSummary(this.data, {super.key});
 
   @override
   State<ProfessionalSummary> createState() => _ProfessionalSummaryState();
@@ -23,6 +24,9 @@ class _ProfessionalSummaryState extends State<ProfessionalSummary> {
 
   @override
   void initState() {
+    if(widget.data.trim().isNotEmpty){
+      controller.text = widget.data;
+    }
     super.initState();
   }
 

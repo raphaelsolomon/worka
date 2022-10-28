@@ -1,13 +1,22 @@
+import 'dart:io';
+
 import 'package:date_time_picker/date_time_picker.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:worka/controllers/loading_controller.dart';
+import 'package:worka/phoenix/Controller.dart';
+import 'package:worka/phoenix/CustomScreens.dart';
+import 'package:worka/phoenix/dashboard_work/Success.dart';
 import 'package:worka/phoenix/model/Constant.dart';
+import 'package:worka/phoenix/model/ProfileModel.dart';
 
 class RedesignExperience extends StatefulWidget {
-  const RedesignExperience({super.key});
+  final bool isEdit;
+  final WorkExperience? eModel;
+  const RedesignExperience({super.key, required this.isEdit, this.eModel});
 
   @override
   State<RedesignExperience> createState() => _RedesignExperienceState();
@@ -18,15 +27,22 @@ class _RedesignExperienceState extends State<RedesignExperience> {
   final roleController = TextEditingController();
   final briefController = TextEditingController();
 
-  bool isChecked = false;
-  var stringStart =
-      '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+  bool isLoading = false;
+  bool isUpdate = false;
+  bool isDelete = false;
 
-  var stringStop =
-      '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+  bool isChecked = false;
+  var stringStart = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+  var stringStop = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
 
   @override
   void initState() {
+     if(widget.isEdit) {
+      organisationController.text = widget.eModel!.companyName!;
+      roleController.text = widget.eModel!.title!;
+      briefController.text = widget.eModel!.description!;
+      stringStart = widget.eModel!.startDate!;
+    }
     super.initState();
   }
 
@@ -162,6 +178,61 @@ class _RedesignExperienceState extends State<RedesignExperience> {
         ),
       ),
     );
+  }
+
+  void delete(id) async {
+     setState(() {
+        isDelete = false;
+      });
+    try {
+      final res = await Dio().delete(
+          '${ROOT}workexperiencedetails/${widget.eModel!.id}',
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Experience Deleted...',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+      CustomSnack('Error', 'Check Internet Connection..');
+    } on Exception {
+      CustomSnack('Error', 'Unable to delete experience');
+    } finally {
+      setState(() {
+        isDelete = false;
+      });
+    }
+  }
+
+  void executeData(Map data) async {
+     setState(() {
+        isUpdate = true;
+      });
+    try {
+      final res = await Dio().post(
+          '${ROOT}workexperiencedetails/${widget.eModel!.id}',
+          data: data,
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Experience Updated...',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+      CustomSnack('Error', 'Check Internet Connection..');
+    } on Exception {
+      CustomSnack('Error', 'Unable to update experience');
+    } finally {
+      setState(() {
+        isUpdate = false;
+      });
+    }
   }
 
   getCardDateForm(label, {datetext}) {

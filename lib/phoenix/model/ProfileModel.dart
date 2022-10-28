@@ -1,273 +1,343 @@
-// To parse this JSON data, do
-//
-//     final profileModel = profileModelFromMap(jsonString);
-
-import 'dart:convert';
-
-ProfileModel profileModelFromMap(String str) =>
-    ProfileModel.fromMap(json.decode(str));
-
-String profileModelToMap(ProfileModel data) => json.encode(data.toMap());
-
 class ProfileModel {
-  ProfileModel(
-      {this.uid,
-      this.firstName,
-      this.lastName,
-      this.displayPicture,
-      this.otherName,
-      this.phone,
-      this.about,
-      this.gender,
-      this.cv,
-      this.location,
-      this.user,
-      this.skill,
-      this.workExperience,
-      this.education,
-      this.language,
-      this.availability});
-
+  User? user;
   String? uid;
   String? firstName;
   String? lastName;
-  String? displayPicture;
-  String? otherName;
   String? phone;
+  String? otherName;
+  String? location;
   String? about;
   String? gender;
+  String? displayPicture;
+  String? dateOfBirth;
   String? cv;
-  String? location;
-  User? user;
+  String? profileSummary;
+  String? keySkills;
+  String? resumeHeadline;
   List<Skill>? skill;
   List<WorkExperience>? workExperience;
   List<Education>? education;
+  List<Certificate>? certificate;
   List<Language>? language;
   List<Availability>? availability;
 
-  factory ProfileModel.fromMap(Map<String, dynamic> json) => ProfileModel(
-      uid: json["uid"] ?? '',
-      firstName: json["first_name"] ?? '',
-      lastName: json["last_name"] ?? '',
-      displayPicture: json["display_picture"] ?? '',
-      otherName: json["other_name"] ?? '',
-      phone: json["phone"] ?? '',
-      about: json["about"] ?? '',
-      gender: json["gender"] ?? '',
-      cv: json["cv"] ?? '',
-      location: json["location"] ?? 'null, null, null',
-      user: User.fromMap(json["user"]),
-      skill: List<Skill>.from(json["skill"].map((x) => Skill.fromMap(x))),
-      workExperience: List<WorkExperience>.from(
-          json["work_experience"].map((x) => WorkExperience.fromMap(x))),
-      education: List<Education>.from(
-          json["education"].map((x) => Education.fromMap(x))),
-      language:
-          List<Language>.from(json["language"].map((x) => Language.fromMap(x))),
-      availability: List<Availability>.from(
-          json["availability"].map((x) => Availability.fromMap(x))));
+  ProfileModel(
+      {this.user,
+      this.uid,
+      this.firstName,
+      this.lastName,
+      this.phone,
+      this.otherName,
+      this.location,
+      this.about,
+      this.gender,
+      this.displayPicture,
+      this.dateOfBirth,
+      this.cv,
+      this.profileSummary,
+      this.keySkills,
+      this.resumeHeadline,
+      this.skill,
+      this.workExperience,
+      this.education,
+      this.certificate,
+      this.language,
+      this.availability});
 
-  Map<String, dynamic> toMap() => {
-        "uid": uid,
-        "first_name": firstName,
-        "last_name": lastName,
-        "display_picture": displayPicture,
-        "other_name": otherName,
-        "phone": phone,
-        "about": about,
-        "gender": gender,
-        "cv": cv,
-        "location": location,
-        "user": user!.toMap(),
-        "skill": List<dynamic>.from(skill!.map((x) => x.toMap())),
-        "work_experience":
-            List<dynamic>.from(workExperience!.map((x) => x.toMap())),
-        "education": List<dynamic>.from(education!.map((x) => x.toMap())),
-        "language": List<dynamic>.from(language!.map((x) => x.toMap())),
-        "availability": List<dynamic>.from(availability!.map((x) => x.toMap()))
-      };
+  ProfileModel.fromJson(Map<String, dynamic> json) {
+    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    uid = json['uid'];
+    firstName = json['first_name'];
+    lastName = json['last_name'];
+    phone = json['phone'];
+    otherName = json['other_name'];
+    location = json['location'];
+    about = json['about'];
+    gender = json['gender'];
+    displayPicture = json['display_picture'];
+    dateOfBirth = json['date_of_birth'];
+    cv = json['cv'];
+    profileSummary = json['profile_summary'];
+    keySkills = json['key_skills'];
+    resumeHeadline = json['resume_headline'];
+    if (json['skill'] != null) {
+      skill = <Skill>[];
+      json['skill'].forEach((v) {
+        skill!.add(new Skill.fromJson(v));
+      });
+    }
+    if (json['work_experience'] != null) {
+      workExperience = <WorkExperience>[];
+      json['work_experience'].forEach((v) {
+        workExperience!.add(new WorkExperience.fromJson(v));
+      });
+    }
+    if (json['education'] != null) {
+      education = <Education>[];
+      json['education'].forEach((v) {
+        education!.add(new Education.fromJson(v));
+      });
+    }
+    if (json['certificate'] != null) {
+      certificate = <Certificate>[];
+      json['certificate'].forEach((v) {
+        certificate!.add(new Certificate.fromJson(v));
+      });
+    }
+    if (json['language'] != null) {
+      language = <Language>[];
+      json['language'].forEach((v) {
+        language!.add(new Language.fromJson(v));
+      });
+    }
+    if (json['availability'] != null) {
+      availability = <Availability>[];
+      json['availability'].forEach((v) {
+        availability!.add(new Availability.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.user != null) {
+      data['user'] = this.user!.toJson();
+    }
+    data['uid'] = this.uid;
+    data['first_name'] = this.firstName;
+    data['last_name'] = this.lastName;
+    data['phone'] = this.phone;
+    data['other_name'] = this.otherName;
+    data['location'] = this.location;
+    data['about'] = this.about;
+    data['gender'] = this.gender;
+    data['display_picture'] = this.displayPicture;
+    data['date_of_birth'] = this.dateOfBirth;
+    data['cv'] = this.cv;
+    data['profile_summary'] = this.profileSummary;
+    data['key_skills'] = this.keySkills;
+    data['resume_headline'] = this.resumeHeadline;
+    if (this.skill != null) {
+      data['skill'] = this.skill!.map((v) => v.toJson()).toList();
+    }
+    if (this.workExperience != null) {
+      data['work_experience'] =
+          this.workExperience!.map((v) => v.toJson()).toList();
+    }
+    if (this.education != null) {
+      data['education'] = this.education!.map((v) => v.toJson()).toList();
+    }
+    if (this.certificate != null) {
+      data['certificate'] = this.certificate!.map((v) => v.toJson()).toList();
+    }
+    if (this.language != null) {
+      data['language'] = this.language!.map((v) => v.toJson()).toList();
+    }
+    if (this.availability != null) {
+      data['availability'] = this.availability!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class User {
+  String? email;
+
+  User({this.email});
+
+  User.fromJson(Map<String, dynamic> json) {
+    email = json['email'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['email'] = this.email;
+    return data;
+  }
+}
+
+class Skill {
+  int? id;
+  String? skillName;
+  String? level;
+  String? yearOfExperience;
+
+  Skill({this.id, this.skillName, this.level, this.yearOfExperience});
+
+  Skill.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    skillName = json['skill_name'];
+    level = json['level'];
+    yearOfExperience = json['year_of_experience'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['skill_name'] = this.skillName;
+    data['level'] = this.level;
+    data['year_of_experience'] = this.yearOfExperience;
+    return data;
+  }
+}
+
+class WorkExperience {
+  int? id;
+  String? title;
+  String? companyName;
+  String? description;
+  String? startDate;
+  bool? current;
+
+  WorkExperience(
+      {this.id,
+      this.title,
+      this.companyName,
+      this.description,
+      this.startDate,
+      this.current});
+
+  WorkExperience.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    companyName = json['company_name'];
+    description = json['description'];
+    startDate = json['start_date'];
+    current = json['current'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['title'] = this.title;
+    data['company_name'] = this.companyName;
+    data['description'] = this.description;
+    data['start_date'] = this.startDate;
+    data['current'] = this.current;
+    return data;
+  }
 }
 
 class Education {
-  Education({
-    this.id,
-    this.schoolName,
-    this.level,
-    this.certificate,
-    this.course,
-    this.current,
-    required this.startDate,
-    required this.endDate,
-  });
-
   int? id;
   String? schoolName;
   String? level;
   String? certificate;
   String? course;
   bool? current;
-  late DateTime startDate;
-  late DateTime endDate;
+  String? startDate;
+  String? endDate;
 
-  factory Education.fromMap(Map<String, dynamic> json) => Education(
-        id: json["id"],
-        schoolName: json["school_name"],
-        level: json["level"],
-        certificate: json["certificate"],
-        course: json["course"],
-        current: json["current"],
-        startDate: DateTime.parse(json["start_date"]),
-        endDate: DateTime.parse(json["end_date"]),
-      );
+  Education(
+      {this.id,
+      this.schoolName,
+      this.level,
+      this.certificate,
+      this.course,
+      this.current,
+      this.startDate,
+      this.endDate});
 
-  Map<String, dynamic> toMap() => {
-        "id": id,
-        "school_name": schoolName,
-        "level": level,
-        "certificate": certificate,
-        "course": course,
-        "current": current,
-        "start_date":
-            "${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}",
-        "end_date":
-            "${endDate.year.toString().padLeft(4, '0')}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}",
-      };
+  Education.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    schoolName = json['school_name'];
+    level = json['level'];
+    certificate = json['certificate'];
+    course = json['course'];
+    current = json['current'];
+    startDate = json['start_date'];
+    endDate = json['end_date'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['school_name'] = this.schoolName;
+    data['level'] = this.level;
+    data['certificate'] = this.certificate;
+    data['course'] = this.course;
+    data['current'] = this.current;
+    data['start_date'] = this.startDate;
+    data['end_date'] = this.endDate;
+    return data;
+  }
+}
+
+class Certificate {
+  int? id;
+  String? cid;
+  String? url;
+  String? title;
+  String? issuer;
+  String? dated;
+
+  Certificate(
+      {this.id, this.cid, this.url, this.title, this.issuer, this.dated});
+
+  Certificate.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    cid = json['cid'];
+    url = json['url'];
+    title = json['title'];
+    issuer = json['issuer'];
+    dated = json['dated'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['cid'] = this.cid;
+    data['url'] = this.url;
+    data['title'] = this.title;
+    data['issuer'] = this.issuer;
+    data['dated'] = this.dated;
+    return data;
+  }
 }
 
 class Language {
-  Language({
-    this.id,
-    this.language,
-    this.level,
-  });
-
   int? id;
   String? language;
   String? level;
 
-  factory Language.fromMap(Map<String, dynamic> json) => Language(
-        id: json["id"],
-        language: json["language"],
-        level: json["level"],
-      );
+  Language({this.id, this.language, this.level});
 
-  Map<String, dynamic> toMap() => {
-        "id": id,
-        "language": language,
-        "level": level,
-      };
+  Language.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    language = json['language'];
+    level = json['level'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['language'] = this.language;
+    data['level'] = this.level;
+    return data;
+  }
 }
 
 class Availability {
-  Availability({
-    required this.id,
-    required this.fullTime,
-    required this.partTime,
-    required this.contract,
-  });
-
-  int id;
-  bool fullTime;
-  bool partTime;
-  bool contract;
-
-  factory Availability.fromMap(Map<String, dynamic> json) => Availability(
-        id: json["id"],
-        fullTime: json["full_time"],
-        partTime: json["part_time"],
-        contract: json["contract"],
-      );
-
-  Map<String, dynamic> toMap() => {
-        "id": id,
-        "full_time": fullTime,
-        "part_time": partTime,
-        "contract": contract,
-      };
-}
-
-class Skill {
-  Skill({
-    this.id,
-    this.skillName,
-    this.level,
-    this.yearOfExperience,
-  });
-
   int? id;
-  String? skillName;
-  String? level;
-  String? yearOfExperience;
+  bool? fullTime;
+  bool? partTime;
+  bool? contract;
 
-  factory Skill.fromMap(Map<String, dynamic> json) => Skill(
-        id: json["id"],
-        skillName: json["skill_name"],
-        level: json["level"],
-        yearOfExperience: json["year_of_experience"],
-      );
+  Availability({this.id, this.fullTime, this.partTime, this.contract});
 
-  Map<String, dynamic> toMap() => {
-        "id": id,
-        "skill_name": skillName,
-        "level": level,
-        "year_of_experience": yearOfExperience,
-      };
-}
+  Availability.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    fullTime = json['full_time'];
+    partTime = json['part_time'];
+    contract = json['contract'];
+  }
 
-class User {
-  User({
-    this.email,
-  });
-
-  String? email;
-
-  factory User.fromMap(Map<String, dynamic> json) => User(
-        email: json["email"] ?? '',
-      );
-
-  Map<String, dynamic> toMap() => {
-        "email": email,
-      };
-}
-
-class WorkExperience {
-  WorkExperience({
-    this.id,
-    this.title,
-    this.companyName,
-    this.description,
-    required this.startDate,
-    required this.endDate,
-    this.current,
-  });
-
-  int? id;
-  String? title;
-  String? companyName;
-  String? description;
-  late DateTime startDate;
-  late DateTime endDate;
-  bool? current;
-
-  factory WorkExperience.fromMap(Map<String, dynamic> json) => WorkExperience(
-        id: json["id"],
-        title: json["title"],
-        companyName: json["company_name"],
-        description: json["description"],
-        startDate: DateTime.parse(json["start_date"]),
-        endDate: DateTime.parse(json["end_date"]),
-        current: json["current"],
-      );
-
-  Map<String, dynamic> toMap() => {
-        "id": id,
-        "title": title,
-        "company_name": companyName,
-        "description": description,
-        "start_date":
-            "${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}",
-        "end_date":
-            "${endDate.year.toString().padLeft(4, '0')}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}",
-        "current": current,
-      };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['full_time'] = this.fullTime;
+    data['part_time'] = this.partTime;
+    data['contract'] = this.contract;
+    return data;
+  }
 }

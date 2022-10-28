@@ -4,7 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 
 class AdditionalInformation extends StatefulWidget {
-  const AdditionalInformation({super.key});
+  final String data;
+  
+  const AdditionalInformation(this.data, {super.key});
 
   @override
   State<AdditionalInformation> createState() => _AdditionalInformationState();
@@ -15,6 +17,9 @@ class _AdditionalInformationState extends State<AdditionalInformation> {
 
   @override
   void initState() {
+    if(widget.data.trim().isNotEmpty){
+      controller.text = widget.data;
+    }
     super.initState();
   }
 

@@ -3,20 +3,24 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/src/provider.dart';
+import 'package:worka/controllers/constants.dart';
 import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/CustomScreens.dart';
 import 'package:worka/phoenix/GeneralButtonContainer.dart';
 import 'package:http/http.dart' as http;
 import 'package:worka/phoenix/model/Constant.dart';
+import 'package:worka/phoenix/model/ProfileModel.dart';
 
 import '../../../phoenix/dashboard_work/Success.dart';
 
 class ReApplicantProfileEdit extends StatefulWidget {
-  const ReApplicantProfileEdit({Key? key}) : super(key: key);
+  final ProfileModel profileModel;
+  const ReApplicantProfileEdit(this.profileModel, {Key? key}) : super(key: key);
 
   @override
   _ReApplicantProfileEditState createState() => _ReApplicantProfileEditState();
@@ -25,14 +29,16 @@ class ReApplicantProfileEdit extends StatefulWidget {
 class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
   final fname = TextEditingController();
   final lname = TextEditingController();
+   final oname = TextEditingController();
   final name = TextEditingController();
   bool isLoading = false;
 
   @override
   void initState() {
-    fname.text = '';
-    lname.text = '';
-    name.text = '';
+    fname.text = widget.profileModel.firstName!;
+    lname.text = widget.profileModel.lastName!;
+    oname.text = widget.profileModel.otherName!;
+    name.text = widget.profileModel.keySkills!;
     super.initState();
   }
 
@@ -54,8 +60,10 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
                 ),
               ),
               Text('Edit Profile',
-                  style:
-                      GoogleFonts.lato(fontSize: 15.0, color: Colors.black87, fontWeight: FontWeight.w600)),
+                  style: GoogleFonts.lato(
+                      fontSize: 15.0,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w600)),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 7.0),
                 child: IconButton(
@@ -95,14 +103,20 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
                   SizedBox(height: 19.0),
                   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: getCardForm('Role Title', 'Role Title',
-                          ctl: name)),
-                  
+                      child: getCardForm('Other Name', 'Other name', ctl: oname)),
+                  SizedBox(height: 19.0),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: inputAutoCompleteWidget(
+                          text: 'Role Title', ctl: name)),
                   SizedBox(height: 35.0),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: isLoading
-                        ? Center(child: CircularProgressIndicator(color: DEFAULT_COLOR,))
+                        ? Center(
+                            child: CircularProgressIndicator(
+                            color: DEFAULT_COLOR,
+                          ))
                         : GeneralButtonContainer(
                             name: 'Save',
                             color: DEFAULT_COLOR,
@@ -126,17 +140,23 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
 
   void executeThis() async {
     setState(() {
-        isLoading = true;
-      });
+      isLoading = true;
+    });
     try {
       final res = await Dio().post('${ROOT}employeedetails/',
-          data: {'uid': ''},
+          data: {
+            'key_skills': name.text,
+            'uid': widget.profileModel.uid.toString(),
+            'first_name': fname.text.trim(),
+            'last_name': lname.text.trim(),
+            'other_name': oname.text.trim(),
+          },
           options: Options(headers: {
             'Authorization': 'TOKEN ${context.read<Controller>().token}'
           }));
       if (res.statusCode == 200) {
         Get.off(() => Success(
-              'Details Updated',
+              'User Details Updated',
               callBack: () => Get.back(),
             ));
       }
@@ -149,53 +169,68 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
     }
   }
 
-  Padding buildPaddingDropdown(List<String> data, String data1, {callBack}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 45.0,
-            decoration: BoxDecoration(
-              color: Color(0xFFFFFFFF),
-              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+  Widget inputAutoCompleteWidget({text, ctl}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '$text',
+          style: GoogleFonts.lato(
+              fontSize: 15.0,
+              color: Colors.black54,
+              fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: DEFAULT_COLOR.withOpacity(.02),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: TypeAheadField<String?>(
+            suggestionsBoxController: SuggestionsBoxController(),
+            hideSuggestionsOnKeyboardHide: true,
+            noItemsFoundBuilder: (context) => Container(
+              height: 50,
+              width: MediaQuery.of(context).size.width,
+              child: Center(
+                child: Text('No Data Found',
+                    style: GoogleFonts.montserrat(
+                        color: Colors.grey, fontSize: 12)),
+              ),
             ),
-            margin: const EdgeInsets.only(top: 5.0),
-            child: FormBuilderDropdown(
-              name: 'skill',
-              icon: Icon(
-                Icons.keyboard_arrow_down,
-                color: Colors.blue,
-              ),
+            suggestionsCallback: (pattern) async {
+              return await LanguageClass.getRollSkills(pattern);
+            },
+            onSuggestionSelected: (suggestion) {
+              name.text = suggestion!;
+            },
+            itemBuilder: (ctx, String? suggestion) => ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+              title: Text('$suggestion',
+                  style: GoogleFonts.lato(fontSize: 15, color: Colors.grey)),
+            ),
+            textFieldConfiguration: TextFieldConfiguration(
+              controller: ctl,
+              autofocus: false,
+              style: GoogleFonts.montserrat(fontSize: 15.0, color: Colors.grey),
               decoration: InputDecoration(
-                labelText: data1,
+                filled: false,
+                hintText: 'Search for $text',
+                suffixIcon: Icon(Icons.search, color: Colors.black54),
+                labelStyle:
+                    GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),
+                hintStyle:
+                    GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 9.9, vertical: 5.0),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  borderSide:
-                      BorderSide(color: Color(0xFF1B6DF9).withOpacity(.2)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  borderSide:
-                      BorderSide(color: Color(0xFF1B6DF9).withOpacity(.2)),
-                ),
+                    EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+                border: OutlineInputBorder(borderSide: BorderSide.none),
               ),
-              // initialValue: 'Male',
-              //hint: Text(data1),
-              onChanged: (s) => callBack(s),
-              items: data
-                  .map((gender) => DropdownMenuItem(
-                        value: gender,
-                        child: Text('$gender'),
-                      ))
-                  .toList(),
             ),
           ),
-        ],
-      ),
+        )
+      ],
     );
   }
 
@@ -269,17 +304,17 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                     borderSide: BorderSide.none),
               ),
-              hint: Text(
-                init,
-                style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black45)
-              ),
+              hint: Text(init,
+                  style:
+                      GoogleFonts.lato(fontSize: 14.0, color: Colors.black45)),
               onChanged: (s) => callBack(s),
               items: list
                   .map((s) => DropdownMenuItem(
                         value: s,
                         child: Text(
                           s,
-                          style:GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+                          style: GoogleFonts.lato(
+                              fontSize: 14.0, color: Colors.black45),
                         ),
                       ))
                   .toList(),

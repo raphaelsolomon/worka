@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:date_time_picker/date_time_picker.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
@@ -12,9 +13,12 @@ import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/CustomScreens.dart';
 import 'package:worka/phoenix/dashboard_work/Success.dart';
 import 'package:worka/phoenix/model/Constant.dart';
+import 'package:worka/phoenix/model/ProfileModel.dart';
 
 class RedesignEducation extends StatefulWidget {
-  const RedesignEducation({super.key});
+  final bool isEdit;
+  final Education? eModel;
+  const RedesignEducation({super.key, required this.isEdit, this.eModel});
 
   @override
   State<RedesignEducation> createState() => _RedesignEducationState();
@@ -23,20 +27,27 @@ class RedesignEducation extends StatefulWidget {
 class _RedesignEducationState extends State<RedesignEducation> {
   final schoolname = TextEditingController();
   final disciplineController = TextEditingController();
-  final awardController = TextEditingController();
   final briefController = TextEditingController();
-  String level = '';
-  String certificate = '';
+  String level = 'Level';
+  String certificate = 'Award Institution';
   bool isChecked = false;
   bool isLoading = false;
+  bool isUpdate = false;
+  bool isDelete = false;
   var stringStart =
       '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
-
   var stringStop =
       '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
 
   @override
   void initState() {
+    if (widget.isEdit) {
+      schoolname.text = widget.eModel!.schoolName!;
+      disciplineController.text = widget.eModel!.course!;
+      level = widget.eModel!.level!;
+      certificate = widget.eModel!.certificate!;
+      stringStart = widget.eModel!.startDate!;
+    }
     super.initState();
   }
 
@@ -91,26 +102,27 @@ class _RedesignEducationState extends State<RedesignEducation> {
                     ),
                     inputDropDown(LEVELS,
                         text: 'Select Level',
-                        hint: 'Levels',
+                        hint: '$level',
                         callBack: (s) => level = s),
                     const SizedBox(
                       height: 10.0,
                     ),
                     inputDropDown(CERTIFICATE,
                         text: 'Award Institution',
-                        hint: 'Award Institution',
+                        hint: '$certificate',
                         callBack: (s) => certificate = s),
                     const SizedBox(
                       height: 10.0,
                     ),
                     Row(children: [
                       Flexible(
-                        child:
-                            getCardDateForm('Start Date', datetext: stringStart),
+                        child: getCardDateForm('Start Date',
+                            datetext: stringStart),
                       ),
                       const SizedBox(width: 20.0),
                       Flexible(
-                        child: getCardDateForm('End Date', datetext: stringStop),
+                        child:
+                            getCardDateForm('End Date', datetext: stringStop),
                       ),
                     ]),
                     const SizedBox(
@@ -241,6 +253,61 @@ class _RedesignEducationState extends State<RedesignEducation> {
     }
   }
 
+  void updateData(Map data) async {
+    setState(() {
+      isUpdate = true;
+    });
+    try {
+      final res = await Dio().post(
+          '${ROOT}educationdetails/${widget.eModel!.id}',
+          data: data,
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Education Updated...',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+      CustomSnack('Error', 'Check Internet Connection..');
+    } on Exception {
+      CustomSnack('Error', 'Unable to update education');
+    } finally {
+      setState(() {
+        isUpdate = false;
+      });
+    }
+  }
+
+  void deleteItem(id) async {
+    setState(() {
+      isDelete = true;
+    });
+    try {
+      final res = await Dio().delete(
+          '${ROOT}educationdetails/${widget.eModel!.id}',
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Education Updated...',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+      CustomSnack('Error', 'Check Internet Connection..');
+    } on Exception {
+      CustomSnack('Error', 'Unable to delete education');
+    } finally {
+      setState(() {
+        isDelete = false;
+      });
+    }
+  }
+
   getCardDateForm(label, {datetext}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -269,10 +336,11 @@ class _RedesignEducationState extends State<RedesignEducation> {
                     initialValue: DateTime.now().toString(),
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
-                    style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),
+                    style:
+                        GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(borderSide: BorderSide.none)
-                    ),
+                        border:
+                            OutlineInputBorder(borderSide: BorderSide.none)),
                     onChanged: (val) => datetext = val,
                   ),
                 ),
@@ -327,7 +395,8 @@ class _RedesignEducationState extends State<RedesignEducation> {
               // initialValue: 'Male',
               onChanged: (s) => callBack(s),
               hint: Text('$hint',
-                  style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+                  style:
+                      GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
               items: list
                   .map((s) => DropdownMenuItem(
                         value: s,

@@ -247,7 +247,7 @@ class Controller extends ChangeNotifier {
       final res = await Dio().get('${ROOT}profile_details/',
           options: Options(headers: {'Authorization': 'TOKEN $token'}));
       if (res.statusCode == 200) {
-        profileModel = ProfileModel.fromMap(res.data);
+        profileModel = ProfileModel.fromJson(res.data);
         setUserName('${profileModel!.firstName} ${profileModel!.lastName} ${profileModel!.otherName}');
         return profileModel;
       }
@@ -416,7 +416,7 @@ class Controller extends ChangeNotifier {
     }
   }
 
-  void apply_now(job_uid) async {
+   apply_now(job_uid) async {
     setIsLoading(true);
     try {
       final res = await Dio().post('${ROOT}applyjob/',

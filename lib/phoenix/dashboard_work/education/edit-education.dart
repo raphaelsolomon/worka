@@ -42,8 +42,8 @@ class _EditEducationState extends State<EditEducation> {
     course.text = widget.eModel.course!;
     level = widget.eModel.level!;
     certificate = widget.eModel.certificate!;
-    stringStart = DateFormat('yyyy-MM-dd').format(widget.eModel.startDate);
-    stringStop = DateFormat('yyyy-MM-dd').format(widget.eModel.endDate);
+    stringStart = DateFormat('yyyy-MM-dd').format(DateTime.parse(widget.eModel.startDate!));
+    stringStop = DateFormat('yyyy-MM-dd').format(DateTime.parse(widget.eModel.endDate!));
     super.initState();
   }
 

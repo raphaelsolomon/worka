@@ -19,6 +19,7 @@ import 'package:worka/phoenix/dashboard_work/profile.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/phoenix/model/SeeMore.dart';
 import 'package:http/http.dart' as http;
+import 'package:worka/redesigns/drawer/re_drawer_applicant.dart';
 import 'package:worka/reuseables/general_container.dart';
 import 'package:worka/screens/see_more/see_more.dart' as page;
 
@@ -85,7 +86,7 @@ class _HomePageState extends State<HomePage> {
       },
       child: Scaffold(
         key: this.scaffold,
-        drawer: getDrawer(context, scaffold, name: name, type: type),
+        drawer: ReDrawerApplicant(scaffold),
         body: SafeArea(
           child: SmartRefresher(
             controller: controller,

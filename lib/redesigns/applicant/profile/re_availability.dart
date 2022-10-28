@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:worka/phoenix/model/ProfileModel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +11,9 @@ import 'package:worka/phoenix/dashboard_work/Success.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 
 class RedesignAvailability extends StatefulWidget {
-  const RedesignAvailability({super.key});
+  final bool edit;
+  final Availability? update;
+  const RedesignAvailability({super.key, required this.edit, this.update});
 
   @override
   State<RedesignAvailability> createState() => _RedesignAvailabilityState();
@@ -19,10 +21,16 @@ class RedesignAvailability extends StatefulWidget {
 
 class _RedesignAvailabilityState extends State<RedesignAvailability> {
   bool isAvailable = true;
+
   bool isLoading = false;
+  bool isUpdate = false;
+  bool isDelete = false;
 
   @override
   void initState() {
+    if(widget.edit) {
+      isAvailable = widget.update!.fullTime!;
+    }
     super.initState();
   }
 
@@ -155,10 +163,65 @@ class _RedesignAvailabilityState extends State<RedesignAvailability> {
     } on SocketException {
       CustomSnack('Error', 'Check Internet Connection..');
     } on Exception {
-      CustomSnack('Error', 'Unable to update laguage');
+      CustomSnack('Error', 'Unable to update availability');
     } finally {
       setState(() {
         isLoading = false;
+      });
+    }
+  }
+
+  void delete(id) async {
+    setState(() {
+      isDelete = false;
+    });
+    try {
+      final res = await Dio().delete(
+          '${ROOT}certificatedetails/${widget.update!.id}',
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Certification Deleted...',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+      CustomSnack('Error', 'Check Internet Connection..');
+    } on Exception {
+      CustomSnack('Error', 'Unable to delete availaility');
+    } finally {
+      setState(() {
+        isDelete = false;
+      });
+    }
+  }
+
+  void updateData(Map data) async {
+    setState(() {
+      isUpdate = true;
+    });
+    try {
+      final res = await Dio().post(
+          '${ROOT}certificatedetails/${widget.update!.id}',
+          data: data,
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Certification Updated...',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+      CustomSnack('Error', 'Check Internet Connection..');
+    } on Exception {
+      CustomSnack('Error', 'Unable to update availaility');
+    } finally {
+      setState(() {
+        isUpdate = false;
       });
     }
   }

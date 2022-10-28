@@ -451,7 +451,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   TextSpan(
                                       text:
-                                          '${DateFormat('yyyy-MM-dd').format(educationModel.startDate)}',
+                                           '${DateFormat('yyyy-MM-dd').format(DateTime.parse(educationModel.startDate!))}',
                                       style: GoogleFonts.montserrat(
                                           color: Colors.black))
                                 ]),
@@ -471,7 +471,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   TextSpan(
                                       text:
-                                          '${DateFormat('yyyy-MM-dd').format(educationModel.startDate)}',
+                                          '${DateFormat('yyyy-MM-dd').format(DateTime.parse(educationModel.endDate!))}',
                                       style: GoogleFonts.montserrat(
                                           color: Colors.black))
                                 ]),
@@ -677,27 +677,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   TextSpan(
                                       text:
-                                          '${DateFormat('yyyy-MM-dd').format(eModel.startDate)}',
-                                      style: GoogleFonts.montserrat(
-                                          color: Colors.black))
-                                ]),
-                            minFontSize: 11,
-                            maxFontSize: 20,
-                            style: GoogleFonts.montserrat(
-                                fontSize: 13.5,
-                                color: SUB_HEAD_1,
-                                fontWeight: FontWeight.normal)),
-                      ),
-                      Flexible(
-                        child: AutoSizeText.rich(
-                            TextSpan(
-                                text: 'to: ',
-                                style: GoogleFonts.montserrat(
-                                    color: Colors.black38),
-                                children: [
-                                  TextSpan(
-                                      text:
-                                          '${DateFormat('yyyy-MM-dd').format(eModel.startDate)}',
+                                          '${DateFormat('yyyy-MM-dd').format(DateTime.parse(eModel.startDate!))}',
                                       style: GoogleFonts.montserrat(
                                           color: Colors.black))
                                 ]),

@@ -420,7 +420,7 @@ class _EditCompanyState extends State<EditCompany> {
           ),
           const SizedBox(height: 10.0),
           Container(
-            height: 48.0,
+            height: 100.0,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5.0),
                 color: DEFAULT_COLOR.withOpacity(.05)),

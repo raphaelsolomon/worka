@@ -1,12 +1,18 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:path/path.dart' as p;
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:worka/phoenix/Controller.dart';
+import 'package:worka/phoenix/CustomScreens.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/phoenix/model/ProfileModel.dart';
+import 'package:worka/screens/main_screens/main_nav.dart';
 
 class ReApplyJob extends StatefulWidget {
   final String jobKey;
@@ -37,6 +43,10 @@ class _ReApplyJobState extends State<ReApplyJob> {
     _fetchProfile().then((value) => setState(() {
           profileModel = value;
           pageLoading = false;
+          lastname.text = value.lastname!;
+          fname.text = value.fname!;
+          email.text = profileModel!.user!.email!;
+          coverLetter.text = profileModel!.profileSummary!;
         }));
     super.initState();
   }
@@ -148,13 +158,13 @@ class _ReApplyJobState extends State<ReApplyJob> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    'Attach File.pdf',
+                                                    '${p.basename(profileModel!.cv!)}',
                                                     style: GoogleFonts.lato(
                                                         color: Colors.black54,
                                                         fontSize: 15.0),
                                                   ),
                                                   Text(
-                                                    '199Kb',
+                                                    '',
                                                     style: GoogleFonts.lato(
                                                         color: Colors.black54,
                                                         fontSize: 12.0),
@@ -185,7 +195,7 @@ class _ReApplyJobState extends State<ReApplyJob> {
                                               color: DEFAULT_COLOR)))
                                   : GestureDetector(
                                       onTap: () async {
-                                        executeData();
+                                        executeData(widget.jobKey);
                                       },
                                       child: Container(
                                           width:
@@ -217,8 +227,30 @@ class _ReApplyJobState extends State<ReApplyJob> {
     );
   }
 
-  executeData() async {
-    var data = {};
+  executeData(job_uid) async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final res = await Dio().post('${ROOT}applyjob/',
+          data: {'jobid': '$job_uid'},
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        if (res.data == 'successfully applied') {
+          return showpopUp();
+        }
+      } else {
+        return CustomSnack('Error', '${res.data}');
+      }
+    } on SocketException {
+      CustomSnack('Error', 'Check internet Connection');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void showpopUp() {
@@ -264,7 +296,7 @@ class _ReApplyJobState extends State<ReApplyJob> {
                           height: 8.0,
                         ),
                         Text(
-                          'You Job Application has be submited successfully.',
+                          'You Job Application has be submitted successfully.',
                           textAlign: TextAlign.center,
                           style: GoogleFonts.lato(
                               fontSize: 13.0, color: Colors.black54),
@@ -299,7 +331,7 @@ class _ReApplyJobState extends State<ReApplyJob> {
                   ),
                 ),
               ],
-            ));
+            )).whenComplete(() => Get.offAll(() => MainNav()));
   }
 
   Widget inputWidget({text = '', icons = Icons.person, hint = '', ctl}) {
@@ -330,7 +362,7 @@ class _ReApplyJobState extends State<ReApplyJob> {
         Container(
           decoration: BoxDecoration(
             color: DEFAULT_COLOR.withOpacity(.03),
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(5.0),
           ),
           child: TextFormField(
             controller: ctl,
@@ -437,7 +469,7 @@ class _ReApplyJobState extends State<ReApplyJob> {
           height: 180.0,
           decoration: BoxDecoration(
             color: DEFAULT_COLOR.withOpacity(.03),
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(5.0),
           ),
           child: TextFormField(
             controller: ctl,

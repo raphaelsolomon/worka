@@ -423,8 +423,24 @@ Widget getJobDescription(JobData jobData) =>
       const SizedBox(
         height: 10.0,
       ),
-      Text('${jobData.benefit}',
-          style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+      ...List.generate(jobData.benefit.toString().split(', ').length, (i) {
+        return Row(
+          children: [
+            Icon(
+              Icons.shield_outlined,
+              color: DEFAULT_COLOR,
+            ),
+            const SizedBox(
+              width: 10.0,
+            ),
+            Flexible(
+              child: Text('${jobData.benefit.toString().split(', ')[i]}',
+                  style:
+                      GoogleFonts.lato(fontSize: 16.0, color: Colors.black54)),
+            )
+          ],
+        );
+      }),
       const SizedBox(
         height: 18.0,
       ),
@@ -438,7 +454,7 @@ Widget getJobDescription(JobData jobData) =>
       ),
       Wrap(spacing: 12.0, children: [
         ...List.generate(
-            3,
+            0,
             (i) => Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),

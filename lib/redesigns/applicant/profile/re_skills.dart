@@ -6,7 +6,9 @@ import 'package:worka/controllers/constants.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 
 class RedesignSkills extends StatefulWidget {
-  const RedesignSkills({super.key});
+  final bool isEdit;
+  final List<String>? eModel;
+  const RedesignSkills({super.key, required this.isEdit, this.eModel});
 
   @override
   State<RedesignSkills> createState() => _RedesignSkillsState();
@@ -19,6 +21,9 @@ class _RedesignSkillsState extends State<RedesignSkills> {
 
   @override
   void initState() {
+    if(widget.isEdit) {
+      skills = widget.eModel!;
+    }
     super.initState();
   }
 

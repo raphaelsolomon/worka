@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:worka/phoenix/model/Constant.dart';
 
 class LanguageClass {
   static Iterable<String?> getLocalLanguage(search) {
@@ -24,6 +25,13 @@ class LanguageClass {
 
   static Iterable<String?> getLocalRequiredSkills(search) {
     return REQUIRED_SKILLS
+        .where((element) =>
+            element.toLowerCase().contains(search.toString().toLowerCase()))
+        .toList();
+  }
+
+  static Iterable<String?> getRollSkills(search) {
+    return ROLES
         .where((element) =>
             element.toLowerCase().contains(search.toString().toLowerCase()))
         .toList();

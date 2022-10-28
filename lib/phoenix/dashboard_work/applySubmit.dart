@@ -234,18 +234,12 @@ class ApplySubmit extends StatelessWidget {
                                               textAlign: TextAlign.start),
                                           SizedBox(height: 2.0),
                                           Text(
-                                              'from: ${DateFormat('yyyy-MM-dd').format(context.watch<Controller>().profileModel!.workExperience![index].startDate)}',
+                                              'from: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(context.watch<Controller>().profileModel!.workExperience![index].startDate!))}',
                                               style: GoogleFonts.montserrat(
                                                   fontSize: 14,
                                                   color: SUB_HEAD),
                                               textAlign: TextAlign.start),
                                           SizedBox(height: 2.0),
-                                          Text(
-                                              'to: ${DateFormat('yyyy-MM-dd').format(context.watch<Controller>().profileModel!.workExperience![index].endDate)}',
-                                              style: GoogleFonts.montserrat(
-                                                  fontSize: 14,
-                                                  color: SUB_HEAD),
-                                              textAlign: TextAlign.start),
                                           SizedBox(height: 2.0),
                                           Text(
                                               'Currently: ${context.watch<Controller>().profileModel!.workExperience![index].current}',
@@ -340,7 +334,7 @@ class ApplySubmit extends StatelessWidget {
                                                           TextAlign.start),
                                                   SizedBox(height: 2.0),
                                                   Text(
-                                                      'from: ${DateFormat('yyyy-MM-dd').format(context.watch<Controller>().profileModel!.education![index].startDate)}',
+                                                      'from: ${DateFormat('yyyy-MM-dd').format(DateTime.parse( context.watch<Controller>().profileModel!.education![index].startDate!))}',
                                                       style: GoogleFonts
                                                           .montserrat(
                                                               fontSize: 14,
@@ -348,14 +342,6 @@ class ApplySubmit extends StatelessWidget {
                                                       textAlign:
                                                           TextAlign.start),
                                                   SizedBox(height: 2.0),
-                                                  Text(
-                                                      'to: ${DateFormat('yyyy-MM-dd').format(context.watch<Controller>().profileModel!.education![index].endDate)}',
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                              fontSize: 14,
-                                                              color: SUB_HEAD),
-                                                      textAlign:
-                                                          TextAlign.start),
                                                 ]))))
                               ],
                             ),

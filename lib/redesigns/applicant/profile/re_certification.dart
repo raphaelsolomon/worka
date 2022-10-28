@@ -1,12 +1,22 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:worka/phoenix/Controller.dart';
+import 'package:worka/phoenix/CustomScreens.dart';
+import 'package:worka/phoenix/dashboard_work/Success.dart';
 import 'package:worka/phoenix/model/Constant.dart';
+import 'package:worka/phoenix/model/ProfileModel.dart';
 
 class Redesigncertification extends StatefulWidget {
-  const Redesigncertification({super.key});
+  final bool isEdit;
+  final Certificate? eModel;
+  const Redesigncertification({super.key, required this.isEdit, this.eModel});
 
   @override
   State<Redesigncertification> createState() => _RedesigncertificationState();
@@ -15,14 +25,25 @@ class Redesigncertification extends StatefulWidget {
 class _RedesigncertificationState extends State<Redesigncertification> {
   final title = TextEditingController();
   final issuer = TextEditingController();
-  var stringStart = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+  var stringStart =
+      '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
   final ceritificateID = TextEditingController();
   final ceritificateURL = TextEditingController();
 
+  bool isLoading = false;
+  bool isUpdate = false;
+  bool isDelete = false;
   bool isChecked = false;
 
   @override
   void initState() {
+    if (widget.isEdit) {
+      title.text = widget.eModel!.title!;
+      issuer.text = widget.eModel!.issuer!;
+      ceritificateID.text = widget.eModel!.cid!;
+      ceritificateURL.text = widget.eModel!.url!;
+      stringStart = widget.eModel!.dated!;
+    }
     super.initState();
   }
 
@@ -76,7 +97,7 @@ class _RedesigncertificationState extends State<Redesigncertification> {
                   getCardDateForm('Issuer Date', datetext: stringStart),
                   const SizedBox(
                     height: 5.0,
-                  ), 
+                  ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: Row(
@@ -140,6 +161,107 @@ class _RedesigncertificationState extends State<Redesigncertification> {
     );
   }
 
+  addCertification(BuildContext c, school, start_date, end_date, course) async {
+    if (ceritificateID.text.trim().isEmpty) {
+      CustomSnack('Error', 'Certificate ID is required...');
+      return;
+    }
+
+    if (title.text.trim().isEmpty) {
+      CustomSnack('Error', 'Title is required...');
+      return;
+    }
+
+    if (issuer.text.trim().isEmpty) {
+      CustomSnack('Error', 'Title is required...');
+      return;
+    }
+
+    var data = {
+      'cid': ceritificateID.text,
+      'title': title.text,
+      'issuer': issuer.text,
+      'dated': '$start_date',
+      'url': ceritificateURL.text.trim(),
+    };
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      final res = await http.Client().post(
+        Uri.parse('${ROOT}addcertificate/'),
+        body: data,
+        headers: {'Authorization': 'TOKEN ${context.read<Controller>().token}'},
+      );
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Ceritification added...',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void delete(id) async {
+    setState(() {
+      isDelete = false;
+    });
+    try {
+      final res = await Dio().delete(
+          '${ROOT}certificatedetails/${widget.eModel!.id}',
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Certification Deleted...',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+      CustomSnack('Error', 'Check Internet Connection..');
+    } on Exception {
+      CustomSnack('Error', 'Unable to delete certificate');
+    } finally {
+      setState(() {
+        isDelete = false;
+      });
+    }
+  }
+
+  void updateData(Map data) async {
+    setState(() {
+      isUpdate = true;
+    });
+    try {
+      final res = await Dio().post(
+          '${ROOT}certificatedetails/${widget.eModel!.id}',
+          data: data,
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Certification Updated...',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+      CustomSnack('Error', 'Check Internet Connection..');
+    } on Exception {
+      CustomSnack('Error', 'Unable to update certificate');
+    } finally {
+      setState(() {
+        isUpdate = false;
+      });
+    }
+  }
+
   Widget inputDropDown(List<String> list,
       {text = 'Select certificate', hint = 'Certificate', callBack}) {
     return Padding(
@@ -176,7 +298,8 @@ class _RedesigncertificationState extends State<Redesigncertification> {
               // initialValue: 'Male',
               onChanged: (s) => callBack(s),
               hint: Text('$hint',
-                  style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+                  style:
+                      GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
               items: list
                   .map((s) => DropdownMenuItem(
                         value: s,
@@ -222,10 +345,11 @@ class _RedesigncertificationState extends State<Redesigncertification> {
                     initialValue: DateTime.now().toString(),
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
-                    style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),
+                    style:
+                        GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(borderSide: BorderSide.none)
-                    ),
+                        border:
+                            OutlineInputBorder(borderSide: BorderSide.none)),
                     onChanged: (val) => datetext = val,
                   ),
                 ),
