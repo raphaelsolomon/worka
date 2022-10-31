@@ -9,10 +9,12 @@ import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/CustomScreens.dart';
 import 'package:worka/phoenix/dashboard_work/Success.dart';
 import 'package:worka/phoenix/model/Constant.dart';
+import 'package:worka/phoenix/model/ProfileModel.dart';
 
 class ProfessionalSummary extends StatefulWidget {
   final String data;
-  const ProfessionalSummary(this.data, {super.key});
+  final ProfileModel profileModel;
+  const ProfessionalSummary(this.data, this.profileModel, {super.key});
 
   @override
   State<ProfessionalSummary> createState() => _ProfessionalSummaryState();
@@ -131,9 +133,11 @@ class _ProfessionalSummaryState extends State<ProfessionalSummary> {
     setState(() {
         isLoading = true;
       });
+      var profile = widget.profileModel;
+      profile.profileSummary = controller.text;
     try {
       final res = await Dio().post('${ROOT}employeedetails/',
-          data: {'uid': ''},
+          data: {'uid': widget.profileModel.uid.toString(), 'profile_summary': controller.text},
           options: Options(headers: {
             'Authorization': 'TOKEN ${context.read<Controller>().token}'
           }));

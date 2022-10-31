@@ -17,6 +17,7 @@ class AlertNotification {
     this.title,
     this.message,
     this.isRead,
+    this.nType,
     required this.created,
   });
 
@@ -24,6 +25,7 @@ class AlertNotification {
   String? title;
   String? message;
   bool? isRead;
+  String? nType;
   late DateTime created;
 
   factory AlertNotification.fromJson(Map<String, dynamic> json) =>
@@ -32,6 +34,7 @@ class AlertNotification {
         title: json["title"],
         message: json["message"],
         isRead: json["is_read"],
+        nType: json["n_type"],
         created: DateTime.parse(json["created"]),
       );
 
@@ -40,6 +43,7 @@ class AlertNotification {
         "title": title,
         "message": message,
         "is_read": isRead,
+        "n_type": nType,
         "created": created.toIso8601String(),
       };
 }

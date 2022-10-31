@@ -99,6 +99,7 @@ class _AddExperienceState extends State<AddExperience> {
                         onChanged: (b) {
                           context.read<Controller>().setCurrently(b);
                         }),
+                        
                     Text(
                       'Current Working',
                       style: GoogleFonts.montserrat(

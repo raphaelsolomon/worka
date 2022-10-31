@@ -19,6 +19,7 @@ import 'package:worka/phoenix/dashboard_work/profile.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/phoenix/model/SeeMore.dart';
 import 'package:http/http.dart' as http;
+import 'package:worka/redesigns/applicant/re_job_details_apply.dart';
 import 'package:worka/redesigns/drawer/re_drawer_applicant.dart';
 import 'package:worka/reuseables/general_container.dart';
 import 'package:worka/screens/see_more/see_more.dart' as page;
@@ -42,16 +43,20 @@ class _HomePageState extends State<HomePage> {
   String searchText = '';
   final controller = RefreshController();
   final textController = TextEditingController();
+  List<SeeMore> seeMore = [];
+  bool moreJobLoading = true;
 
   @override
   void initState() {
-    context.read<Controller>().viewSkills();
-    context.read<Controller>().getMyJobs();
+    // context.read<Controller>().getMyJobs();
     context.read<Controller>().getHotAlert();
+    context.read<Controller>().hotListJobs().then((v) => setState(() {
+          seeMore = v;
+          moreJobLoading = false;
+        }));
     execute('').then((value) => setState(() {
-        type = value;
-      })
-    );
+          type = value;
+        }));
     super.initState();
   }
 
@@ -283,102 +288,56 @@ class _HomePageState extends State<HomePage> {
                                 .toList(),
                           )
                         : carouselEmpty()),
-                FutureBuilder(
-                    future: context.read<Controller>().hotListJobs(),
-                    builder: (ctx, AsyncSnapshot<List<SeeMore>> snap) {
-                      if (snap.connectionState == ConnectionState.waiting) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20.0),
-                          child: SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              child:
-                                  Center(child: CircularProgressIndicator())),
-                        );
-                      } else if (snap.connectionState == ConnectionState.done) {
-                        if (snap.hasError) {
-                          return const Text('Error');
-                        } else if (snap.hasData) {
-                          if (snap.data!.isEmpty) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.only(bottom: 5.0, top: 35.0),
-                              child: SizedBox(
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Center(
-                                      child: Text(
-                                    'No Hot Jobs',
-                                    style: GoogleFonts.montserrat(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black),
-                                  ))),
-                            );
-                          }
-                          return Column(
+               moreJobLoading ? Padding(
+                 padding: const EdgeInsets.only(top: 20.0),
+                 child: SizedBox(
+                  child: Center(child: SizedBox(
+                    width: 30.0,
+                    height: 30.0,
+                    child: CircularProgressIndicator(color: DEFAULT_COLOR))),
+                 ),
+               ) : Column(
+                  children: [
+                    seeMore.length > 1
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              snap.data!.length > 1
-                                  ? Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(20, 10, 0, 0),
-                                          child: Text(
-                                            'Hot Listing',
-                                            style: GoogleFonts.montserrat(
-                                                fontSize: 19,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black),
-                                          ),
-                                        ),
-                                        GeneralContainer(
-                                          name: 'See all',
-                                          onPress: () => context
-                                              .read<Controller>()
-                                              .setHomePage(1),
-                                          paddingLeft: 10,
-                                          paddingTop: 10,
-                                          paddingRight: 30,
-                                          paddingBottom: 0,
-                                          width: 50,
-                                          bcolor: const Color(0xffFFFFFF),
-                                          stroke: 0,
-                                          height: 30,
-                                          size: 12,
-                                        ),
-                                      ],
-                                    )
-                                  : Container(),
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(children: [
-                                  ...List.generate(
-                                      snap.data!.length,
-                                      (index) => hotListingMethod(
-                                          '${snap.data![index].employer_logo}',
-                                          '${snap.data![index].title}',
-                                          '${snap.data![index].budget}/${snap.data![index].salaryType}',
-                                          '${snap.data![index].location}',
-                                          '${snap.data![index].jobKey}',
-                                          snap.data![index])),
-                                ]),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
+                                child: Text(
+                                  'Hot Listing',
+                                  style: GoogleFonts.montserrat(
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black),
+                                ),
+                              ),
+                              GeneralContainer(
+                                name: 'See all',
+                                onPress: () =>
+                                    context.read<Controller>().setHomePage(1),
+                                paddingLeft: 10,
+                                paddingTop: 10,
+                                paddingRight: 30,
+                                paddingBottom: 0,
+                                width: 50,
+                                bcolor: const Color(0xffFFFFFF),
+                                stroke: 0,
+                                height: 30,
+                                size: 12,
                               ),
                             ],
-                          );
-                        } else {
-                          return Container(
-                            width: MediaQuery.of(context).size.width,
-                            child: Center(
-                                child: Text('No data',
-                                    style:
-                                        GoogleFonts.montserrat(fontSize: 16))),
-                          );
-                        }
-                      } else {
-                        return Text('State: ${snap.connectionState}');
-                      }
-                    }),
+                          )
+                        : Container(),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(children: [
+                        ...List.generate(seeMore.length,
+                            (index) => hotListingMethod(seeMore[index])),
+                      ]),
+                    ),
+                  ],
+                ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(8.0, 10.0, 0, 0),
                   child: TextButton(
@@ -544,7 +503,7 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
-   Padding hotListingMethod(String avatar, String job, String salary, String location, String key, SeeMore see) {
+  Padding hotListingMethod(SeeMore see) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
       child: InkWell(
@@ -552,14 +511,15 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(12.0),
         onTap: () async {
           if (context.read<Controller>().type == 'employee')
-              Get.to(() => JobDetailsScreen(key));
+            Get.to(() => ReJobsDetails(see.jobKey!));
         },
         child: Container(
           width: 270.0,
-          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: Colors.black54.withOpacity(.1), width: 1.4),
+            border:
+                Border.all(color: Colors.black54.withOpacity(.1), width: 1.4),
           ),
           child: SingleChildScrollView(
             physics: NeverScrollableScrollPhysics(),
@@ -576,19 +536,21 @@ class _HomePageState extends State<HomePage> {
                           CircleAvatar(
                             radius: 20,
                             backgroundColor: DEFAULT_COLOR.withOpacity(.03),
-                            backgroundImage: NetworkImage('$avatar'),
+                            backgroundImage: NetworkImage(see.employer_logo!),
                           ),
-                          const SizedBox(width: 10.0,), 
+                          const SizedBox(
+                            width: 10.0,
+                          ),
                           Flexible(
-                                child: Text(
-                                  '',
-                                  maxLines: 1,
-                                  style: GoogleFonts.lato(
-                                      fontSize: 18,
-                                      color: Colors.black54,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ),
+                            child: Text(
+                              '${see.title}',
+                              maxLines: 1,
+                              style: GoogleFonts.lato(
+                                  fontSize: 19,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -601,9 +563,8 @@ class _HomePageState extends State<HomePage> {
                         }
                         setState(() {});
                       },
-                     
                       icon: Icon(
-                          see.isLike ? Icons.bookmark : Icons.bookmark_outline,
+                        see.isLike ? Icons.bookmark : Icons.bookmark_outline,
                         color: Colors.black87,
                       ),
                     ),
@@ -613,10 +574,11 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 8.0, vertical: 8.0),
                   child: Text(
-                    job,
+                    see.description!,
+                    maxLines: 1,
                     style: const TextStyle(
                         fontFamily: 'Lato',
-                        fontSize: 19,
+                        fontSize: 15,
                         color: Colors.black54,
                         fontWeight: FontWeight.bold),
                   ),
@@ -629,29 +591,36 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.fromLTRB(8.0, 3, 0, 0),
                         child: Row(
                           children: [
-                            Icon(Icons.location_on_outlined, color: DEFAULT_COLOR_1.withOpacity(.8), size: 17.0 ),
+                            Icon(Icons.location_on_outlined,
+                                color: DEFAULT_COLOR_1.withOpacity(.8),
+                                size: 17.0),
                             const SizedBox(width: 10.0),
                             Flexible(
                               child: Text(
-                                '$location',
+                                see.location!,
                                 maxLines: 1,
                                 style: GoogleFonts.lato(
-                                  color: Colors.black54,
-                                    fontSize: 13, fontWeight: FontWeight.w400),
+                                    color: Colors.black54,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400),
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(width: 20.0,),
+                    const SizedBox(
+                      width: 20.0,
+                    ),
                     Flexible(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(8.0, 3, 8, 0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Icon(Icons.timelapse_outlined, color: DEFAULT_COLOR_1.withOpacity(.8), size: 17.0 ),
+                            Icon(Icons.timelapse_outlined,
+                                color: DEFAULT_COLOR_1.withOpacity(.8),
+                                size: 17.0),
                             const SizedBox(width: 10.0),
                             Flexible(
                               child: FittedBox(
@@ -686,22 +655,20 @@ class _HomePageState extends State<HomePage> {
         splashColor: Colors.blue.withOpacity(.2),
         borderRadius: BorderRadius.circular(12.0),
         onTap: () async {
-          Get.to(() => JobDetailsScreen(see.jobKey!));
+          Get.to(() => ReJobsDetails(see.jobKey!));
         },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.0),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.0),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: DEFAULT_COLOR.withOpacity(.1),
-                offset: Offset(0.0, 4.0),
-                spreadRadius: 1.0,
-                blurRadius: 9.0
-              )
-            ]
-          ),
+              borderRadius: BorderRadius.circular(5.0),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                    color: DEFAULT_COLOR.withOpacity(.1),
+                    offset: Offset(0.0, 4.0),
+                    spreadRadius: 1.0,
+                    blurRadius: 9.0)
+              ]),
           child: SingleChildScrollView(
             physics: NeverScrollableScrollPhysics(),
             child: Column(
@@ -717,19 +684,22 @@ class _HomePageState extends State<HomePage> {
                           CircleAvatar(
                             radius: 20,
                             backgroundColor: DEFAULT_COLOR.withOpacity(.03),
-                            backgroundImage: NetworkImage('${see.employer_logo}'),
+                            backgroundImage:
+                                NetworkImage('${see.employer_logo}'),
                           ),
-                          const SizedBox(width: 20.0,), 
+                          const SizedBox(
+                            width: 20.0,
+                          ),
                           Flexible(
-                                child: Text(
-                                  'Worka Networks inc,',
-                                  maxLines: 1,
-                                  style: GoogleFonts.lato(
-                                      fontSize: 17,
-                                      color: Colors.black87.withOpacity(.7),
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ),
+                            child: Text(
+                              '${see.title}',
+                              maxLines: 1,
+                              style: GoogleFonts.lato(
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -743,7 +713,7 @@ class _HomePageState extends State<HomePage> {
                         setState(() {});
                       },
                       icon: Icon(
-                         see.isLike ? Icons.bookmark : Icons.bookmark_outline,
+                        see.isLike ? Icons.bookmark : Icons.bookmark_outline,
                         size: 28.0,
                         color: Colors.black87,
                       ),
@@ -754,12 +724,13 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 8.0, vertical: 8.0),
                   child: Text(
-                    see.title!,
-                    style: const TextStyle(
+                    see.description!,
+                    maxLines: 1,
+                    style: TextStyle(
                         fontFamily: 'Lato',
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold),
+                        fontSize: 15,
+                        color: Colors.black87.withOpacity(.7),
+                        fontWeight: FontWeight.w400),
                   ),
                 ),
                 Row(
@@ -770,28 +741,35 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.fromLTRB(8.0, 3, 0, 0),
                         child: Row(
                           children: [
-                            Icon(Icons.location_on_outlined, color: DEFAULT_COLOR_1.withOpacity(.8), size: 17.0 ),
+                            Icon(Icons.location_on_outlined,
+                                color: DEFAULT_COLOR_1.withOpacity(.8),
+                                size: 17.0),
                             const SizedBox(width: 10.0),
                             Flexible(
                               child: Text(
                                 '${see.location}',
                                 maxLines: 1,
                                 style: GoogleFonts.lato(
-                                  color: Colors.black45,
-                                    fontSize: 14, fontWeight: FontWeight.w400),
+                                    color: Colors.black45,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400),
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(width: 20.0,),
+                    const SizedBox(
+                      width: 20.0,
+                    ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8.0, 3, 8, 0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Icon(Icons.timelapse_outlined, color: DEFAULT_COLOR_1.withOpacity(.8), size: 17.0 ),
+                          Icon(Icons.timelapse_outlined,
+                              color: DEFAULT_COLOR_1.withOpacity(.8),
+                              size: 17.0),
                           const SizedBox(width: 10.0),
                           Text(
                             '${see.jobType}',
@@ -834,7 +812,8 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   ...List.generate(
                       context.watch<Controller>().see.length,
-                      (index) => moreJobItems(context.watch<Controller>().see[index]))
+                      (index) =>
+                          moreJobItems(context.watch<Controller>().see[index]))
                 ],
               ),
       ),

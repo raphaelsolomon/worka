@@ -25,18 +25,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) => MultiProvider(
           providers: [
             ChangeNotifierProvider<Controller>(create: (_) => Controller()),
-            ChangeNotifierProvider<AnswerController>(
-                create: (_) => AnswerController()),
+            ChangeNotifierProvider<AnswerController>(create: (_) => AnswerController()),
             ChangeNotifierProvider<Helper>(create: (_) => Helper()),
-            ChangeNotifierProvider<LoadingController>(
-                create: (_) => LoadingController()),
-            ChangeNotifierProvider<ProfileController>(
-                create: (_) => ProfileController()),
-            ChangeNotifierProvider<EmpController>(
-                create: (_) => EmpController())
+            ChangeNotifierProvider<LoadingController>(create: (_) => LoadingController()),
+            ChangeNotifierProvider<ProfileController>(create: (_) => ProfileController()),
+            ChangeNotifierProvider<EmpController>(create: (_) => EmpController())
           ],
-          child: 
-          GetMaterialApp(
+          child: GetMaterialApp(
             title: 'Worka',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(

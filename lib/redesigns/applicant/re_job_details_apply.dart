@@ -8,7 +8,6 @@ import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/phoenix/model/JobDetails.dart';
 import 'package:worka/redesigns/applicant/re_apply_job.dart';
-import 'package:worka/redesigns/employer/re_company_profile.dart';
 
 class ReJobsDetails extends StatefulWidget {
   final String jobKey;
@@ -132,12 +131,14 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                                             MainAxisAlignment.center,
                                         children: [
                                           Flexible(
-                                            child: Text(
-                                              '${jobDetails!.jobData.location}',
-                                              style: GoogleFonts.lato(
-                                                  fontSize: 16.0,
-                                                  color: Colors.black87,
-                                                  fontWeight: FontWeight.w500),
+                                            child: FittedBox(
+                                              child: Text(
+                                                '${jobDetails!.jobData.location}',
+                                                style: GoogleFonts.lato(
+                                                    fontSize: 16.0,
+                                                    color: Colors.black87,
+                                                    fontWeight: FontWeight.w500),
+                                              ),
                                             ),
                                           ),
                                           const SizedBox(
@@ -244,7 +245,7 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                                     Flexible(
                                         child: GestureDetector(
                                       onTap: () => setState(() {
-                                        Get.to(() => ReCompanyProfile());
+                                        isJobDesc = false;
                                       }),
                                       child: Column(
                                         children: [
@@ -275,7 +276,7 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                                 ),
                                 isJobDesc
                                     ? getJobDescription(jobDetails!.jobData)
-                                    : getAboutCompany(jobDetails!.jobData),
+                                    : getAboutCompany(jobDetails!.jobData, context),
                                 const SizedBox(
                                   height: 25.0,
                                 ),
@@ -328,51 +329,104 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
   }
 }
 
-Widget getAboutCompany(JobData jobData) => Column(children: [
-      Text('About',
-          style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
-      const SizedBox(
-        height: 10.0,
-      ),
-      Text(jobData.employer.companyProfile,
-          style: GoogleFonts.lato(fontSize: 13.0, color: Colors.black54)),
-      const SizedBox(
-        height: 18.0,
-      ),
-      Text('Successful Hires:',
-          style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
-      const SizedBox(
-        height: 10.0,
-      ),
-      Text('${jobData.employer.hired} Successful Hires',
-          style: GoogleFonts.lato(fontSize: 13.0, color: Colors.black54)),
-      const SizedBox(
-        height: 18.0,
-      ),
-      Text('Reviews',
-          style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
-      const SizedBox(
-        height: 10.0,
-      ),
-      RatingBar.builder(
-        initialRating: double.parse('${jobData.employer.reviews}'),
-        minRating: 1,
-        itemSize: 15.0,
-        direction: Axis.horizontal,
-        allowHalfRating: true,
-        itemCount: 5,
-        updateOnDrag: false,
-        ignoreGestures: true,
-        itemPadding: EdgeInsets.symmetric(horizontal: 0.0),
-        itemBuilder: (context, _) => Icon(Icons.star, color: Colors.amber),
-        onRatingUpdate: (rating) {
-          print(rating);
-        },
-      ),
-      SizedBox(
-        height: 30.0,
-      )
-    ]);
+Widget getAboutCompany(JobData jobData, BuildContext context) => SizedBox(
+  width: MediaQuery.of(context).size.width,
+  child:   Column(
+  
+    crossAxisAlignment: CrossAxisAlignment.start,
+  
+    mainAxisSize: MainAxisSize.max,
+  
+    children: [
+  
+        Text('About',
+  
+            style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+  
+        const SizedBox(
+  
+          height: 10.0,
+  
+        ),
+  
+        Text(jobData.employer.companyProfile,
+  
+            style: GoogleFonts.lato(fontSize: 13.0, color: Colors.black54)),
+  
+        const SizedBox(
+  
+          height: 18.0,
+  
+        ),
+  
+        Text('Successful Hires:',
+  
+            style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+  
+        const SizedBox(
+  
+          height: 10.0,
+  
+        ),
+  
+        Text('${jobData.employer.hired} Successful Hires',
+  
+            style: GoogleFonts.lato(fontSize: 13.0, color: Colors.black54)),
+  
+        const SizedBox(
+  
+          height: 18.0,
+  
+        ),
+  
+        Text('Reviews',
+  
+            style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+  
+        const SizedBox(
+  
+          height: 10.0,
+  
+        ),
+  
+        RatingBar.builder(
+  
+          initialRating: double.parse('${jobData.employer.reviews}'),
+  
+          minRating: 1,
+  
+          itemSize: 15.0,
+  
+          direction: Axis.horizontal,
+  
+          allowHalfRating: true,
+  
+          itemCount: 5,
+  
+          updateOnDrag: false,
+  
+          ignoreGestures: true,
+  
+          itemPadding: EdgeInsets.symmetric(horizontal: 0.0),
+  
+          itemBuilder: (context, _) => Icon(Icons.star, color: Colors.amber),
+  
+          onRatingUpdate: (rating) {
+  
+            print(rating);
+  
+          },
+  
+        ),
+  
+        SizedBox(
+  
+          height: 30.0,
+  
+        )
+  
+      ]),
+);
 
 Widget getJobDescription(JobData jobData) =>
     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

@@ -7,12 +7,12 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/src/provider.dart';
 import 'package:worka/controllers/constants.dart';
 import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/CustomScreens.dart';
 import 'package:worka/phoenix/GeneralButtonContainer.dart';
-import 'package:http/http.dart' as http;
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/phoenix/model/ProfileModel.dart';
 
@@ -29,9 +29,13 @@ class ReApplicantProfileEdit extends StatefulWidget {
 class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
   final fname = TextEditingController();
   final lname = TextEditingController();
-   final oname = TextEditingController();
+  final oname = TextEditingController();
   final name = TextEditingController();
+  final contactController = TextEditingController();
   bool isLoading = false;
+
+  String? contact = '';
+  bool phoneValidate = false;
 
   @override
   void initState() {
@@ -39,6 +43,7 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
     lname.text = widget.profileModel.lastName!;
     oname.text = widget.profileModel.otherName!;
     name.text = widget.profileModel.keySkills!;
+    contactController.text = widget.profileModel.phone!;
     super.initState();
   }
 
@@ -103,7 +108,13 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
                   SizedBox(height: 19.0),
                   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: getCardForm('Other Name', 'Other name', ctl: oname)),
+                      child:
+                          getCardForm('Other Name', 'Other name', ctl: oname)),
+                  SizedBox(height: 19.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                    child: getCardFormPhone('Mobile Number', 'Mobile Number'),
+                  ),
                   SizedBox(height: 19.0),
                   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -145,7 +156,7 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
     try {
       final res = await Dio().post('${ROOT}employeedetails/',
           data: {
-            'key_skills': name.text,
+            'resume_headline': name.text,
             'uid': widget.profileModel.uid.toString(),
             'first_name': fname.text.trim(),
             'last_name': lname.text.trim(),
@@ -171,6 +182,49 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
         isLoading = false;
       });
     }
+  }
+
+  getCardFormPhone(label, hint, {ctl}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10.0),
+          Container(
+              height: 48.0,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5.0),
+                  color: DEFAULT_COLOR.withOpacity(.05)),
+              child: InternationalPhoneNumberInput(
+                  selectorConfig: SelectorConfig(showFlags: true),
+                  onInputValidated: (b) {
+                    phoneValidate = b;
+                  },
+                  textFieldController: contactController,
+                  inputDecoration: InputDecoration(
+                    fillColor: Colors.white,
+                    hintText: 'phone number',
+                    hintStyle: GoogleFonts.montserrat(
+                        fontSize: 14.0, color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(0.0)),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  onInputChanged: (phone) {
+                    contact = phone.phoneNumber;
+                  }))
+        ],
+      ),
+    );
   }
 
   Widget inputAutoCompleteWidget({text, ctl}) {
@@ -385,36 +439,6 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
       return;
     }
 
-    executeData();
-  }
-
-  void executeData() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      final res =
-          await http.Client().post(Uri.parse('${ROOT}employerdetails/'), body: {
-        'first_name': '${fname.text.trim()}',
-        'last_name': '${lname.text.trim()}',
-        'company_name': name.text.trim(),
-      }, headers: {
-        'Authorization': 'TOKEN ${context.read<Controller>().token}'
-      });
-      if (res.statusCode == 200) {
-        Get.off(() => Success(
-              'Profile updated successfully..',
-              callBack: () => Get.back(),
-            ));
-      }
-    } on SocketException {
-      CustomSnack('Error', 'please check your internet connection');
-    } on Exception {
-      CustomSnack('Error', 'Could not submit details. Please try again');
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
+    executeThis();
   }
 }

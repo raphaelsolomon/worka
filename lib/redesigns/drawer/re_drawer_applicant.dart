@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:worka/employer_page/employer_settings.dart';
 import 'package:worka/employer_page/phoenix/screens/EmpInterviews.dart';
 import 'package:worka/interfaces/login_interface.dart';
+import 'package:worka/phoenix/model/ProfileModel.dart';
 import 'package:worka/redesigns/applicant/re_app_applicant.dart';
 import 'package:worka/redesigns/applicant/re_design_profile.dart';
 import 'package:worka/screens/help_center.dart';
@@ -15,9 +16,25 @@ import '../../employer_page/controller/empContoller.dart';
 import '../../phoenix/Controller.dart';
 import '../../phoenix/model/Constant.dart';
 
-class ReDrawerApplicant extends StatelessWidget {
+class ReDrawerApplicant extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffold;
   const ReDrawerApplicant(this.scaffold, {Key? key}) : super(key: key);
+
+  @override
+  State<ReDrawerApplicant> createState() => _ReDrawerApplicantState();
+}
+
+class _ReDrawerApplicantState extends State<ReDrawerApplicant> {
+
+  String fullname = '';
+
+  @override
+  void initState() {
+    context.read<Controller>().getUserDetails().then((s) => setState((){
+        fullname = s;
+    }));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +62,11 @@ class ReDrawerApplicant extends StatelessWidget {
                 width: 20.0,
               ),
               Flexible(
-                child: Column(
+                child:  Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${context.watch<Controller>().userNames}',
+                      '${fullname}',
                       style: GoogleFonts.lato(
                           fontSize: 17.0,
                           color: Colors.black87,
@@ -58,14 +75,12 @@ class ReDrawerApplicant extends StatelessWidget {
                     const SizedBox(
                       height: 5.0,
                     ),
-                    FittedBox(
-                      child: Text(
-                        '${context.watch<Controller>().email}',
-                        style: GoogleFonts.lato(
-                            fontSize: 14.0,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w400),
-                      ),
+                    Text(
+                      '${context.watch<Controller>().email}',
+                      style: GoogleFonts.lato(
+                          fontSize: 14.0,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w400),
                     ),
                   ],
                 ),

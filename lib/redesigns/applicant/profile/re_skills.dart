@@ -1,14 +1,21 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:worka/controllers/constants.dart';
+import 'package:worka/phoenix/Controller.dart';
+import 'package:worka/phoenix/dashboard_work/Success.dart';
 import 'package:worka/phoenix/model/Constant.dart';
+import 'package:worka/phoenix/model/ProfileModel.dart';
 
 class RedesignSkills extends StatefulWidget {
   final bool isEdit;
   final List<String>? eModel;
-  const RedesignSkills({super.key, required this.isEdit, this.eModel});
+  final ProfileModel profileModel;
+  const RedesignSkills(this.profileModel, {super.key, required this.isEdit, this.eModel});
 
   @override
   State<RedesignSkills> createState() => _RedesignSkillsState();
@@ -18,10 +25,11 @@ class _RedesignSkillsState extends State<RedesignSkills> {
   final searchController = TextEditingController();
   List<String> skills = [];
   bool isLoading = false;
+  bool isUpdate = false;
 
   @override
   void initState() {
-    if(widget.isEdit) {
+    if (widget.isEdit) {
       skills = widget.eModel!;
     }
     super.initState();
@@ -64,86 +72,110 @@ class _RedesignSkillsState extends State<RedesignSkills> {
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                children: [
-                  CustomAutoGeneral(
-                      context,
-                      'Add Skills',
-                      'skills',
-                      searchController),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  Expanded(
-                      child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Wrap(spacing: 12.0, children: [
-                        ...List.generate(
-                            skills.length,
-                            (i) => Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0, vertical: 4.0),
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 5.0),
-                                decoration: BoxDecoration(
-                                    color: DEFAULT_COLOR.withOpacity(.09),
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    border: Border.all(
-                                        width: .5, color: DEFAULT_COLOR)),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text('${skills[i]}',
-                                        style: GoogleFonts.lato(
-                                            fontSize: 15.0,
-                                            color: DEFAULT_COLOR)),
-                                    const SizedBox(width: 15.0),
-                                    GestureDetector(
-                                      onTap: () =>
-                                          setState(() => skills.removeAt(i)),
-                                      child: Text('x',
-                                          style: GoogleFonts.lato(
-                                              fontSize: 16.0,
-                                              color: DEFAULT_COLOR)),
-                                    ),
-                                  ],
-                                ))),
-                      ]),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    CustomAutoGeneral(
+                        context, 'Add Skills', 'skills', searchController),
+                    const SizedBox(
+                      height: 10.0,
                     ),
-                  )),
-                  const SizedBox(
-                    height: 30.0,
-                  ),
-                  isLoading
-                      ? SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Center(
-                              child: CircularProgressIndicator(
-                            color: DEFAULT_COLOR,
-                          )),
-                        )
-                      : GestureDetector(
-                          onTap: () async {},
-                          child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              padding: const EdgeInsets.all(15.0),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  color: DEFAULT_COLOR),
-                              child: Center(
-                                child: Text(
-                                  'Submit',
-                                  style: GoogleFonts.lato(
-                                      fontSize: 15.0, color: Colors.white),
-                                ),
-                              )),
-                        ),
-                  const SizedBox(
-                    height: 25.0,
-                  ),
-                ],
+                    Expanded(
+                        child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Wrap(spacing: 12.0, children: [
+                          ...List.generate(
+                              skills.length,
+                              (i) => Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0, vertical: 4.0),
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 5.0),
+                                  decoration: BoxDecoration(
+                                      color: DEFAULT_COLOR.withOpacity(.09),
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      border: Border.all(
+                                          width: .5, color: DEFAULT_COLOR)),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text('${skills[i]}',
+                                          style: GoogleFonts.lato(
+                                              fontSize: 15.0,
+                                              color: DEFAULT_COLOR)),
+                                      const SizedBox(width: 15.0),
+                                      GestureDetector(
+                                        onTap: () =>
+                                            setState(() => skills.removeAt(i)),
+                                        child: Text('x',
+                                            style: GoogleFonts.lato(
+                                                fontSize: 16.0,
+                                                color: DEFAULT_COLOR)),
+                                      ),
+                                    ],
+                                  ))),
+                        ]),
+                      ),
+                    )),
+                    const SizedBox(
+                      height: 30.0,
+                    ),
+                    widget.isEdit
+                        ? isLoading
+                            ? SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: Center(
+                                    child: CircularProgressIndicator(
+                                  color: DEFAULT_COLOR,
+                                )),
+                              )
+                            : GestureDetector(
+                                onTap: () => executeThis(),
+                                child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: const EdgeInsets.all(15.0),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        color: DEFAULT_COLOR),
+                                    child: Center(
+                                      child: Text(
+                                        'Submit',
+                                        style: GoogleFonts.lato(
+                                            fontSize: 15.0, color: Colors.white),
+                                      ),
+                                    )),
+                              )
+                        : isUpdate
+                            ? SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: Center(
+                                    child: CircularProgressIndicator(
+                                  color: DEFAULT_COLOR,
+                                )),
+                              )
+                            : GestureDetector(
+                                onTap: () => executeThis(),
+                                child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: const EdgeInsets.all(15.0),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        color: DEFAULT_COLOR),
+                                    child: Center(
+                                      child: Text(
+                                        'Update Skills',
+                                        style: GoogleFonts.lato(
+                                            fontSize: 15.0, color: Colors.white),
+                                      ),
+                                    )),
+                              ),
+                    const SizedBox(
+                      height: 25.0,
+                    ),
+                  ],
+                ),
               ),
             ))
           ],
@@ -152,8 +184,35 @@ class _RedesignSkillsState extends State<RedesignSkills> {
     );
   }
 
-  Widget CustomAutoGeneral(BuildContext context, hint, label, ctl) =>
-      Padding(
+  void executeThis() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final res = await Dio().post('${ROOT}employeedetails/',
+          data: {
+            'key_skills': skills.join(', '),
+            'uid': widget.profileModel.uid.toString(),
+          },
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'User Details Updated',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+    } on Exception {
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Widget CustomAutoGeneral(BuildContext context, hint, label, ctl) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 9.0, vertical: 5.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

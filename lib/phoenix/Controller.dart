@@ -50,6 +50,9 @@ class Controller extends ChangeNotifier {
   String privacy = '';
   String terms = '';
   bool isCurrently = false;
+  bool isGraduate = false;
+   bool willExpire = false;
+   String fullname = '';
   List<MyJobsModel>? myJobsModel = [];
   List<SearchModel>? searchModel = [];
   List<AvailablityModel>? availabilityModel = [];
@@ -219,11 +222,12 @@ class Controller extends ChangeNotifier {
     } on SocketException {
       return null;
     } finally {
-      myJobsModel = await getMyJobs();
+      // myJobsModel = await getMyJobs();
       profileModel = await getprofileReview();
       cv = profileModel!.cv!;
       SharedPreferences preferences = await SharedPreferences.getInstance();
       setAvatar(preferences.getString(AVATAR) ?? '');
+      fullname = await getUserDetails();
       email = (preferences.getString(EMAIL) ?? '').trim();
       if (ctl != null) {
         ctl.refreshCompleted();
@@ -805,6 +809,16 @@ class Controller extends ChangeNotifier {
 
   void setCurrently(bool? b) {
     isCurrently = b!;
+    notifyListeners();
+  }
+
+    void setWillExpire(bool? b) {
+    isCurrently = b!;
+    notifyListeners();
+  }
+
+  void setGraduate(bool? b) {
+    isGraduate = b!;
     notifyListeners();
   }
 

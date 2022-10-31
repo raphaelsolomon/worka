@@ -1,17 +1,17 @@
 import 'dart:io';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:worka/phoenix/Controller.dart';
 import 'package:provider/provider.dart';
 import 'package:worka/phoenix/CustomScreens.dart';
 import 'package:worka/phoenix/Resusable.dart';
-import 'package:worka/phoenix/dashboard_work/JobDetailsScreen.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/phoenix/model/SeeMore.dart' as seeMores;
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:worka/redesigns/applicant/re_job_details_apply.dart';
+import 'package:worka/redesigns/drawer/re_drawer_applicant.dart';
 
 import '../../phoenix/dashboard_work/filter.dart';
 
@@ -56,7 +56,7 @@ class _SeeMoreState extends State<SeeMore> {
     var items = context.watch<Controller>().see;
     return Scaffold(
         key: scaffold,
-        drawer: getDrawer(context, scaffold, name: '', type: type),
+         drawer: ReDrawerApplicant(scaffold),
         body: SafeArea(
           child: RefreshIndicator(
               onRefresh: () => context.read<Controller>().seeMore(),
@@ -167,7 +167,7 @@ class _SeeMoreState extends State<SeeMore> {
                                 itemCount:
                                     context.watch<Controller>().see.length,
                                 itemBuilder: (context, index) {
-                                  return hotListingMethod(
+                                  return moreJobItems(
                                       context.watch<Controller>().see[index]);
                                 }),
                           )
@@ -179,7 +179,7 @@ class _SeeMoreState extends State<SeeMore> {
                                       .toLowerCase()
                                       .contains(
                                           textController.text.toLowerCase()))
-                                  .map((e) => hotListingMethod(e))
+                                  .map((e) => moreJobItems(e))
                                   .toList(),
                             ),
                           )),
@@ -189,138 +189,149 @@ class _SeeMoreState extends State<SeeMore> {
         ));
   }
 
-  Widget hotListingMethod(seeMores.SeeMore see) => Padding(
-        padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
-        child: InkWell(
-          splashColor: Colors.blue.withOpacity(.2),
-          borderRadius: BorderRadius.circular(1.0),
-          onTap: () async {
-            if (context.read<Controller>().type == 'employee')
-              Get.to(() => JobDetailsScreen(see.jobKey!));
-          },
-          child: Container(
+   Padding moreJobItems(seeMores.SeeMore see) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 8.0, 15, 8.0),
+      child: InkWell(
+        splashColor: Colors.blue.withOpacity(.2),
+        borderRadius: BorderRadius.circular(12.0),
+        onTap: () async {
+          Get.to(() => ReJobsDetails(see.jobKey!));
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.0),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5.0),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                    color: DEFAULT_COLOR.withOpacity(.1),
+                    offset: Offset(0.0, 4.0),
+                    spreadRadius: 1.0,
+                    blurRadius: 9.0)
+              ]),
+          child: SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  height: 1.0,
-                  width: double.infinity,
-                  color: Colors.blue.withOpacity(.1),
-                ),
-                SizedBox(
-                  height: 7.0,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundColor: DEFAULT_COLOR.withOpacity(.03),
+                            backgroundImage:
+                                NetworkImage('${see.employer_logo}'),
+                          ),
+                          const SizedBox(
+                            width: 20.0,
+                          ),
+                          Flexible(
+                            child: Text(
+                              '${see.title}',
+                              maxLines: 1,
+                              style: GoogleFonts.lato(
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        if (see.isLike) {
+                          see.isLike = await disLike(see.jobKey);
+                        } else {
+                          see.isLike = await isLike(see.jobKey);
+                        }
+                        setState(() {});
+                      },
+                      icon: Icon(
+                        see.isLike ? Icons.bookmark : Icons.bookmark_outline,
+                        size: 28.0,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 0.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: AutoSizeText(
-                          '${see.title}'.capitalizeFirst!,
-                          minFontSize: 11,
-                          maxLines: 1,
-                          style: GoogleFonts.montserrat(
-                              fontSize: 17, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () async {
-                          if (see.isLike) {
-                            see.isLike = await disLike(see.jobKey);
-                          } else {
-                            see.isLike = await isLike(see.jobKey);
-                          }
-                          setState(() {});
-                        },
-                        icon: Icon(
-                          see.isLike ? Icons.favorite : Icons.favorite_border,
-                          color: DEFAULT_COLOR,
-                        ),
-                      )
-                    ],
+                      horizontal: 8.0, vertical: 8.0),
+                  child: Text(
+                    see.title!,
+                    style: TextStyle(
+                        fontFamily: 'Lato',
+                        fontSize: 17,
+                        color: Colors.black87.withOpacity(.7),
+                        fontWeight: FontWeight.w400),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(4.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(9.0),
-                      color: Colors.blue.withOpacity(.2),
-                    ),
-                    child: Text(
-                      '${see.currency!.toUpperCase()} ${see.budget}/${see
-                          .salaryType.toString().capitalizeFirst}',
-                      style: GoogleFonts.montserrat(
-                          color: Colors.black87,
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.normal),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Flexible(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                        child: AutoSizeText(
-                          '${see.description}',
-                          minFontSize: 12,
-                          maxFontSize: 20,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.montserrat(
-                              color: Colors.black54,
-                              fontSize: 14,
-                              fontWeight: FontWeight.normal),
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        padding: const EdgeInsets.fromLTRB(8.0, 3, 0, 0),
+                        child: Row(
                           children: [
-                            Text(
-                              '${see.isRemote}' == true ? 'Remote' : 'FullTime',
-                              style: GoogleFonts.montserrat(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              '${see.location}',
-                              style: GoogleFonts.montserrat(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal),
+                            Icon(Icons.location_on_outlined,
+                                color: DEFAULT_COLOR_1.withOpacity(.8),
+                                size: 17.0),
+                            const SizedBox(width: 10.0),
+                            Flexible(
+                              child: Text(
+                                '${see.location}',
+                                maxLines: 1,
+                                style: GoogleFonts.lato(
+                                    color: Colors.black45,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400),
+                              ),
                             ),
                           ],
                         ),
                       ),
                     ),
+                    const SizedBox(
+                      width: 20.0,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 3, 8, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(Icons.timelapse_outlined,
+                              color: DEFAULT_COLOR_1.withOpacity(.8),
+                              size: 17.0),
+                          const SizedBox(width: 10.0),
+                          Text(
+                            '${see.jobType}',
+                            maxLines: 1,
+                            style: GoogleFonts.montserrat(
+                                fontSize: 12,
+                                color: Colors.black54,
+                                fontWeight: FontWeight.w400),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Container(
-                  height: 1.0,
-                  width: double.infinity,
-                  color: Colors.blue.withOpacity(.1),
                 ),
               ],
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
+
   isLike(job_uid) async {
     try {
       final res = await http.Client().get(Uri.parse('${ROOT}like/$job_uid'),
