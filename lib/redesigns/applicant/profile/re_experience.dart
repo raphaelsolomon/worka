@@ -32,12 +32,14 @@ class _RedesignExperienceState extends State<RedesignExperience> {
   bool isDelete = false;
 
   bool isChecked = false;
-  var stringStart = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
-  var stringStop = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+  var stringStart =
+      '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+  var stringStop =
+      '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
 
   @override
   void initState() {
-     if(widget.isEdit) {
+    if (widget.isEdit) {
       organisationController.text = widget.eModel!.companyName!;
       roleController.text = widget.eModel!.title!;
       briefController.text = widget.eModel!.description!;
@@ -83,95 +85,167 @@ class _RedesignExperienceState extends State<RedesignExperience> {
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                children: [
-                  getCardForm('Organization', 'Organization',
-                      ctl: organisationController),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  getCardForm('Job Role', 'Job Role', ctl: roleController),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  Row(children: [
-                    Flexible(
-                      child:
-                          getCardDateForm('Start Date', datetext: stringStart),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    getCardForm('Organization', 'Organization',
+                        ctl: organisationController),
+                    const SizedBox(
+                      height: 10.0,
                     ),
-                    const SizedBox(width: 20.0),
-                    Flexible(
-                      child: getCardDateForm('End Date', datetext: stringStop),
+                    getCardForm('Job Role', 'Job Role', ctl: roleController),
+                    const SizedBox(
+                      height: 10.0,
                     ),
-                  ]),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  inputWidgetRich(ctl: briefController),
-                  const SizedBox(
-                    height: 5.0,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Row(
-                          children: [
-                            Checkbox(
-                              onChanged: (b) {
-                                setState(() {
-                                  isChecked = !b!;
-                                });
-                              },
-                              value: isChecked,
-                              activeColor: DEFAULT_COLOR,
-                            ),
-                            Text(
-                              'Graduate',
-                              style: GoogleFonts.lato(
-                                  fontSize: 12.0, color: Colors.black38),
-                            )
-                          ],
-                        )),
-                  ),
-                  const SizedBox(
-                    height: 30.0,
-                  ),
-                  context.watch<LoadingController>().isAddExperience
-                      ? SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        )
-                      : GestureDetector(
-                          onTap: () async {
-                            context.read<LoadingController>().addExperience(
-                                organisationController.text.trim(),
-                                roleController.text.trim(),
-                                stringStart,
-                                stringStop,
-                                briefController.text.trim(),
-                                context);
-                          },
-                          child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              padding: const EdgeInsets.all(15.0),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  color: DEFAULT_COLOR),
-                              child: Center(
-                                child: Text(
-                                  'Submit',
-                                  style: GoogleFonts.lato(
-                                      fontSize: 15.0, color: Colors.white),
+                    Row(children: [
+                      Flexible(
+                        child:
+                            getCardDateForm('Start Date', datetext: stringStart),
+                      ),
+                      const SizedBox(width: 20.0),
+                      Flexible(
+                        child: getCardDateForm('End Date', datetext: stringStop),
+                      ),
+                    ]),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    inputWidgetRich(ctl: briefController),
+                    const SizedBox(
+                      height: 5.0,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Row(
+                            children: [
+                              Checkbox(
+                                onChanged: (b) {
+                                 context.read<Controller>().setCurrently(b);
+                                },
+                                value: context.watch<Controller>().isCurrently,
+                                activeColor: DEFAULT_COLOR,
+                              ),
+                              Text(
+                                'Current Working',
+                                style: GoogleFonts.lato(
+                                    fontSize: 12.0, color: Colors.black38),
+                              )
+                            ],
+                          )),
+                    ),
+                    const SizedBox(
+                      height: 30.0,
+                    ),
+                    widget.isEdit == false
+                        ? context.watch<LoadingController>().isAddExperience
+                            ? SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: Center(
+                                  child: CircularProgressIndicator(),
                                 ),
-                              )),
-                        ),
-                  const SizedBox(
-                    height: 25.0,
-                  ),
-                ],
+                              )
+                            : GestureDetector(
+                                onTap: () async {
+                                  context.read<LoadingController>().addExperience(
+                                      organisationController.text.trim(),
+                                      roleController.text.trim(),
+                                      stringStart,
+                                      stringStop,
+                                      briefController.text.trim(),
+                                      context);
+                                },
+                                child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: const EdgeInsets.all(15.0),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        color: DEFAULT_COLOR),
+                                    child: Center(
+                                      child: Text(
+                                        'Submit',
+                                        style: GoogleFonts.lato(
+                                            fontSize: 15.0, color: Colors.white),
+                                      ),
+                                    )),
+                              )
+                        : Column(children: [
+                            isUpdate
+                                ? SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        color: DEFAULT_COLOR,
+                                      ),
+                                    ),
+                                  )
+                                : GestureDetector(
+                                    onTap: isDelete
+                                        ? () {}
+                                        : () async {
+                                            var data = {
+                                              'title': roleController.text,
+                                              'company_name': organisationController.text,
+                                              'current': context.read<Controller>().isCurrently,
+                                              'start_date': '$stringStart',
+                                              'end_date': '$stringStop',
+                                              'description': '$desc'
+                                            };
+                                            executeData(data);
+                                          },
+                                    child: Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        padding: const EdgeInsets.all(15.0),
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 10.0),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            color: isDelete
+                                                ? Colors.grey.shade300
+                                                : DEFAULT_COLOR),
+                                        child: Center(
+                                          child: Text(
+                                            'Update Experience',
+                                            style: GoogleFonts.lato(
+                                                fontSize: 15.0,
+                                                color: isDelete
+                                                    ? Colors.black87
+                                                    : Colors.white),
+                                          ),
+                                        ))),
+                            const SizedBox(
+                              height: 20.0,
+                            ),
+                            GestureDetector(
+                              onTap: isUpdate
+                                  ? () {}
+                                  : () => delete(widget.eModel!.id),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.delete,
+                                      color: isUpdate
+                                          ? Colors.black45
+                                          : Colors.redAccent),
+                                  const SizedBox(
+                                    width: 15.0,
+                                  ),
+                                  Text(
+                                    'Delete',
+                                    style: GoogleFonts.lato(
+                                        fontSize: 17.0, color: Colors.black54),
+                                  )
+                                ],
+                              ),
+                            )
+                          ]),
+                    const SizedBox(
+                      height: 25.0,
+                    ),
+                  ],
+                ),
               ),
             ))
           ],
@@ -181,9 +255,9 @@ class _RedesignExperienceState extends State<RedesignExperience> {
   }
 
   void delete(id) async {
-     setState(() {
-        isDelete = false;
-      });
+    setState(() {
+      isDelete = true;
+    });
     try {
       final res = await Dio().delete(
           '${ROOT}workexperiencedetails/${widget.eModel!.id}',
@@ -208,9 +282,9 @@ class _RedesignExperienceState extends State<RedesignExperience> {
   }
 
   void executeData(Map data) async {
-     setState(() {
-        isUpdate = true;
-      });
+    setState(() {
+      isUpdate = true;
+    });
     try {
       final res = await Dio().post(
           '${ROOT}workexperiencedetails/${widget.eModel!.id}',

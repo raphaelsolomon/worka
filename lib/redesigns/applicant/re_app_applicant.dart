@@ -46,7 +46,7 @@ class _ReApplicationApplicantState extends State<ReApplicationApplicant> {
                   GestureDetector(
                       onTap: () => Get.back(),
                       child: Icon(
-                        Icons.menu,
+                        Icons.keyboard_backspace,
                         color: DEFAULT_COLOR,
                       )),
                   const SizedBox(
@@ -86,13 +86,13 @@ class _ReApplicationApplicantState extends State<ReApplicationApplicant> {
                                   myJobsModel.length,
                                   (i) => GestureDetector(
                                         onTap: () =>
-                                            Get.to(() => ReAppProgress()),
+                                            Get.to(() => ReAppProgress(myJobsModel[i])),
                                         child: Container(
                                           width:
                                               MediaQuery.of(context).size.width,
-                                          padding: const EdgeInsets.all(15.0),
+                                          padding: const EdgeInsets.all(10.0),
                                           margin: const EdgeInsets.symmetric(
-                                              vertical: 5.0, horizontal: 20.0),
+                                              vertical: 5.0, horizontal: 5.0),
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(8.0),
@@ -174,7 +174,7 @@ class _ReApplicationApplicantState extends State<ReApplicationApplicant> {
                                                             ],
                                                           )),
                                                           const SizedBox(
-                                                          height: 10.0),
+                                                          height: 5.0),
                                                     ],
                                                   ),
                                                 )

@@ -83,7 +83,10 @@ class ProfileModel {
       json['certificate'].forEach((v) {
         certificate!.add(new Certificate.fromJson(v));
       });
+    } else {
+      certificate = <Certificate>[];
     }
+    
     if (json['language'] != null) {
       language = <Language>[];
       json['language'].forEach((v) {

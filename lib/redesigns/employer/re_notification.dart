@@ -17,11 +17,9 @@ class ReNotification extends StatefulWidget {
 
 class _ReNotificationState extends State<ReNotification> {
   final notificationController = RefreshController();
-  final applicationController = RefreshController();
   final scaffold = GlobalKey<ScaffoldState>();
   bool isNotification = true;
   bool isNotificationLoading = true;
-  bool isApplicationLoading = true;
 
   List<AlertNotification> alertList = [];
 
@@ -136,7 +134,7 @@ class _ReNotificationState extends State<ReNotification> {
             ),
             isNotification
                 ? getNotifications(notificationController, context)
-                : getApplications(applicationController)
+                : getApplication(notificationController, context)
           ],
         ),
       ),
@@ -151,37 +149,63 @@ class _ReNotificationState extends State<ReNotification> {
               .read<EmpController>()
               .fetchNotifications(context, controller),
           child: Container(
-              child: isNotificationLoading ? Center(child: CircularProgressIndicator(color: DEFAULT_COLOR),) : alertList.isEmpty
-                  ? Center(child: _isEmpty(isNotification))
-                  : SingleChildScrollView(
-                      child: Column(
-                      children: [
-                        ...List.generate(alertList.length,
-                            (index) => listItem(context, alertList[index]))
-                      ],
-                    ))),
+              child: isNotificationLoading
+                  ? Center(
+                      child: CircularProgressIndicator(color: DEFAULT_COLOR),
+                    )
+                  : alertList.isEmpty
+                      ? Center(child: _isEmpty(isNotification))
+                      : SingleChildScrollView(
+                          child: Column(
+                          children: [
+                            ...List.generate(
+                                alertList
+                                    .where((element) =>
+                                        element.nType == 'notification')
+                                    .toList()
+                                    .length,
+                                (i) => listItem(
+                                    context,
+                                    alertList
+                                        .where((element) =>
+                                            element.nType == 'notification')
+                                        .toList()[i]))
+                          ],
+                        ))),
         ),
       );
 
-  Widget getApplications(controller) => Expanded(
-        child: SizedBox(
-          child: SmartRefresher(
-            header: WaterDropHeader(),
-            controller: controller,
-            onRefresh: () => context
-                .read<EmpController>()
-                .fetchNotifications(context, controller),
-            child: Container(
-                child: alertList.isEmpty
-                    ? Center(child: _isEmpty(isNotification))
-                    : SingleChildScrollView(
-                        child: Column(
-                        children: [
-                          ...List.generate(alertList.length,
-                              (index) => listItem(context, alertList[index]))
-                        ],
-                      ))),
-          ),
+  Widget getApplication(controller, BuildContext context) => Expanded(
+        child: SmartRefresher(
+          header: WaterDropHeader(),
+          controller: controller,
+          onRefresh: () => context
+              .read<EmpController>()
+              .fetchNotifications(context, controller),
+          child: Container(
+              child: isNotificationLoading
+                  ? Center(
+                      child: CircularProgressIndicator(color: DEFAULT_COLOR),
+                    )
+                  : alertList.isEmpty
+                      ? Center(child: _isEmpty(isNotification))
+                      : SingleChildScrollView(
+                          child: Column(
+                          children: [
+                            ...List.generate(
+                                alertList
+                                    .where((element) =>
+                                        element.nType == 'application')
+                                    .toList()
+                                    .length,
+                                (i) => listItem(
+                                    context,
+                                    alertList
+                                        .where((element) =>
+                                            element.nType == 'application')
+                                        .toList()[i]))
+                          ],
+                        ))),
         ),
       );
 }
@@ -228,6 +252,7 @@ Widget listItem(BuildContext context, AlertNotification alert) => Container(
                       maxLines: 2,
                       style: GoogleFonts.lato(
                         color: Colors.black87,
+                        fontSize: 14.0
                       )),
                 ),
               ),

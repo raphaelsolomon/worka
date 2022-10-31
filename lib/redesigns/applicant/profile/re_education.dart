@@ -139,15 +139,13 @@ class _RedesignEducationState extends State<RedesignEducation> {
                         children: [
                           Checkbox(
                             onChanged: (b) {
-                              setState(() {
-                                isChecked = !b!;
-                              });
+                             context.read<Controller>().setGraduate(b);
                             },
-                            value: isChecked,
+                            value: context.watch<Controller>().isGraduate,
                             activeColor: DEFAULT_COLOR,
                           ),
                           Text(
-                            'Current Role',
+                            'Graduated',
                             style: GoogleFonts.lato(
                                 fontSize: 12.0, color: Colors.black54),
                           )
@@ -157,34 +155,111 @@ class _RedesignEducationState extends State<RedesignEducation> {
                     const SizedBox(
                       height: 30.0,
                     ),
-                    isLoading
-                        ? SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            child: Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          )
-                        : GestureDetector(
-                            onTap: () => addEducation(
-                                context,
-                                schoolname.text.trim(),
-                                stringStart,
-                                stringStop,
-                                disciplineController.text.trim()),
-                            child: Container(
+                    widget.isEdit == false
+                        ? isLoading
+                            ? SizedBox(
                                 width: MediaQuery.of(context).size.width,
-                                padding: const EdgeInsets.all(15.0),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    color: DEFAULT_COLOR),
                                 child: Center(
-                                  child: Text(
-                                    'Submit',
-                                    style: GoogleFonts.lato(
-                                        fontSize: 15.0, color: Colors.white),
+                                  child: CircularProgressIndicator(
+                                    color: DEFAULT_COLOR,
                                   ),
-                                )),
-                          ),
+                                ),
+                              )
+                            : GestureDetector(
+                                onTap: () => addEducation(
+                                    context,
+                                    schoolname.text.trim(),
+                                    stringStart,
+                                    stringStop,
+                                    disciplineController.text.trim()),
+                                child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: const EdgeInsets.all(15.0),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        color: DEFAULT_COLOR),
+                                    child: Center(
+                                      child: Text(
+                                        'Submit',
+                                        style: GoogleFonts.lato(
+                                            fontSize: 15.0,
+                                            color: Colors.white),
+                                      ),
+                                    )),
+                              )
+                        : Column(children: [
+                            isUpdate
+                                ? SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        color: DEFAULT_COLOR,
+                                      ),
+                                    ),
+                                  )
+                                : GestureDetector(
+                                    onTap: isDelete
+                                        ? () {}
+                                        : () async {
+                                            var data = {
+                                              'school_name': schoolname.text.capitalize,
+                                              'level': level.toLowerCase(),
+                                              'certificate': certificate.toLowerCase(),
+                                              'start_date': stringStart,
+                                              'end_date': stringStop,
+                                              'course': certificate.toLowerCase(),
+                                            };
+                                            updateData(data);
+                                          },
+                                    child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        padding: const EdgeInsets.all(15.0),
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 10.0),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            color: isDelete
+                                                ? Colors.grey.shade300
+                                                : DEFAULT_COLOR),
+                                        child: Center(
+                                          child: Text(
+                                            'Update Education',
+                                            style: GoogleFonts.lato(
+                                                fontSize: 15.0,
+                                                color: isDelete
+                                                    ? Colors.black87
+                                                    : Colors.white),
+                                          ),
+                                        ))),
+                            const SizedBox(
+                              height: 20.0,
+                            ),
+                            GestureDetector(
+                              onTap: isUpdate
+                                  ? () {}
+                                  : () => deleteItem(widget.eModel!.id),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.delete,
+                                      color: isUpdate
+                                          ? Colors.black45
+                                          : Colors.redAccent),
+                                  const SizedBox(
+                                    width: 15.0,
+                                  ),
+                                  Text(
+                                    'Delete',
+                                    style: GoogleFonts.lato(
+                                        fontSize: 17.0, color: Colors.black54),
+                                  )
+                                ],
+                              ),
+                            )
+                          ]),
                     const SizedBox(
                       height: 25.0,
                     ),

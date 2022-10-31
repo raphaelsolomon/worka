@@ -303,9 +303,7 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                                 color: DEFAULT_COLOR,
                               )))
                           : GestureDetector(
-                              onTap: () {
-                                
-                              },
+                              onTap: () => execute(context),
                               child: Container(
                                   width: MediaQuery.of(context).size.width,
                                   padding: const EdgeInsets.all(15.0),
@@ -314,9 +312,10 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                                       color: DEFAULT_COLOR_1),
                                   child: Center(
                                     child: Text(
-                                      'View Applications List',
+                                      'Close Vacancy',
                                       style: GoogleFonts.lato(
-                                          fontSize: 15.0, color: Colors.white),
+                                          fontSize: 15.0,
+                                          color: Colors.redAccent),
                                     ),
                                   )),
                             ),
@@ -333,6 +332,7 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
       )),
     );
   }
+
   void execute(BuildContext c) async {
     setState(() {
       isLoading = true;

@@ -6,6 +6,8 @@ import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:worka/phoenix/Controller.dart';
+import 'package:worka/phoenix/dashboard_work/skills/add-skill.dart';
+import 'package:worka/phoenix/dashboard_work/skills/edit-skill.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/phoenix/model/ProfileModel.dart';
 import 'package:worka/redesigns/applicant/profile/additional_information.dart';
@@ -28,6 +30,7 @@ class ReApplicantProfile extends StatefulWidget {
 
 class _ReApplicantProfileState extends State<ReApplicantProfile> {
   List<bool> allList = [
+    false,
     false,
     false,
     false,
@@ -90,7 +93,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
             ),
           ),
           const SizedBox(
-            height: 40.0,
+            height: 30.0,
           ),
           Expanded(
               child: pageLoading
@@ -111,8 +114,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                           child: SingleChildScrollView(
                               child: Column(children: [
                             Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              margin: const EdgeInsets.symmetric(horizontal: 20.0),
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10.0, horizontal: 10.0),
                               width: MediaQuery.of(context).size.width,
@@ -150,7 +152,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                           height: 5.0,
                                         ),
                                         Text(
-                                          '${profileModel!.keySkills}',
+                                          '${profileModel!.resumeHeadline}',
                                           style: GoogleFonts.lato(
                                               fontSize: 12.0,
                                               color: Colors.black54,
@@ -165,8 +167,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                       color: DEFAULT_COLOR,
                                       size: 18.0,
                                     ),
-                                    onPressed: () =>
-                                        Get.to(() => ReApplicantProfileEdit(profileModel!)),
+                                    onPressed: () => Get.to(() =>
+                                        ReApplicantProfileEdit(profileModel!)),
                                   )
                                 ],
                               ),
@@ -205,7 +207,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                 child: _items(
                                     'Professional Summary',
                                     Icons.book_rounded,
-                                    () => Get.to(() => ProfessionalSummary('')),
+                                    () => Get.to(() =>
+                                        ProfessionalSummary('', profileModel!)),
                                     allList[0])),
                             //============professional summary============
                             allList[0]
@@ -219,7 +222,9 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                         const SizedBox(height: 8.0),
                                         GestureDetector(
                                           onTap: () => Get.to(() =>
-                                              ProfessionalSummary('${profileModel!.profileSummary!}')),
+                                              ProfessionalSummary(
+                                                  '${profileModel!.profileSummary!}',
+                                                  profileModel!)),
                                           child: Text(
                                               profileModel!.profileSummary!,
                                               style: GoogleFonts.lato(
@@ -245,7 +250,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                 child: _items(
                                     'Education',
                                     Icons.book,
-                                    () => Get.to(() => RedesignEducation(isEdit: false)),
+                                    () => Get.to(
+                                        () => RedesignEducation(isEdit: false)),
                                     allList[1])),
                             allList[1]
                                 ? Padding(
@@ -260,7 +266,11 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                     const EdgeInsets.symmetric(
                                                         vertical: 8.0),
                                                 child: GestureDetector(
-                                                  onTap: () => Get.to(() => RedesignEducation(isEdit: true, eModel: profileModel!.education![i])),
+                                                  onTap: () => Get.to(() =>
+                                                      RedesignEducation(
+                                                          isEdit: true,
+                                                          eModel: profileModel!
+                                                              .education![i])),
                                                   child: Row(
                                                     children: [
                                                       CircleAvatar(
@@ -289,7 +299,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                               '${profileModel!.education![i].course}'
                                                                   .capitalize!,
                                                               style: GoogleFonts.lato(
-                                                                  fontSize: 16.0,
+                                                                  fontSize:
+                                                                      16.0,
                                                                   color: Colors
                                                                       .black,
                                                                   fontWeight:
@@ -303,7 +314,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                               '${profileModel!.education![i].schoolName}'
                                                                   .capitalize!,
                                                               style: GoogleFonts.lato(
-                                                                  fontSize: 13.0,
+                                                                  fontSize:
+                                                                      13.0,
                                                                   color: Colors
                                                                       .black54,
                                                                   fontWeight:
@@ -316,7 +328,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                             Text(
                                                               '${DateFormat('EEEE, MMM, yyyy').format(DateTime.parse(profileModel!.education![i].startDate!))}, - ${DateFormat('EEEE, MMM, yyyy').format(DateTime.parse(profileModel!.education![i].endDate!))}',
                                                               style: GoogleFonts.lato(
-                                                                  fontSize: 13.0,
+                                                                  fontSize:
+                                                                      13.0,
                                                                   color: Colors
                                                                       .black54,
                                                                   fontWeight:
@@ -328,10 +341,12 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                       ),
                                                       IconButton(
                                                           onPressed: () =>
-                                                              Get.to(() => null),
+                                                              Get.to(
+                                                                  () => null),
                                                           icon: Icon(
                                                             Icons.edit,
-                                                            color: Colors.black54,
+                                                            color:
+                                                                Colors.black54,
                                                           ))
                                                     ],
                                                   ),
@@ -355,7 +370,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                 child: _items(
                                     'Work Experience',
                                     Icons.work_history,
-                                    () => Get.to(() => RedesignExperience(isEdit: false)),
+                                    () => Get.to(() =>
+                                        RedesignExperience(isEdit: false)),
                                     allList[2])),
                             //======================Experience==================
                             allList[2]
@@ -371,7 +387,12 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                     const EdgeInsets.symmetric(
                                                         vertical: 8.0),
                                                 child: GestureDetector(
-                                                  onTap: () => Get.to(() => RedesignExperience(isEdit: true, eModel: profileModel!.workExperience![i],)),
+                                                  onTap: () => Get.to(
+                                                      () => RedesignExperience(
+                                                            isEdit: true,
+                                                            eModel: profileModel!
+                                                                .workExperience![i],
+                                                          )),
                                                   child: Row(
                                                     children: [
                                                       CircleAvatar(
@@ -400,7 +421,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                               '${profileModel!.workExperience![i].title}'
                                                                   .capitalize!,
                                                               style: GoogleFonts.lato(
-                                                                  fontSize: 16.0,
+                                                                  fontSize:
+                                                                      16.0,
                                                                   color: Colors
                                                                       .black,
                                                                   fontWeight:
@@ -414,7 +436,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                               '${profileModel!.workExperience![i].companyName}'
                                                                   .capitalize!,
                                                               style: GoogleFonts.lato(
-                                                                  fontSize: 13.0,
+                                                                  fontSize:
+                                                                      13.0,
                                                                   color: Colors
                                                                       .black54,
                                                                   fontWeight:
@@ -427,7 +450,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                             Text(
                                                               '${DateFormat('EEEE, MMM, yyyy').format(DateTime.parse(profileModel!.workExperience![i].startDate!))}',
                                                               style: GoogleFonts.lato(
-                                                                  fontSize: 13.0,
+                                                                  fontSize:
+                                                                      13.0,
                                                                   color: Colors
                                                                       .black54,
                                                                   fontWeight:
@@ -439,10 +463,12 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                       ),
                                                       IconButton(
                                                           onPressed: () =>
-                                                              Get.to(() => null),
+                                                              Get.to(
+                                                                  () => null),
                                                           icon: Icon(
                                                             Icons.edit,
-                                                            color: Colors.black54,
+                                                            color:
+                                                                Colors.black54,
                                                           ))
                                                     ],
                                                   ),
@@ -452,6 +478,118 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     ]),
                                   )
                                 : const SizedBox(),
+
+                            GestureDetector(
+                                onTap: () {
+                                  allList[10] = true;
+                                  for (int i = 0; i < allList.length; i++) {
+                                    setState(() {
+                                      if (i != 10) {
+                                        allList[i] = false;
+                                      }
+                                    });
+                                  }
+                                },
+                                child: _items(
+                                    'Skills',
+                                    Icons.trending_down,
+                                    () => Get.to(() => AddSkills()),
+                                    allList[10])),
+                            //===========================SKILLS===========================
+                            allList[10]
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20.0),
+                                    child: Wrap(children: [
+                                      const SizedBox(height: 8.0),
+                                      ...List.generate(
+                                          profileModel!.skill!.length,
+                                          (i) => Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8.0),
+                                                child: GestureDetector(
+                                                  onTap: () => Get.to(() =>
+                                                      EditSkill(profileModel!
+                                                          .skill![i])),
+                                                  child: Row(
+                                                    children: [
+                                                      CircleAvatar(
+                                                          backgroundColor:
+                                                              DEFAULT_COLOR
+                                                                  .withOpacity(
+                                                                      .03),
+                                                          radius: 20,
+                                                          child: Icon(
+                                                            Icons.book_online,
+                                                            color:
+                                                                DEFAULT_COLOR_1,
+                                                            size: 18.0,
+                                                          )),
+                                                      const SizedBox(
+                                                        width: 25.0,
+                                                      ),
+                                                      Flexible(
+                                                        fit: FlexFit.tight,
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              '${profileModel!.skill![i].skillName}'
+                                                                  .capitalize!,
+                                                              style: GoogleFonts.lato(
+                                                                  fontSize:
+                                                                      16.0,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 6.0,
+                                                            ),
+                                                            Text(
+                                                              '${profileModel!.skill![i].level}'
+                                                                  .capitalize!,
+                                                              style: GoogleFonts.lato(
+                                                                  fontSize:
+                                                                      13.0,
+                                                                  color: Colors
+                                                                      .black54,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 6.0,
+                                                            ),
+                                                            Text(
+                                                              '${profileModel!.skill![i].yearOfExperience} Years Exp.'
+                                                                  .capitalize!,
+                                                              style: GoogleFonts.lato(
+                                                                  fontSize:
+                                                                      13.0,
+                                                                  color: Colors
+                                                                      .black54,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              )),
+                                      const SizedBox(height: 15.0),
+                                    ]),
+                                  )
+                                : const SizedBox(),
+
                             GestureDetector(
                                 onTap: () {
                                   allList[3] = true;
@@ -464,11 +602,12 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                   }
                                 },
                                 child: _items(
-                                    'Skills',
+                                    'Key Skills',
                                     Icons.trending_down,
-                                    () => Get.to(() => RedesignSkills(isEdit: false)),
+                                    () => Get.to(
+                                        () => RedesignSkills(profileModel!, isEdit: false)),
                                     allList[3])),
-                            //===========================SKILLS===========================
+                            //===========================KEY SKILLS===========================
                             allList[3]
                                 ? Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -476,7 +615,9 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     child: Wrap(children: [
                                       const SizedBox(height: 8.0),
                                       ...List.generate(
-                                          2,
+                                          profileModel!.keySkills!
+                                              .split(', ')
+                                              .length,
                                           (i) => Container(
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -497,27 +638,20 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  Text('Javascript',
+                                                  Text(
+                                                      '${profileModel!.keySkills!.split(', ')[i]}',
                                                       style: GoogleFonts.lato(
                                                           fontSize: 15.0,
                                                           color:
                                                               DEFAULT_COLOR)),
                                                   const SizedBox(width: 15.0),
-                                                  GestureDetector(
-                                                    onTap: () =>
-                                                        setState(() => null),
-                                                    child: Text('x',
-                                                        style: GoogleFonts.lato(
-                                                            fontSize: 16.0,
-                                                            color:
-                                                                DEFAULT_COLOR)),
-                                                  ),
                                                 ],
                                               ))),
                                       const SizedBox(height: 15.0),
                                     ]),
                                   )
                                 : const SizedBox(),
+
                             GestureDetector(
                                 onTap: () {
                                   allList[4] = true;
@@ -532,7 +666,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                 child: _items(
                                     'Certification',
                                     Icons.star_border_outlined,
-                                    () => Get.to(() => Redesigncertification(isEdit: false)),
+                                    () => Get.to(() =>
+                                        Redesigncertification(isEdit: false, eModel: null)),
                                     allList[4])),
                             //======================Cerification==================
                             allList[4]
@@ -542,13 +677,13 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     child: Column(children: [
                                       const SizedBox(height: 8.0),
                                       ...List.generate(
-                                          profileModel!.certificate!.length,
-                                          (i) => Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8.0),
+                                          profileModel!.certificate == null  ? 0 : profileModel!.certificate!.length, (i) => Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 8.0),
                                                 child: GestureDetector(
-                                                  onTap: () => Get.to(() => Redesigncertification(isEdit: true, eModel: profileModel!.certificate![i],)),
+                                                  onTap: () => Get.to(() => Redesigncertification(
+                                                        isEdit: true,
+                                                        eModel: profileModel!.certificate![i],
+                                                      )),
                                                   child: Row(
                                                     children: [
                                                       CircleAvatar(
@@ -576,7 +711,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                             Text(
                                                               '${profileModel!.certificate![i].title}',
                                                               style: GoogleFonts.lato(
-                                                                  fontSize: 16.0,
+                                                                  fontSize:
+                                                                      16.0,
                                                                   color: Colors
                                                                       .black,
                                                                   fontWeight:
@@ -589,7 +725,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                             Text(
                                                               '${profileModel!.certificate![i].issuer}',
                                                               style: GoogleFonts.lato(
-                                                                  fontSize: 13.0,
+                                                                  fontSize:
+                                                                      13.0,
                                                                   color: Colors
                                                                       .black54,
                                                                   fontWeight:
@@ -602,7 +739,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                             Text(
                                                               '${DateFormat('EEEE, MMM, yyyy').format(DateTime.parse(profileModel!.certificate![i].dated!))}',
                                                               style: GoogleFonts.lato(
-                                                                  fontSize: 13.0,
+                                                                  fontSize:
+                                                                      13.0,
                                                                   color: Colors
                                                                       .black54,
                                                                   fontWeight:
@@ -614,10 +752,12 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                       ),
                                                       IconButton(
                                                           onPressed: () =>
-                                                              Get.to(() => null),
+                                                              Get.to(
+                                                                  () => null),
                                                           icon: Icon(
                                                             Icons.edit,
-                                                            color: Colors.black54,
+                                                            color:
+                                                                Colors.black54,
                                                           ))
                                                     ],
                                                   ),
@@ -641,7 +781,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                 child: _items(
                                     'Languages',
                                     Icons.person,
-                                    () => Get.to(() => RedesignLanguage(isEdit: false)),
+                                    () => Get.to(
+                                        () => RedesignLanguage(isEdit: false)),
                                     allList[5])),
                             //======================Experience==================
                             allList[5]
@@ -657,7 +798,12 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                     const EdgeInsets.symmetric(
                                                         vertical: 8.0),
                                                 child: GestureDetector(
-                                                  onTap: () => Get.to(() => RedesignLanguage(isEdit: true, eModel: profileModel!.language![i],)),
+                                                  onTap: () => Get.to(
+                                                      () => RedesignLanguage(
+                                                            isEdit: true,
+                                                            eModel: profileModel!
+                                                                .language![i],
+                                                          )),
                                                   child: Row(
                                                     children: [
                                                       CircleAvatar(
@@ -685,7 +831,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                             Text(
                                                               '${profileModel!.language![i].language}',
                                                               style: GoogleFonts.lato(
-                                                                  fontSize: 16.0,
+                                                                  fontSize:
+                                                                      16.0,
                                                                   color: Colors
                                                                       .black,
                                                                   fontWeight:
@@ -698,7 +845,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                             Text(
                                                               '${profileModel!.language![i].level}',
                                                               style: GoogleFonts.lato(
-                                                                  fontSize: 13.0,
+                                                                  fontSize:
+                                                                      13.0,
                                                                   color: Colors
                                                                       .black54,
                                                                   fontWeight:
@@ -710,10 +858,12 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                       ),
                                                       IconButton(
                                                           onPressed: () =>
-                                                              Get.to(() => null),
+                                                              Get.to(
+                                                                  () => null),
                                                           icon: Icon(
                                                             Icons.edit,
-                                                            color: Colors.black54,
+                                                            color:
+                                                                Colors.black54,
                                                           ))
                                                     ],
                                                   ),
@@ -737,8 +887,9 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                 child: _items(
                                     'Availablility',
                                     Icons.timelapse,
-                                    () => Get.to(() =>
-                                        RedesignAvailability(edit: false)),
+                                    () => Get.to(() => RedesignAvailability(
+                                        profileModel!,
+                                        edit: false)),
                                     allList[6])),
                             //======================Availability==================
                             allList[6]
@@ -756,6 +907,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                 child: GestureDetector(
                                                   onTap: () => Get.to(() =>
                                                       RedesignAvailability(
+                                                        profileModel!,
                                                         edit: true,
                                                         update: profileModel!
                                                             .availability![i],
@@ -786,7 +938,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                           children: [
                                                             Text(
                                                               profileModel!
-                                                                      .availability![i]
+                                                                      .availability![
+                                                                          i]
                                                                       .fullTime!
                                                                   ? 'Available to work Fulltime'
                                                                   : 'Not available to work fulltime',
@@ -847,7 +1000,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                 child: _items(
                                     'Resume/CV',
                                     Icons.file_open,
-                                    () => Get.to(() => RedesignResume()),
+                                    () => Get.to(
+                                        () => RedesignResume(isEdit: false)),
                                     allList[7])),
                             //======================RESUME/CV==================
                             allList[7]
@@ -947,8 +1101,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                 child: _items(
                                     'Additional Information',
                                     Icons.person_add,
-                                    () =>
-                                        Get.to(() => AdditionalInformation('')),
+                                    () => Get.to(() => AdditionalInformation(
+                                        '', profileModel!)),
                                     allList[8])),
                             //======================ADDITIONAL INFORMATION==================
                             allList[8]
@@ -960,7 +1114,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                       GestureDetector(
                                         onTap: () => Get.to(() =>
                                             AdditionalInformation(
-                                                '${profileModel!.about!}')),
+                                                '${profileModel!.about!}',
+                                                profileModel!)),
                                         child: Text(profileModel!.about!,
                                             style: GoogleFonts.lato(
                                                 fontSize: 13.0,

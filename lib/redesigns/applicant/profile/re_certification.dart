@@ -25,8 +25,7 @@ class Redesigncertification extends StatefulWidget {
 class _RedesigncertificationState extends State<Redesigncertification> {
   final title = TextEditingController();
   final issuer = TextEditingController();
-  var stringStart =
-      '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+  var stringStart = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
   final ceritificateID = TextEditingController();
   final ceritificateURL = TextEditingController();
 
@@ -84,75 +83,159 @@ class _RedesigncertificationState extends State<Redesigncertification> {
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                children: [
-                  getCardForm('Title', 'Title', ctl: title),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  getCardForm('Issuer', 'Issuer', ctl: issuer),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  getCardDateForm('Issuer Date', datetext: stringStart),
-                  const SizedBox(
-                    height: 5.0,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Checkbox(
-                          onChanged: (b) {
-                            setState(() {
-                              isChecked = !b!;
-                            });
-                          },
-                          value: isChecked,
-                          activeColor: DEFAULT_COLOR,
-                        ),
-                        Text(
-                          'This will not expire',
-                          style: GoogleFonts.lato(
-                              fontSize: 12.0, color: Colors.black38),
-                        )
-                      ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    getCardForm('Title', 'Title', ctl: title),
+                    const SizedBox(
+                      height: 10.0,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  getCardForm('Certificate ID', 'Certificate ID',
-                      ctl: ceritificateID),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  getCardForm('Certificate URL', 'Certificate URL',
-                      ctl: ceritificateURL),
-                  const SizedBox(
-                    height: 30.0,
-                  ),
-                  GestureDetector(
-                    onTap: () async {},
-                    child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        padding: const EdgeInsets.all(15.0),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: DEFAULT_COLOR),
-                        child: Center(
-                          child: Text(
-                            'Submit',
-                            style: GoogleFonts.lato(
-                                fontSize: 15.0, color: Colors.white),
+                    getCardForm('Issuer', 'Issuer', ctl: issuer),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    getCardDateForm('Issuer Date', datetext: stringStart),
+                    const SizedBox(
+                      height: 5.0,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Checkbox(
+                            onChanged: (b) {
+                              context.read<Controller>().setWillExpire(b);
+                            },
+                            value: context.watch<Controller>().willExpire,
+                            activeColor: DEFAULT_COLOR,
                           ),
-                        )),
-                  ),
-                  const SizedBox(
-                    height: 25.0,
-                  ),
-                ],
+                          Text(
+                            'This will not expire',
+                            style: GoogleFonts.lato(
+                                fontSize: 12.0, color: Colors.black38),
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    getCardForm('Certificate ID', 'Certificate ID',
+                        ctl: ceritificateID),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    getCardForm('Certificate URL', 'Certificate URL',
+                        ctl: ceritificateURL),
+                    const SizedBox(
+                      height: 30.0,
+                    ),
+                    widget.isEdit == false
+                        ? isLoading
+                            ? SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color: DEFAULT_COLOR,
+                                  ),
+                                ),
+                              )
+                            : GestureDetector(
+                                onTap: () => addCertification(),
+                                child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: const EdgeInsets.all(15.0),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        color: DEFAULT_COLOR),
+                                    child: Center(
+                                      child: Text(
+                                        'Submit',
+                                        style: GoogleFonts.lato(
+                                            fontSize: 15.0, color: Colors.white),
+                                      ),
+                                    )),
+                              )
+                        : Column(
+                            children: [
+                              isUpdate
+                                  ? SizedBox(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          color: DEFAULT_COLOR,
+                                        ),
+                                      ),
+                                    )
+                                  : GestureDetector(
+                                      onTap: isDelete
+                                          ? () {}
+                                          : () async {
+                                              var data = {
+                                                'cid': ceritificateID.text,
+                                                'title': title.text,
+                                                'issuer': issuer.text,
+                                                'dated': stringStart,
+                                                'url':
+                                                    ceritificateURL.text.trim(),
+                                              };
+                                              updateData(data);
+                                            },
+                                      child: Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          padding: const EdgeInsets.all(15.0),
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 10.0),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                              color: isDelete
+                                                  ? Colors.grey.shade300
+                                                  : DEFAULT_COLOR),
+                                          child: Center(
+                                            child: Text(
+                                              'Update Certification',
+                                              style: GoogleFonts.lato(
+                                                  fontSize: 15.0,
+                                                  color: isDelete
+                                                      ? Colors.black87
+                                                      : Colors.white),
+                                            ),
+                                          ))),
+                              const SizedBox(
+                                height: 20.0,
+                              ),
+                              GestureDetector(
+                                onTap: isUpdate
+                                    ? () {}
+                                    : () => delete(widget.eModel!.id),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.delete,
+                                        color: isUpdate
+                                            ? Colors.black45
+                                            : Colors.redAccent),
+                                    const SizedBox(
+                                      width: 15.0,
+                                    ),
+                                    Text(
+                                      'Delete',
+                                      style: GoogleFonts.lato(
+                                          fontSize: 17.0, color: Colors.black54),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                    const SizedBox(
+                      height: 25.0,
+                    ),
+                  ],
+                ),
               ),
             ))
           ],
@@ -161,7 +244,7 @@ class _RedesigncertificationState extends State<Redesigncertification> {
     );
   }
 
-  addCertification(BuildContext c, school, start_date, end_date, course) async {
+  addCertification() async {
     if (ceritificateID.text.trim().isEmpty) {
       CustomSnack('Error', 'Certificate ID is required...');
       return;
@@ -181,7 +264,7 @@ class _RedesigncertificationState extends State<Redesigncertification> {
       'cid': ceritificateID.text,
       'title': title.text,
       'issuer': issuer.text,
-      'dated': '$start_date',
+      'dated': stringStart,
       'url': ceritificateURL.text.trim(),
     };
     try {
@@ -209,7 +292,7 @@ class _RedesigncertificationState extends State<Redesigncertification> {
 
   void delete(id) async {
     setState(() {
-      isDelete = false;
+      isDelete = true;
     });
     try {
       final res = await Dio().delete(

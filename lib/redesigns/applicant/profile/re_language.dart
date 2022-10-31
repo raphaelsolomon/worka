@@ -75,47 +75,120 @@ class _RedesignLanguageState extends State<RedesignLanguage> {
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                children: [
-                  getCardForm('select Language', 'Language', ctl: language),
-                  const SizedBox(
-                    height: 12.0,
-                  ),
-                  inputDropDown(
-                      ['Fluent', 'Native', 'Beginner', 'Conversational'],
-                      text: 'Language Proficiency',
-                      hint: '$proficiency',
-                      callBack: (s) => proficiency = s),
-                  const SizedBox(
-                    height: 30.0,
-                  ),
-                  isLoading
-                      ? SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Center(
-                              child: CircularProgressIndicator(
-                            color: DEFAULT_COLOR,
-                          )))
-                      : GestureDetector(
-                          onTap: () async {},
-                          child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              padding: const EdgeInsets.all(15.0),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  color: DEFAULT_COLOR),
-                              child: Center(
-                                child: Text(
-                                  'Submit',
-                                  style: GoogleFonts.lato(
-                                      fontSize: 15.0, color: Colors.white),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    getCardForm('select Language', 'Language', ctl: language),
+                    const SizedBox(
+                      height: 12.0,
+                    ),
+                    inputDropDown(
+                        ['Fluent', 'Native', 'Beginner', 'Conversational'],
+                        text: 'Language Proficiency',
+                        hint: '$proficiency',
+                        callBack: (s) => proficiency = s),
+                    const SizedBox(
+                      height: 30.0,
+                    ),
+                    widget.isEdit == false
+                        ? isLoading
+                            ? SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: Center(
+                                    child: CircularProgressIndicator(
+                                  color: DEFAULT_COLOR,
+                                )))
+                            : GestureDetector(
+                                onTap: () => addLanguage({
+                                  'language': language.text.toLowerCase(),
+                                  'level': proficiency.toLowerCase()
+                                }),
+                                child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: const EdgeInsets.all(15.0),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        color: DEFAULT_COLOR),
+                                    child: Center(
+                                      child: Text(
+                                        'Submit',
+                                        style: GoogleFonts.lato(
+                                            fontSize: 15.0, color: Colors.white),
+                                      ),
+                                    )),
+                              )
+                        : Column(
+                            children: [
+                              isUpdate
+                                  ? SizedBox(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          color: DEFAULT_COLOR,
+                                        ),
+                                      ),
+                                    )
+                                  : GestureDetector(
+                                      onTap: isDelete
+                                          ? () {}
+                                          : () => updateData({
+                                                'language': language.text.toLowerCase(),
+                                                'level': proficiency.toLowerCase()
+                                              }),
+                                      child: Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          padding: const EdgeInsets.all(15.0),
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 10.0),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                              color: isDelete
+                                                  ? Colors.grey.shade300
+                                                  : DEFAULT_COLOR),
+                                          child: Center(
+                                            child: Text(
+                                              'Update Language',
+                                              style: GoogleFonts.lato(
+                                                  fontSize: 15.0,
+                                                  color: isDelete
+                                                      ? Colors.black87
+                                                      : Colors.white),
+                                            ),
+                                          ))),
+                              const SizedBox(
+                                height: 20.0,
+                              ),
+                              GestureDetector(
+                                onTap: isUpdate
+                                    ? () {}
+                                    : () => delete(widget.eModel!.id),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.delete,
+                                        color: isUpdate
+                                            ? Colors.black45
+                                            : Colors.redAccent),
+                                    const SizedBox(
+                                      width: 15.0,
+                                    ),
+                                    Text(
+                                      'Delete',
+                                      style: GoogleFonts.lato(
+                                          fontSize: 17.0, color: Colors.black54),
+                                    )
+                                  ],
                                 ),
-                              )),
-                        ),
-                  const SizedBox(
-                    height: 25.0,
-                  ),
-                ],
+                              )
+                            ],
+                          ),
+                    const SizedBox(
+                      height: 25.0,
+                    ),
+                  ],
+                ),
               ),
             ))
           ],
@@ -124,13 +197,13 @@ class _RedesignLanguageState extends State<RedesignLanguage> {
     );
   }
 
-  void addCertification(data) async {
+  void addLanguage(data) async {
     setState(() {
-      isLoading = false;
+      isLoading = true;
     });
     try {
       final res = await Dio().post('${ROOT}add/',
-      data: data,
+          data: data,
           options: Options(headers: {
             'Authorization': 'TOKEN ${context.read<Controller>().token}'
           }));
@@ -153,7 +226,7 @@ class _RedesignLanguageState extends State<RedesignLanguage> {
 
   void delete(id) async {
     setState(() {
-      isDelete = false;
+      isDelete = true;
     });
     try {
       final res = await Dio().delete(

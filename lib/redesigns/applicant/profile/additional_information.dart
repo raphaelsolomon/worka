@@ -1,12 +1,20 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:worka/phoenix/Controller.dart';
+import 'package:worka/phoenix/CustomScreens.dart';
+import 'package:worka/phoenix/dashboard_work/Success.dart';
 import 'package:worka/phoenix/model/Constant.dart';
+import 'package:worka/phoenix/model/ProfileModel.dart';
 
 class AdditionalInformation extends StatefulWidget {
   final String data;
-  
-  const AdditionalInformation(this.data, {super.key});
+  final ProfileModel profileModel;
+  const AdditionalInformation(this.data, this.profileModel, {super.key});
 
   @override
   State<AdditionalInformation> createState() => _AdditionalInformationState();
@@ -14,10 +22,12 @@ class AdditionalInformation extends StatefulWidget {
 
 class _AdditionalInformationState extends State<AdditionalInformation> {
   final controller = TextEditingController();
+  bool isLoading = false;
+  bool isUpdating = false;
 
   @override
   void initState() {
-    if(widget.data.trim().isNotEmpty){
+    if (widget.data.trim().isNotEmpty) {
       controller.text = widget.data;
     }
     super.initState();
@@ -86,27 +96,35 @@ class _AdditionalInformationState extends State<AdditionalInformation> {
                     height: 10.0,
                   ),
                   inputWidgetRich(
-                      hint: 'Tell us more about your experience and Achievements',
+                      hint:
+                          'Tell us more about your experience and Achievements',
                       ctl: controller),
                   const SizedBox(
                     height: 30.0,
                   ),
-                  GestureDetector(
-                    onTap: () async {},
-                    child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        padding: const EdgeInsets.all(15.0),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: DEFAULT_COLOR),
-                        child: Center(
-                          child: Text(
-                            'Submit',
-                            style: GoogleFonts.lato(
-                                fontSize: 15.0, color: Colors.white),
-                          ),
-                        )),
-                  ),
+                  isLoading
+                      ? SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                            child:
+                                CircularProgressIndicator(color: DEFAULT_COLOR),
+                          ))
+                      : GestureDetector(
+                          onTap: () => executeThis(),
+                          child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              padding: const EdgeInsets.all(15.0),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  color: DEFAULT_COLOR),
+                              child: Center(
+                                child: Text(
+                                  'Submit',
+                                  style: GoogleFonts.lato(
+                                      fontSize: 15.0, color: Colors.white),
+                                ),
+                              )),
+                        ),
                   const SizedBox(
                     height: 25.0,
                   ),
@@ -117,6 +135,42 @@ class _AdditionalInformationState extends State<AdditionalInformation> {
         ),
       ),
     );
+  }
+
+  void executeThis() async {
+    if (controller.text.trim().isEmpty) {
+      CustomSnack('Error', 'Required field is empty');
+      return;
+    }
+    setState(() {
+      isLoading = true;
+    });
+
+    var profile = widget.profileModel;
+    profile.about = controller.text;
+
+    try {
+      final res = await Dio().post('${ROOT}employeedetails/',
+          data: {
+            'uid': widget.profileModel.uid.toString(),
+            'about': controller.text
+          },
+          options: Options(headers: {
+            'Authorization': 'TOKEN ${context.read<Controller>().token}'
+          }));
+      if (res.statusCode == 200) {
+        Get.off(() => Success(
+              'Additional Information Added.',
+              callBack: () => Get.back(),
+            ));
+      }
+    } on SocketException {
+    } on Exception {
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Widget inputWidgetRich({hint = 'Type here', ctl}) {

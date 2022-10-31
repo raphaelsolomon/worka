@@ -3,9 +3,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:worka/phoenix/dashboard_work/JobDetailsScreen.dart';
 import 'package:worka/phoenix/model/Constant.dart';
+import 'package:worka/phoenix/model/MyJobsModel.dart';
 
 class ReAppProgress extends StatefulWidget {
-  const ReAppProgress({super.key});
+  final MyJobsModel myJobsModel;
+  const ReAppProgress(this.myJobsModel, {super.key});
 
   @override
   State<ReAppProgress> createState() => _ReAppProgressState();
@@ -76,7 +78,7 @@ class _ReAppProgressState extends State<ReAppProgress> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CircleAvatar(
-                            backgroundImage: NetworkImage(''),
+                            backgroundImage: NetworkImage(widget.myJobsModel.job.employer.companyLogo),
                             radius: 30.0,
                             backgroundColor: DEFAULT_COLOR.withOpacity(.03),
                           ),
@@ -85,13 +87,13 @@ class _ReAppProgressState extends State<ReAppProgress> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Google LLC',
+                                Text(widget.myJobsModel.job.employer.companyName,
                                     style: GoogleFonts.lato(
                                         fontSize: 14.0,
                                         color: Colors.black54,
                                         fontWeight: FontWeight.w400)),
                                 const SizedBox(height: 10.0),
-                                Text('Project Manager',
+                                Text(widget.myJobsModel.job.title,
                                     style: GoogleFonts.lato(
                                         fontSize: 19.0,
                                         color: Colors.black87,
