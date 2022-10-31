@@ -45,6 +45,7 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
       lname.text = widget.profileModel.lastName!;
       oname.text = widget.profileModel.otherName!;
       name.text = widget.profileModel.keySkills!;
+      contactController.text = phoneNumber!.phoneNumber!;
       isPageLoaded = false;
     })));
     super.initState();
@@ -287,7 +288,7 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
                 ),
               ),
               suggestionsCallback: (pattern) async {
-                return await LanguageClass.getRollSkills(pattern);
+                return await LanguageClass.getLocalOccupation(pattern);
               },
               onSuggestionSelected: (suggestion) {
                 name.text = suggestion!;

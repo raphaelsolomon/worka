@@ -271,7 +271,7 @@ class _EmpInterviewState extends State<EmpInterview> {
     } on SocketException {
       CustomSnack('Error', 'Check Internet Connection..');
     } on Exception {
-      CustomSnack('Error', 'Could not submit job. Please try again');
+      // CustomSnack('Error', 'Could not submit job. Please try again');
     }
     return empIntModel;
   }

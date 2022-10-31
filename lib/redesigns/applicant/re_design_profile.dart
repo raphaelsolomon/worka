@@ -114,7 +114,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                           child: SingleChildScrollView(
                               child: Column(children: [
                             Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10.0, horizontal: 10.0),
                               width: MediaQuery.of(context).size.width,
@@ -604,7 +605,9 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                 child: _items(
                                     'Key Skills',
                                     Icons.trending_down,
-                                    () => Get.to(() => RedesignSkills(profileModel!, isEdit: false)),
+                                    () => Get.to(() => RedesignSkills(
+                                        profileModel!,
+                                        isEdit: false)),
                                     allList[3])),
                             //===========================KEY SKILLS===========================
                             allList[3]
@@ -614,34 +617,52 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     child: Wrap(children: [
                                       const SizedBox(height: 8.0),
                                       ...List.generate(
-                                          profileModel!.keySkills!.split(',').length,
+                                          profileModel!.keySkills!.isEmpty
+                                              ? 0
+                                              : profileModel!.keySkills!
+                                                  .split(',')
+                                                  .length,
                                           (i) => GestureDetector(
-                                            onTap: () => Get.to(() => RedesignSkills(profileModel!, isEdit: true, eModel: profileModel!.keySkills!.split(','))),
-                                            child: Container(
-                                              margin: const EdgeInsets.symmetric(horizontal: 4.5, vertical: 4.5),
-                                                padding:
-                                                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 3.0),
-                                                decoration: BoxDecoration(
-                                                    color: DEFAULT_COLOR
-                                                        .withOpacity(.05),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5.0),
-                                                    border: Border.all(
-                                                        width: .5,
-                                                        color: DEFAULT_COLOR.withOpacity(.5))),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Text(
-                                                        '${profileModel!.keySkills!.split(',')[i]}',
-                                                        style: GoogleFonts.lato(
-                                                            fontSize: 15.0,
-                                                            color:
-                                                                DEFAULT_COLOR)),
-                                                  ],
-                                                )),
-                                          )),
+                                                onTap: () => Get.to(() =>
+                                                    RedesignSkills(
+                                                        profileModel!,
+                                                        isEdit: true,
+                                                        eModel: profileModel!
+                                                            .keySkills!
+                                                            .split(','))),
+                                                child: Container(
+                                                    margin: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 4.5,
+                                                        vertical: 4.5),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 10.0,
+                                                        vertical: 3.0),
+                                                    decoration: BoxDecoration(
+                                                        color: DEFAULT_COLOR
+                                                            .withOpacity(.05),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5.0),
+                                                        border: Border.all(
+                                                            width: .5,
+                                                            color: DEFAULT_COLOR
+                                                                .withOpacity(
+                                                                    .5))),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Text(
+                                                            '${profileModel!.keySkills!.split(',')[i]}',
+                                                            style: GoogleFonts.lato(
+                                                                fontSize: 15.0,
+                                                                color:
+                                                                    DEFAULT_COLOR)),
+                                                      ],
+                                                    )),
+                                              )),
                                       const SizedBox(height: 15.0),
                                     ]),
                                   )
@@ -661,8 +682,8 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                 child: _items(
                                     'Certification',
                                     Icons.star_border_outlined,
-                                    () => Get.to(() =>
-                                        Redesigncertification(isEdit: false, eModel: null)),
+                                    () => Get.to(() => Redesigncertification(
+                                        isEdit: false, eModel: null)),
                                     allList[4])),
                             //======================Cerification==================
                             allList[4]
@@ -672,12 +693,20 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     child: Column(children: [
                                       const SizedBox(height: 8.0),
                                       ...List.generate(
-                                          profileModel!.certificate == null  ? 0 : profileModel!.certificate!.length, (i) => Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                          profileModel!.certificate == null
+                                              ? 0
+                                              : profileModel!
+                                                  .certificate!.length,
+                                          (i) => Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8.0),
                                                 child: GestureDetector(
-                                                  onTap: () => Get.to(() => Redesigncertification(
+                                                  onTap: () => Get.to(() =>
+                                                      Redesigncertification(
                                                         isEdit: true,
-                                                        eModel: profileModel!.certificate![i],
+                                                        eModel: profileModel!
+                                                            .certificate![i],
                                                       )),
                                                   child: Row(
                                                     children: [

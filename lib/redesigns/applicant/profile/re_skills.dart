@@ -254,7 +254,7 @@ class _RedesignSkillsState extends State<RedesignSkills> {
                   ),
                 ),
                 suggestionsCallback: (pattern) async {
-                  return await LanguageClass.getLocalOccupation(pattern);
+                  return await LanguageClass.getRollSkills(pattern);
                 },
                 onSuggestionSelected: (suggestion) {
                   setState(() {

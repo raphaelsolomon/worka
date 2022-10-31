@@ -192,7 +192,7 @@ class _NotificationPageState extends State<NotificationPage> {
     } on SocketException {
       CustomSnack('Error', 'check internet connection');
     } on Exception {
-      CustomSnack('Error', 'unable to fetch notifications');
+      // CustomSnack('Error', 'unable to fetch notifications');
     }
     return returnValue;
   }
