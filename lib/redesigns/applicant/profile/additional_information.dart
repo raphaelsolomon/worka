@@ -36,6 +36,7 @@ class _AdditionalInformationState extends State<AdditionalInformation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
@@ -152,8 +153,17 @@ class _AdditionalInformationState extends State<AdditionalInformation> {
     try {
       final res = await Dio().post('${ROOT}employeedetails/',
           data: {
+            'resume_headline': widget.profileModel.resumeHeadline,
+            'phone': widget.profileModel.phone,
             'uid': widget.profileModel.uid.toString(),
-            'about': controller.text
+            'first_name': widget.profileModel.firstName,
+            'last_name': widget.profileModel.lastName,
+            'other_name': widget.profileModel.otherName,
+            'gender': widget.profileModel.gender.toString(),
+            'display_picture': widget.profileModel.displayPicture.toString(),
+            'location': widget.profileModel.location,
+            'about': controller.text.trim(),
+            'profile_summary': widget.profileModel.profileSummary
           },
           options: Options(headers: {
             'Authorization': 'TOKEN ${context.read<Controller>().token}'

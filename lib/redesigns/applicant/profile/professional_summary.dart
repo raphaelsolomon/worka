@@ -35,6 +35,7 @@ class _ProfessionalSummaryState extends State<ProfessionalSummary> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
@@ -137,7 +138,19 @@ class _ProfessionalSummaryState extends State<ProfessionalSummary> {
       profile.profileSummary = controller.text;
     try {
       final res = await Dio().post('${ROOT}employeedetails/',
-          data: {'uid': widget.profileModel.uid.toString(), 'profile_summary': controller.text},
+         data: {
+            'resume_headline': widget.profileModel.resumeHeadline,
+            'uid': widget.profileModel.uid.toString(),
+            'first_name': widget.profileModel.firstName,
+            'last_name': widget.profileModel.lastName,
+            'other_name': widget.profileModel.otherName,
+            'gender': widget.profileModel.gender.toString(),
+            'display_picture': widget.profileModel.displayPicture.toString(),
+            'location': widget.profileModel.location,
+            'about': widget.profileModel.about,
+            'phone': widget.profileModel.phone,
+            'profile_summary': controller.text.trim()
+          },
           options: Options(headers: {
             'Authorization': 'TOKEN ${context.read<Controller>().token}'
           }));

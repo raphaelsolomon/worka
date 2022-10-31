@@ -248,7 +248,7 @@ class Controller extends ChangeNotifier {
 
   Future<ProfileModel?> getprofileReview() async {
     try {
-      final res = await Dio().get('${ROOT}profile_details/',
+      final res = await Dio().get('${ROOT}employeeprofile/',
           options: Options(headers: {'Authorization': 'TOKEN $token'}));
       if (res.statusCode == 200) {
         profileModel = ProfileModel.fromJson(res.data);

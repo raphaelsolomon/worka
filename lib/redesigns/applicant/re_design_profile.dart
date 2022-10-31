@@ -144,7 +144,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                         Text(
                                           '${profileModel!.firstName} ${profileModel!.lastName}',
                                           style: GoogleFonts.lato(
-                                              fontSize: 16.0,
+                                              fontSize: 18.0,
                                               color: Colors.black87,
                                               fontWeight: FontWeight.w600),
                                         ),
@@ -154,7 +154,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                         Text(
                                           '${profileModel!.resumeHeadline}',
                                           style: GoogleFonts.lato(
-                                              fontSize: 12.0,
+                                              fontSize: 14.0,
                                               color: Colors.black54,
                                               fontWeight: FontWeight.w400),
                                         ),
@@ -604,8 +604,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                 child: _items(
                                     'Key Skills',
                                     Icons.trending_down,
-                                    () => Get.to(
-                                        () => RedesignSkills(profileModel!, isEdit: false)),
+                                    () => Get.to(() => RedesignSkills(profileModel!, isEdit: false)),
                                     allList[3])),
                             //===========================KEY SKILLS===========================
                             allList[3]
@@ -615,38 +614,34 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     child: Wrap(children: [
                                       const SizedBox(height: 8.0),
                                       ...List.generate(
-                                          profileModel!.keySkills!
-                                              .split(', ')
-                                              .length,
-                                          (i) => Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10.0,
-                                                      vertical: 5.0),
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              decoration: BoxDecoration(
-                                                  color: DEFAULT_COLOR
-                                                      .withOpacity(.2),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5.0),
-                                                  border: Border.all(
-                                                      width: .5,
-                                                      color: DEFAULT_COLOR)),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                      '${profileModel!.keySkills!.split(', ')[i]}',
-                                                      style: GoogleFonts.lato(
-                                                          fontSize: 15.0,
-                                                          color:
-                                                              DEFAULT_COLOR)),
-                                                  const SizedBox(width: 15.0),
-                                                ],
-                                              ))),
+                                          profileModel!.keySkills!.split(',').length,
+                                          (i) => GestureDetector(
+                                            onTap: () => Get.to(() => RedesignSkills(profileModel!, isEdit: true, eModel: profileModel!.keySkills!.split(','))),
+                                            child: Container(
+                                              margin: const EdgeInsets.symmetric(horizontal: 4.5, vertical: 4.5),
+                                                padding:
+                                                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 3.0),
+                                                decoration: BoxDecoration(
+                                                    color: DEFAULT_COLOR
+                                                        .withOpacity(.05),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5.0),
+                                                    border: Border.all(
+                                                        width: .5,
+                                                        color: DEFAULT_COLOR.withOpacity(.5))),
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                        '${profileModel!.keySkills!.split(',')[i]}',
+                                                        style: GoogleFonts.lato(
+                                                            fontSize: 15.0,
+                                                            color:
+                                                                DEFAULT_COLOR)),
+                                                  ],
+                                                )),
+                                          )),
                                       const SizedBox(height: 15.0),
                                     ]),
                                   )
@@ -1151,7 +1146,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                           fit: FlexFit.tight,
                           child: Text(text,
                               style: GoogleFonts.lato(
-                                  fontSize: 15.0,
+                                  fontSize: 16.0,
                                   color: Colors.black54,
                                   fontWeight: FontWeight.w600))),
                       const SizedBox(
@@ -1162,7 +1157,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                         child: Icon(
                           Icons.add_circle_outline,
                           color: DEFAULT_COLOR_1,
-                          size: 18.0,
+                          size: 24.0,
                         ),
                       )
                     ],
@@ -1193,16 +1188,19 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                         fit: FlexFit.tight,
                         child: Text(text,
                             style: GoogleFonts.lato(
-                                fontSize: 15.0,
+                                fontSize: 16.0,
                                 color: Colors.black54,
                                 fontWeight: FontWeight.w600))),
                     const SizedBox(
                       width: 10.0,
                     ),
-                    Icon(
-                      Icons.add_circle_outline,
-                      color: DEFAULT_COLOR_1,
-                      size: 18.0,
+                    GestureDetector(
+                      onTap: () => callBack(),
+                      child: Icon(
+                        Icons.add_circle_outline,
+                        color: DEFAULT_COLOR_1,
+                        size: 24.0,
+                      ),
                     )
                   ],
                 ),
@@ -1221,7 +1219,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                 const SizedBox(
                   width: 10.0,
                 ),
-                Text('Lagos, Nigeria',
+                Text('${profileModel!.location}',
                     style:
                         GoogleFonts.lato(fontSize: 14.0, color: Colors.black54))
               ],
@@ -1233,7 +1231,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                 const SizedBox(
                   width: 10.0,
                 ),
-                Text('info@Fklynetwork.inc',
+                Text('${profileModel!.user!.email}',
                     style:
                         GoogleFonts.lato(fontSize: 14.0, color: Colors.black54))
               ],
@@ -1245,7 +1243,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                 const SizedBox(
                   width: 10.0,
                 ),
-                Text('+234 708 9704 086',
+                Text('${profileModel!.phone}',
                     style:
                         GoogleFonts.lato(fontSize: 14.0, color: Colors.black54))
               ],

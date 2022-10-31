@@ -67,7 +67,7 @@ class _RePostJobsPreviewState extends State<RePostJobsPreview> {
                         borderRadius: BorderRadius.circular(8.0),
                         border: Border.all(width: .5, color: Colors.black54)),
                     child: Icon(
-                      Icons.bookmark_outline,
+                      null,
                       color: Colors.black54,
                       size: 18.0,
                     ),

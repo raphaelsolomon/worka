@@ -265,10 +265,11 @@ class _SeeMoreState extends State<SeeMore> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 8.0, vertical: 8.0),
                   child: Text(
-                    see.title!,
+                    see.description!,
+                    maxLines: 1,
                     style: TextStyle(
                         fontFamily: 'Lato',
-                        fontSize: 17,
+                        fontSize: 15,
                         color: Colors.black87.withOpacity(.7),
                         fontWeight: FontWeight.w400),
                   ),

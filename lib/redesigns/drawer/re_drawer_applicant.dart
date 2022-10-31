@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:worka/employer_page/employer_settings.dart';
 import 'package:worka/employer_page/phoenix/screens/EmpInterviews.dart';
 import 'package:worka/interfaces/login_interface.dart';
-import 'package:worka/phoenix/model/ProfileModel.dart';
 import 'package:worka/redesigns/applicant/re_app_applicant.dart';
 import 'package:worka/redesigns/applicant/re_design_profile.dart';
 import 'package:worka/screens/help_center.dart';
@@ -32,6 +31,7 @@ class _ReDrawerApplicantState extends State<ReDrawerApplicant> {
   void initState() {
     context.read<Controller>().getUserDetails().then((s) => setState((){
         fullname = s;
+        print(s);
     }));
     super.initState();
   }
@@ -66,7 +66,7 @@ class _ReDrawerApplicantState extends State<ReDrawerApplicant> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${fullname}',
+                      '${context.watch<Controller>().userNames}',
                       style: GoogleFonts.lato(
                           fontSize: 17.0,
                           color: Colors.black87,
@@ -135,7 +135,7 @@ class _ReDrawerApplicantState extends State<ReDrawerApplicant> {
           const SizedBox(
             height: 10.0,
           ),
-          Text('Version 1.0.2021',
+          Text('Version 1.0.2',
               style: GoogleFonts.lato(fontSize: 13.0, color: Colors.black54)),
           const SizedBox(height: 20.0)
         ],

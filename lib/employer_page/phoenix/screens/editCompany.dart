@@ -6,7 +6,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/src/provider.dart';
 import 'package:worka/controllers/constants.dart';
 import 'package:worka/models/compModel.dart';
@@ -42,23 +42,29 @@ class _EditCompanyState extends State<EditCompany> {
   String businessScale = '';
   String industries = '';
   bool isLoading = false;
+  PhoneNumber? phoneNumber = null;
+  bool isPageLoaded = true;
+  bool phoneValidate = false;
 
   @override
   void initState() {
-    fname.text = widget.compModel.firstName!;
-    lname.text = widget.compModel.lastName!;
-    name.text = widget.compModel.companyName!;
-    email.text = widget.compModel.companyEmail!;
-    industries = widget.compModel.industry!;
-    address2 = widget.compModel.location!.split(',')[0];
-    address1 = widget.compModel.location!.split(',')[1];
-    address0 = widget.compModel.location!.split(',')[2];
-    phone.text = widget.compModel.phone!;
-    position = widget.compModel.position!;
-    businessScale = widget.compModel.businessScale!;
-    website.text = widget.compModel.companyWebsite!;
-    cprofile.text = widget.compModel.companyProfile!;
-    cAddress.text = widget.compModel.address!;
+    PhoneNumber.getRegionInfoFromPhoneNumber(widget.compModel.phone!).then((value) => setState((() {
+      fname.text = widget.compModel.firstName!;
+      lname.text = widget.compModel.lastName!;
+      name.text = widget.compModel.companyName!;
+      email.text = widget.compModel.companyEmail!;
+      industries = widget.compModel.industry!;
+      address2 = widget.compModel.location!.split(',')[0];
+      address1 = widget.compModel.location!.split(',')[1];
+      address0 = widget.compModel.location!.split(',')[2];
+      phone.text = widget.compModel.phone!;
+      position = widget.compModel.position!;
+      businessScale = widget.compModel.businessScale!;
+      website.text = widget.compModel.companyWebsite!;
+      cprofile.text = widget.compModel.companyProfile!;
+      cAddress.text = widget.compModel.address!;
+      isPageLoaded = false;
+    })));
     super.initState();
   }
 
@@ -129,11 +135,7 @@ class _EditCompanyState extends State<EditCompany> {
                   SizedBox(height: 7.0),
                   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: getCardForm('Phone Number', 'Phone Number',
-                          ctl: phone,
-                          formater: [
-                            MaskTextInputFormatter(mask: '+(###) ### ### ####')
-                          ])),
+                      child: getCardFormPhone('Mobile Number', phoneNumber, ctl: phone)),
                   SizedBox(height: 7.0),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -347,6 +349,51 @@ class _EditCompanyState extends State<EditCompany> {
                   border: OutlineInputBorder(borderSide: BorderSide.none)),
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  getCardFormPhone(label, initialValue, {ctl}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w400),
+          ),
+          const SizedBox(height: 10.0),
+          Container(
+              height: 48.0,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5.0),
+                  color: DEFAULT_COLOR.withOpacity(.05)),
+              child: InternationalPhoneNumberInput(
+                textStyle: GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+                initialValue: initialValue,
+                  selectorConfig: SelectorConfig(showFlags: true),
+                  onInputValidated: (b) {
+                    phoneValidate = b;
+                  },
+                  textFieldController: ctl,
+                  inputDecoration: InputDecoration(
+                    fillColor: Colors.white,
+                    hintText: 'phone number',
+                    hintStyle: GoogleFonts.lato(
+                        fontSize: 14.0, color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(0.0)),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  onInputChanged: (phone) {
+                    ctl.text = phone.phoneNumber;
+                  }))
         ],
       ),
     );

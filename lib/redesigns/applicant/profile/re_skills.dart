@@ -38,6 +38,7 @@ class _RedesignSkillsState extends State<RedesignSkills> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
@@ -80,49 +81,48 @@ class _RedesignSkillsState extends State<RedesignSkills> {
                     const SizedBox(
                       height: 10.0,
                     ),
-                    Expanded(
-                        child: Padding(
+                    Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Wrap(spacing: 12.0, children: [
-                          ...List.generate(
-                              skills.length,
-                              (i) => Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 4.0),
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 5.0),
-                                  decoration: BoxDecoration(
-                                      color: DEFAULT_COLOR.withOpacity(.09),
-                                      borderRadius: BorderRadius.circular(5.0),
-                                      border: Border.all(
-                                          width: .5, color: DEFAULT_COLOR)),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text('${skills[i]}',
-                                          style: GoogleFonts.lato(
-                                              fontSize: 15.0,
-                                              color: DEFAULT_COLOR)),
-                                      const SizedBox(width: 15.0),
-                                      GestureDetector(
-                                        onTap: () =>
-                                            setState(() => skills.removeAt(i)),
-                                        child: Text('x',
-                                            style: GoogleFonts.lato(
-                                                fontSize: 16.0,
-                                                color: DEFAULT_COLOR)),
-                                      ),
-                                    ],
-                                  ))),
-                        ]),
+                    alignment: Alignment.topLeft,
+                    child: Wrap(spacing: 12.0, children: [
+                      ...List.generate(
+                          skills.length,
+                          (i) => Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 4.0),
+                              margin:
+                                  const EdgeInsets.symmetric(vertical: 5.0),
+                              decoration: BoxDecoration(
+                                  color: DEFAULT_COLOR.withOpacity(.05),
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  border: Border.all(
+                                      width: .5, color: DEFAULT_COLOR.withOpacity(.5))),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('${skills[i]}',
+                                      style: GoogleFonts.lato(
+                                          fontSize: 15.0,
+                                          color: DEFAULT_COLOR)),
+                                  const SizedBox(width: 15.0),
+                                  GestureDetector(
+                                    onTap: () =>
+                                        setState(() => skills.removeAt(i)),
+                                    child: Text('x',
+                                        style: GoogleFonts.lato(
+                                            fontSize: 16.0,
+                                            color: DEFAULT_COLOR)),
+                                  ),
+                                ],
+                              ))),
+                    ]),
                       ),
-                    )),
+                    ),
                     const SizedBox(
                       height: 30.0,
                     ),
-                    widget.isEdit
+                    widget.isEdit == false
                         ? isLoading
                             ? SizedBox(
                                 width: MediaQuery.of(context).size.width,
@@ -191,8 +191,17 @@ class _RedesignSkillsState extends State<RedesignSkills> {
     try {
       final res = await Dio().post('${ROOT}employeedetails/',
           data: {
-            'key_skills': skills.join(', '),
+            'key_skills': skills.join(','),
             'uid': widget.profileModel.uid.toString(),
+            'first_name': widget.profileModel.firstName,
+            'last_name': widget.profileModel.lastName,
+            'other_name': widget.profileModel.otherName,
+            'gender': widget.profileModel.gender.toString(),
+            'display_picture': widget.profileModel.displayPicture.toString(),
+            'location': widget.profileModel.location,
+            'phone': widget.profileModel.phone,
+            'about': widget.profileModel.about,
+            'profile_summary': widget.profileModel.profileSummary
           },
           options: Options(headers: {
             'Authorization': 'TOKEN ${context.read<Controller>().token}'

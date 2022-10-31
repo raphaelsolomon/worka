@@ -15,7 +15,6 @@ import 'package:worka/phoenix/CustomScreens.dart';
 import 'package:worka/phoenix/GeneralButtonContainer.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/phoenix/model/ProfileModel.dart';
-
 import '../../../phoenix/dashboard_work/Success.dart';
 
 class ReApplicantProfileEdit extends StatefulWidget {
@@ -31,21 +30,45 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
   final lname = TextEditingController();
   final oname = TextEditingController();
   final name = TextEditingController();
+  PhoneNumber? phoneNumber = null;
+  bool isPageLoaded = true;
   final contactController = TextEditingController();
   bool isLoading = false;
-
-  String? contact = '';
+  
   bool phoneValidate = false;
 
   @override
   void initState() {
-    fname.text = widget.profileModel.firstName!;
-    lname.text = widget.profileModel.lastName!;
-    oname.text = widget.profileModel.otherName!;
-    name.text = widget.profileModel.keySkills!;
-    contactController.text = widget.profileModel.phone!;
+    PhoneNumber.getRegionInfoFromPhoneNumber(widget.profileModel.phone!).then((value) => setState((() {
+      phoneNumber = value;
+      fname.text = widget.profileModel.firstName!;
+      lname.text = widget.profileModel.lastName!;
+      oname.text = widget.profileModel.otherName!;
+      name.text = widget.profileModel.keySkills!;
+      isPageLoaded = false;
+    })));
     super.initState();
   }
+
+  // seperatePhoneAndDialCode() {
+  //   Map<String, String> foundedCountry = {};
+  //   for (var country in Countries.allCountries) {
+  //     String dialCode = country["dial_code"].toString();
+  //     if (widget.profileModel.phone!.contains(dialCode)) {
+  //       foundedCountry = country;
+  //     }
+  //   }
+
+  //   if (foundedCountry.isNotEmpty) {
+  //     var dialCode = widget.profileModel.phone!.substring(
+  //       0, foundedCountry["dial_code"]!.length,
+  //     );
+  //     var newPhoneNumber = widget.profileModel.phone!.substring(
+  //       foundedCountry["dial_code"]!.length,
+  //     );
+  //     return {dialCode, newPhoneNumber};
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +103,7 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
             ]),
             const SizedBox(height: 5.0),
             Expanded(
-                child: SingleChildScrollView(
+                child: isPageLoaded ? Center(child: CircularProgressIndicator(color: DEFAULT_COLOR)) : SingleChildScrollView(
               child: Column(
                 children: [
                   imageView('${context.watch<Controller>().avatar}', context,
@@ -113,7 +136,7 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
                   SizedBox(height: 19.0),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                    child: getCardFormPhone('Mobile Number', 'Mobile Number'),
+                    child: getCardFormPhone('Mobile Number', phoneNumber, ctl: contactController),
                   ),
                   SizedBox(height: 19.0),
                   Padding(
@@ -161,6 +184,7 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
             'first_name': fname.text.trim(),
             'last_name': lname.text.trim(),
             'other_name': oname.text.trim(),
+            'phone': contactController.text,
             'gender': widget.profileModel.gender.toString(),
             'display_picture': widget.profileModel.displayPicture.toString(),
             'location': widget.profileModel.location,
@@ -184,7 +208,7 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
     }
   }
 
-  getCardFormPhone(label, hint, {ctl}) {
+  getCardFormPhone(label, initialValue, {ctl}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: Column(
@@ -195,7 +219,7 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
             style: GoogleFonts.lato(
                 fontSize: 15.0,
                 color: Colors.black87,
-                fontWeight: FontWeight.w600),
+                fontWeight: FontWeight.w400),
           ),
           const SizedBox(height: 10.0),
           Container(
@@ -204,15 +228,17 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
                   borderRadius: BorderRadius.circular(5.0),
                   color: DEFAULT_COLOR.withOpacity(.05)),
               child: InternationalPhoneNumberInput(
+                textStyle: GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+                initialValue: initialValue,
                   selectorConfig: SelectorConfig(showFlags: true),
                   onInputValidated: (b) {
                     phoneValidate = b;
                   },
-                  textFieldController: contactController,
+                  textFieldController: ctl,
                   inputDecoration: InputDecoration(
                     fillColor: Colors.white,
                     hintText: 'phone number',
-                    hintStyle: GoogleFonts.montserrat(
+                    hintStyle: GoogleFonts.lato(
                         fontSize: 14.0, color: Colors.grey),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(0.0)),
@@ -220,7 +246,7 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
                     ),
                   ),
                   onInputChanged: (phone) {
-                    contact = phone.phoneNumber;
+                    ctl.text = phone.phoneNumber;
                   }))
         ],
       ),
@@ -238,14 +264,14 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
             style: GoogleFonts.lato(
                 fontSize: 15.0,
                 color: Colors.black87,
-                fontWeight: FontWeight.bold),
+                fontWeight: FontWeight.w400),
           ),
           const SizedBox(
             height: 10.0,
           ),
           Container(
             decoration: BoxDecoration(
-              color: DEFAULT_COLOR.withOpacity(.02),
+              color: DEFAULT_COLOR.withOpacity(.05),
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: TypeAheadField<String?>(
@@ -274,7 +300,8 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
               textFieldConfiguration: TextFieldConfiguration(
                 controller: ctl,
                 autofocus: false,
-                style: GoogleFonts.montserrat(fontSize: 15.0, color: Colors.grey),
+                style:
+                    GoogleFonts.montserrat(fontSize: 15.0, color: Colors.grey),
                 decoration: InputDecoration(
                   filled: false,
                   hintText: 'Search for $text',

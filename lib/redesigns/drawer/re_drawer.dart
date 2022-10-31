@@ -133,7 +133,7 @@ class ReDrawer extends StatelessWidget {
           const SizedBox(
             height: 10.0,
           ),
-          Text('Version 1.0.2021',
+          Text('Version 1.0.2',
               style: GoogleFonts.lato(fontSize: 13.0, color: Colors.black54)),
           const SizedBox(height: 20.0)
         ],
