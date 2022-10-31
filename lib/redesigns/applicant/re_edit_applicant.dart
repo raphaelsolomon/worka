@@ -150,6 +150,10 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
             'first_name': fname.text.trim(),
             'last_name': lname.text.trim(),
             'other_name': oname.text.trim(),
+            'gender': widget.profileModel.gender.toString(),
+            'display_picture': widget.profileModel.displayPicture.toString(),
+            'location': widget.profileModel.location,
+            'about': widget.profileModel.about.toString(),
           },
           options: Options(headers: {
             'Authorization': 'TOKEN ${context.read<Controller>().token}'
@@ -170,67 +174,70 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
   }
 
   Widget inputAutoCompleteWidget({text, ctl}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '$text',
-          style: GoogleFonts.lato(
-              fontSize: 15.0,
-              color: Colors.black54,
-              fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(
-          height: 10.0,
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: DEFAULT_COLOR.withOpacity(.02),
-            borderRadius: BorderRadius.circular(8.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$text',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.bold),
           ),
-          child: TypeAheadField<String?>(
-            suggestionsBoxController: SuggestionsBoxController(),
-            hideSuggestionsOnKeyboardHide: true,
-            noItemsFoundBuilder: (context) => Container(
-              height: 50,
-              width: MediaQuery.of(context).size.width,
-              child: Center(
-                child: Text('No Data Found',
-                    style: GoogleFonts.montserrat(
-                        color: Colors.grey, fontSize: 12)),
+          const SizedBox(
+            height: 10.0,
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: DEFAULT_COLOR.withOpacity(.02),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: TypeAheadField<String?>(
+              suggestionsBoxController: SuggestionsBoxController(),
+              hideSuggestionsOnKeyboardHide: true,
+              noItemsFoundBuilder: (context) => Container(
+                height: 50,
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                  child: Text('No Data Found',
+                      style: GoogleFonts.montserrat(
+                          color: Colors.grey, fontSize: 12)),
+                ),
+              ),
+              suggestionsCallback: (pattern) async {
+                return await LanguageClass.getRollSkills(pattern);
+              },
+              onSuggestionSelected: (suggestion) {
+                name.text = suggestion!;
+              },
+              itemBuilder: (ctx, String? suggestion) => ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                title: Text('$suggestion',
+                    style: GoogleFonts.lato(fontSize: 15, color: Colors.grey)),
+              ),
+              textFieldConfiguration: TextFieldConfiguration(
+                controller: ctl,
+                autofocus: false,
+                style: GoogleFonts.montserrat(fontSize: 15.0, color: Colors.grey),
+                decoration: InputDecoration(
+                  filled: false,
+                  hintText: 'Search for $text',
+                  suffixIcon: Icon(Icons.search, color: Colors.black54),
+                  labelStyle:
+                      GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),
+                  hintStyle:
+                      GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+                  border: OutlineInputBorder(borderSide: BorderSide.none),
+                ),
               ),
             ),
-            suggestionsCallback: (pattern) async {
-              return await LanguageClass.getRollSkills(pattern);
-            },
-            onSuggestionSelected: (suggestion) {
-              name.text = suggestion!;
-            },
-            itemBuilder: (ctx, String? suggestion) => ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
-              title: Text('$suggestion',
-                  style: GoogleFonts.lato(fontSize: 15, color: Colors.grey)),
-            ),
-            textFieldConfiguration: TextFieldConfiguration(
-              controller: ctl,
-              autofocus: false,
-              style: GoogleFonts.montserrat(fontSize: 15.0, color: Colors.grey),
-              decoration: InputDecoration(
-                filled: false,
-                hintText: 'Search for $text',
-                suffixIcon: Icon(Icons.search, color: Colors.black54),
-                labelStyle:
-                    GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),
-                hintStyle:
-                    GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
-                border: OutlineInputBorder(borderSide: BorderSide.none),
-              ),
-            ),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 
