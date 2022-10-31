@@ -183,21 +183,25 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            jobDetails!.jobData.categories,
-                                            style: GoogleFonts.lato(
-                                                fontSize: 14.0,
-                                                color: Colors.black54),
+                                          Flexible(
+                                            child: Text(
+                                              jobDetails!.jobData.categories,
+                                              style: GoogleFonts.lato(
+                                                  fontSize: 14.0,
+                                                  color: Colors.black54),
+                                            ),
                                           ),
                                           const SizedBox(
                                             width: 15.0,
                                           ),
-                                          Text(
-                                            '${jobDetails!.jobData.budget} ${jobDetails!.jobData.salaryType}',
-                                            style: GoogleFonts.lato(
-                                                fontSize: 14.0,
-                                                color: DEFAULT_COLOR,
-                                                fontWeight: FontWeight.bold),
+                                          Flexible(
+                                            child: Text(
+                                              '${jobDetails!.jobData.budget} ${jobDetails!.jobData.salaryType}',
+                                              style: GoogleFonts.lato(
+                                                  fontSize: 14.0,
+                                                  color: DEFAULT_COLOR,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -305,7 +309,7 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                                                     : DEFAULT_COLOR),
                                             child: Center(
                                               child: Text(
-                                                'Apply Now',
+                                                jobDetails!.applied ? 'Applied' : 'Apply Now',
                                                 style: GoogleFonts.lato(
                                                     fontSize: 15.0,
                                                     color: jobDetails!.applied
