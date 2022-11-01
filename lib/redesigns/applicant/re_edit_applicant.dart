@@ -112,7 +112,7 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
                     try {
                       final file = await ImagePicker()
                           .pickImage(source: ImageSource.gallery);
-                      context.read<Controller>().uploadCompanyImage(file!.path);
+                      context.read<Controller>().uploadImage(file!.path);
                     } on MissingPluginException {}
                   }),
                   const SizedBox(height: 25.0),
@@ -247,7 +247,7 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
                     ),
                   ),
                   onInputChanged: (phone) {
-                    ctl.text = phone.phoneNumber;
+                   
                   }))
         ],
       ),

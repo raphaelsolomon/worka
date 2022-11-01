@@ -19,6 +19,7 @@ import 'package:worka/phoenix/dashboard_work/profile.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/phoenix/model/SeeMore.dart';
 import 'package:http/http.dart' as http;
+import 'package:worka/redesigns/applicant/re_design_profile.dart';
 import 'package:worka/redesigns/applicant/re_job_details_apply.dart';
 import 'package:worka/redesigns/drawer/re_drawer_applicant.dart';
 import 'package:worka/reuseables/general_container.dart';
@@ -824,7 +825,7 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: () {
         if (e.link == 'profile') {
-          Get.to(() => ProfileScreen());
+          Get.to(() => ReApplicantProfile());
         }
         if (e.link == 'interview') {
           Get.to(() => InterviewPage());

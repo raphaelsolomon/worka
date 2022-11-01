@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:worka/controllers/constants.dart';
 import 'package:worka/employer_page/controller/empContoller.dart';
 import 'package:worka/models/compModel.dart';
+import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/redesigns/employer/preview_post_job.dart';
 
@@ -132,7 +133,7 @@ class _RePostJobsState extends State<RePostJobs> {
             ],
           ),
           const SizedBox(
-           height: 20.0,
+            height: 20.0,
           ),
           Expanded(
               child: Padding(
@@ -146,11 +147,11 @@ class _RePostJobsState extends State<RePostJobs> {
                       hint: 'Production Manager',
                       ctl: jobController),
                   const SizedBox(
-                   height: 20.0,
+                    height: 20.0,
                   ),
                   inputWidgetRich(ctl: jobDescController), // Description
                   const SizedBox(
-                   height: 20.0,
+                    height: 20.0,
                   ),
                   inputWidgetRich(
                       text: 'Job Requirements',
@@ -158,7 +159,7 @@ class _RePostJobsState extends State<RePostJobs> {
                       hint: 'Enter Job Requirements',
                       ctl: jobReqirement),
                   const SizedBox(
-                   height: 20.0,
+                    height: 20.0,
                   ),
                   inputWidgetRich(
                       text: 'Job Qualification',
@@ -166,51 +167,50 @@ class _RePostJobsState extends State<RePostJobs> {
                       hint: 'Enter Job Qualification',
                       ctl: jobQualification),
                   const SizedBox(
-                   height: 20.0,
+                    height: 20.0,
                   ),
                   inputAutoCompleteWidget(
                       text: 'Benfits',
                       icons: Icons.timelapse,
                       b: false,
                       ctl: jobBenfits),
-                       SizedBox(height: benefits.isEmpty? 0.0 : 10.0),
-                      Align(
-                      alignment: Alignment.topLeft,
-                      child: Wrap(spacing: 12.0, children: [
-                        ...List.generate(
-                            benefits.length,
-                            (i) => Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0, vertical: 4.0),
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 5.0),
-                                decoration: BoxDecoration(
-                                    color: DEFAULT_COLOR.withOpacity(.09),
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    border: Border.all(
-                                        width: .2, color: DEFAULT_COLOR)),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text('${benefits[i]}',
+                  SizedBox(height: benefits.isEmpty ? 0.0 : 10.0),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Wrap(spacing: 12.0, children: [
+                      ...List.generate(
+                          benefits.length,
+                          (i) => Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 4.0),
+                              margin: const EdgeInsets.symmetric(vertical: 5.0),
+                              decoration: BoxDecoration(
+                                  color: DEFAULT_COLOR.withOpacity(.09),
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  border: Border.all(
+                                      width: .2, color: DEFAULT_COLOR)),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('${benefits[i]}',
+                                      style: GoogleFonts.lato(
+                                          fontSize: 15.0,
+                                          color: DEFAULT_COLOR)),
+                                  const SizedBox(width: 15.0),
+                                  GestureDetector(
+                                    onTap: () =>
+                                        setState(() => benefits.removeAt(i)),
+                                    child: Text('x',
                                         style: GoogleFonts.lato(
-                                            fontSize: 15.0,
+                                            fontSize: 16.0,
                                             color: DEFAULT_COLOR)),
-                                    const SizedBox(width: 15.0),
-                                    GestureDetector(
-                                      onTap: () =>
-                                          setState(() => benefits.removeAt(i)),
-                                      child: Text('x',
-                                          style: GoogleFonts.lato(
-                                              fontSize: 16.0,
-                                              color: DEFAULT_COLOR)),
-                                    ),
-                                  ],
-                                ))),
-                      ]),
-                    ),
+                                  ),
+                                ],
+                              ))),
+                    ]),
+                  ),
                   const SizedBox(
-                   height: 20.0,
+                    height: 20.0,
                   ),
                   inputDropDown(SALARY,
                       text: 'Choose Budget',
@@ -219,7 +219,7 @@ class _RePostJobsState extends State<RePostJobs> {
                     budget = s;
                   }),
                   const SizedBox(
-                   height: 20.0,
+                    height: 20.0,
                   ),
                   inputDropDown(CURRENCY,
                       text: 'Choose Currency',
@@ -228,7 +228,7 @@ class _RePostJobsState extends State<RePostJobs> {
                     currency = s;
                   }),
                   const SizedBox(
-                   height: 20.0,
+                    height: 20.0,
                   ),
                   inputDropDown(jobTypeItem,
                       text: 'Job Type',
@@ -236,7 +236,30 @@ class _RePostJobsState extends State<RePostJobs> {
                       hint: 'FullTime',
                       callBack: (s) => jobType = s),
                   const SizedBox(
-                   height: 20.0,
+                    height: 5.0,
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Checkbox(
+                          onChanged: (b) {
+                            context.read<Controller>().setGraduate(b);
+                          },
+                          value: context.watch<Controller>().isGraduate,
+                          activeColor: DEFAULT_COLOR,
+                        ),
+                        Text(
+                          'Remote',
+                          style: GoogleFonts.lato(
+                              fontSize: 12.0, color: Colors.black54),
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20.0,
                   ),
                   inputDropDown(jobCategoryItem,
                       text: 'Required Categories',
@@ -244,51 +267,50 @@ class _RePostJobsState extends State<RePostJobs> {
                       hint: 'Search to add Categories',
                       callBack: (s) => categories = s),
                   const SizedBox(
-                   height: 20.0,
+                    height: 20.0,
                   ),
                   inputAutoCompleteWidget(
                       text: 'Required Skills',
                       icons: Icons.timelapse,
                       b: true,
                       ctl: requiredSkills),
-                       SizedBox(height: skills.isEmpty? 0.0 : 10.0),
-                      Align(
-                      alignment: Alignment.topLeft,
-                      child: Wrap(spacing: 12.0, children: [
-                        ...List.generate(
-                            skills.length,
-                            (i) => Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0, vertical: 4.0),
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 5.0),
-                                decoration: BoxDecoration(
-                                    color: DEFAULT_COLOR.withOpacity(.09),
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    border: Border.all(
-                                        width: .5, color: DEFAULT_COLOR)),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text('${skills[i]}',
+                  SizedBox(height: skills.isEmpty ? 0.0 : 10.0),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Wrap(spacing: 12.0, children: [
+                      ...List.generate(
+                          skills.length,
+                          (i) => Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 4.0),
+                              margin: const EdgeInsets.symmetric(vertical: 5.0),
+                              decoration: BoxDecoration(
+                                  color: DEFAULT_COLOR.withOpacity(.09),
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  border: Border.all(
+                                      width: .5, color: DEFAULT_COLOR)),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('${skills[i]}',
+                                      style: GoogleFonts.lato(
+                                          fontSize: 15.0,
+                                          color: DEFAULT_COLOR)),
+                                  const SizedBox(width: 15.0),
+                                  GestureDetector(
+                                    onTap: () =>
+                                        setState(() => skills.removeAt(i)),
+                                    child: Text('x',
                                         style: GoogleFonts.lato(
-                                            fontSize: 15.0,
+                                            fontSize: 16.0,
                                             color: DEFAULT_COLOR)),
-                                    const SizedBox(width: 15.0),
-                                    GestureDetector(
-                                      onTap: () =>
-                                          setState(() => skills.removeAt(i)),
-                                      child: Text('x',
-                                          style: GoogleFonts.lato(
-                                              fontSize: 16.0,
-                                              color: DEFAULT_COLOR)),
-                                    ),
-                                  ],
-                                ))),
-                      ]),
-                    ),
+                                  ),
+                                ],
+                              ))),
+                    ]),
+                  ),
                   const SizedBox(
-                   height: 20.0,
+                    height: 20.0,
                   ),
                   inputExp(),
                   const SizedBox(
@@ -313,7 +335,7 @@ class _RePostJobsState extends State<RePostJobs> {
                         )),
                   ),
                   const SizedBox(
-                   height: 20.0,
+                    height: 20.0,
                   ),
                 ],
               ),
@@ -334,10 +356,10 @@ class _RePostJobsState extends State<RePostJobs> {
       'requirement': '${jobReqirement.text.trim()}',
       'budget': '${budget.trim()}',
       'benefit': benefits.join(', '),
-      'skills' : skills.join(', '),
+      'skills': skills.join(', '),
       'salary_type': '$budget'.split(' ')[3].toLowerCase(),
       'currency': '$currency'.toLowerCase(),
-      'is_remote': '${false}',
+      'is_remote': '${context.read<Controller>().isGraduate}',
       'expiry': '$stringStart',
       'location': compModel!.location
     };
@@ -445,8 +467,7 @@ class _RePostJobsState extends State<RePostJobs> {
             itemBuilder: (ctx, String? suggestion) => ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
               title: Text('$suggestion',
-                  style:
-                      GoogleFonts.lato(fontSize: 15, color: Colors.grey)),
+                  style: GoogleFonts.lato(fontSize: 15, color: Colors.grey)),
             ),
             textFieldConfiguration: TextFieldConfiguration(
               controller: ctl,
@@ -508,17 +529,16 @@ class _RePostJobsState extends State<RePostJobs> {
             firstDate: DateTime.now(),
             lastDate: DateTime(2100),
             style: GoogleFonts.lato(
-                  fontSize: 15.0,
-                  color: Colors.black54,
-                ),
+              fontSize: 15.0,
+              color: Colors.black54,
+            ),
             dateLabelText: 'Expire date',
             decoration: InputDecoration(
                 labelStyle: GoogleFonts.lato(
                   fontSize: 15.0,
                   color: Colors.black54,
                 ),
-                hintStyle:
-                    GoogleFonts.lato(fontSize: 15.0, color: Colors.grey),
+                hintStyle: GoogleFonts.lato(fontSize: 15.0, color: Colors.grey),
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 9.9, vertical: 9.9),
                 border: OutlineInputBorder(borderSide: BorderSide.none)),

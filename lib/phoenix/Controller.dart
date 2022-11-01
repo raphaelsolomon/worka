@@ -29,6 +29,7 @@ import 'package:worka/phoenix/model/SeeMore.dart';
 import 'package:worka/phoenix/model/UserResponse.dart';
 import 'package:get/get.dart';
 import 'package:worka/phoenix/model/noreply_data.dart';
+import 'package:worka/redesigns/applicant/re_design_profile.dart';
 import 'package:worka/screens/main_screens/main_nav.dart';
 import 'dashboard_work/Success.dart';
 import 'dashboard_work/profile.dart';
@@ -847,7 +848,7 @@ class Controller extends ChangeNotifier {
       if (res.statusCode == 200) {
         Get.off(() => Success(
               'Profile updated...',
-              callBack: () => Get.off(() => ProfileScreen()),
+              callBack: () => Get.off(() => ReApplicantProfile()),
             ));
         notifyListeners();
       }
@@ -876,7 +877,7 @@ class Controller extends ChangeNotifier {
         CustomSnack('Error', 'Could not update..');
         Get.to(() => Success(
               'Skills update...',
-              callBack: () => Get.off(() => ProfileScreen()),
+              callBack: () => Get.off(() => ReApplicantProfile()),
             ));
       }
     } on SocketException {
@@ -902,7 +903,7 @@ class Controller extends ChangeNotifier {
         CustomSnack('Success', 'Skills updated..');
         Get.to(() => Success(
               'Education updated...',
-              callBack: () => Get.off(() => ProfileScreen()),
+              callBack: () => Get.off(() => ReApplicantProfile()),
             ));
       } else {
         CustomSnack('Error', 'Could not update..');
@@ -930,7 +931,7 @@ class Controller extends ChangeNotifier {
         CustomSnack('Success', 'Skills updated..');
         Get.to(() => Success(
               'Experience updated...',
-              callBack: () => Get.off(() => ProfileScreen()),
+              callBack: () => Get.off(() => ReApplicantProfile()),
             ));
       } else {
         CustomSnack('Error', 'Could not update..');
@@ -958,7 +959,7 @@ class Controller extends ChangeNotifier {
         CustomSnack('Success', 'Language updated..');
         Get.to(() => Success(
               'Language updated...',
-              callBack: () => Get.off(() => ProfileScreen()),
+              callBack: () => Get.off(() => ReApplicantProfile()),
             ));
       } else {
         CustomSnack('Error', 'Could not update..');

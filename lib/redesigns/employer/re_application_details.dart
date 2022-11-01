@@ -106,7 +106,7 @@ class _ReApplicationDetailsState extends State<ReApplicationDetails> {
                                               fontWeight: FontWeight.w500),
                                         ),
                                         Text(
-                                          'Production Manager',
+                                          widget.application.applicant!.gender!,
                                           style: GoogleFonts.lato(
                                               fontSize: 14.0,
                                               color: Colors.black54,
@@ -128,7 +128,7 @@ class _ReApplicationDetailsState extends State<ReApplicationDetails> {
                                         const SizedBox(
                                           width: 10.0,
                                         ),
-                                        Text('Boladeaalex@yahoo.com',
+                                        Text(widget.application.applicant!.location!,
                                             style: GoogleFonts.lato(
                                                 fontSize: 14.0,
                                                 color: Colors.black54))

@@ -392,7 +392,7 @@ class _EditCompanyState extends State<EditCompany> {
                     ),
                   ),
                   onInputChanged: (phone) {
-                    ctl.text = phone.phoneNumber;
+                  
                   }))
         ],
       ),

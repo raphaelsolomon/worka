@@ -95,29 +95,29 @@ class _RedesigncertificationState extends State<Redesigncertification> {
                       height: 10.0,
                     ),
                     getCardDateForm('Issuer Date', datetext: stringStart),
-                    const SizedBox(
-                      height: 5.0,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Checkbox(
-                            onChanged: (b) {
-                              context.read<Controller>().setWillExpire(b);
-                            },
-                            value: context.watch<Controller>().willExpire,
-                            activeColor: DEFAULT_COLOR,
-                          ),
-                          Text(
-                            'This will not expire',
-                            style: GoogleFonts.lato(
-                                fontSize: 12.0, color: Colors.black38),
-                          )
-                        ],
-                      ),
-                    ),
+                    // const SizedBox(
+                    //   height: 5.0,
+                    // ),
+                    // SizedBox(
+                    //   width: MediaQuery.of(context).size.width,
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.end,
+                    //     children: [
+                    //       Checkbox(
+                    //         onChanged: (b) {
+                    //           context.read<Controller>().setWillExpire(b);
+                    //         },
+                    //         value: context.watch<Controller>().willExpire,
+                    //         activeColor: DEFAULT_COLOR,
+                    //       ),
+                    //       Text(
+                    //         'This will not expire',
+                    //         style: GoogleFonts.lato(
+                    //             fontSize: 12.0, color: Colors.black38),
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
                     const SizedBox(
                       height: 10.0,
                     ),

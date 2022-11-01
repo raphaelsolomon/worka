@@ -1,791 +1,1284 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:readmore/readmore.dart';
-import 'package:worka/phoenix/Controller.dart';
-import 'package:worka/phoenix/CustomScreens.dart';
-import 'package:worka/phoenix/dashboard_work/availablility/add-availability.dart';
-import 'package:worka/phoenix/dashboard_work/education/addEducation.dart';
-import 'package:worka/phoenix/dashboard_work/preview.dart';
-import 'package:worka/phoenix/dashboard_work/skills/edit-skill.dart';
-import 'package:worka/phoenix/model/Constant.dart';
-import 'package:worka/phoenix/model/ProfileModel.dart';
-import 'education/edit-education.dart';
-import 'experience/addExperience.dart';
-import 'experience/edit-experience.dart';
-import 'language/edit-language.dart';
-import 'personal-details.dart';
-import 'skills/add-skill.dart';
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:intl/intl.dart';
+// import 'package:path/path.dart' as p;
+// import 'package:provider/provider.dart';
+// import 'package:pull_to_refresh/pull_to_refresh.dart';
+// import 'package:worka/phoenix/Controller.dart';
+// import 'package:worka/phoenix/dashboard_work/skills/add-skill.dart';
+// import 'package:worka/phoenix/dashboard_work/skills/edit-skill.dart';
+// import 'package:worka/phoenix/model/Constant.dart';
+// import 'package:worka/phoenix/model/ProfileModel.dart';
+// import 'package:worka/redesigns/applicant/profile/additional_information.dart';
+// import 'package:worka/redesigns/applicant/profile/professional_summary.dart';
+// import 'package:worka/redesigns/applicant/profile/re_availability.dart';
+// import 'package:worka/redesigns/applicant/profile/re_certification.dart';
+// import 'package:worka/redesigns/applicant/profile/re_education.dart';
+// import 'package:worka/redesigns/applicant/profile/re_experience.dart';
+// import 'package:worka/redesigns/applicant/profile/re_language.dart';
+// import 'package:worka/redesigns/applicant/profile/re_resume_cv.dart';
+// import 'package:worka/redesigns/applicant/profile/re_skills.dart';
+// import 'package:worka/redesigns/applicant/re_edit_applicant.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+// class ReApplicantProfile extends StatefulWidget {
+//   const ReApplicantProfile({super.key});
 
-  @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
+//   @override
+//   State<ReApplicantProfile> createState() => _ReApplicantProfileState();
+// }
 
-class _ProfileScreenState extends State<ProfileScreen> {
-  final c = TextEditingController();
-  final _smartController = RefreshController();
-  final addCtl = TextEditingController();
-  //=====================================================================
+// class _ReApplicantProfileState extends State<ReApplicantProfile> {
+//   List<bool> allList = [
+//     false,
+//     false,
+//     false,
+//     false,
+//     false,
+//     false,
+//     false,
+//     false,
+//     false,
+//     false,
+//     false
+//   ];
+//   ProfileModel? profileModel = null;
+//   bool pageLoading = true;
+//   final refresh = RefreshController();
 
-  @override
-  void initState() {
-    context.read<Controller>().getprofileReview();
-    super.initState();
-  }
+//   _fetchProfile() async {
+//     return await context.read<Controller>().getprofileReview();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    var item = context.watch<Controller>().profileModel;
-    return Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: SafeArea(
-            child: SmartRefresher(
-          controller: _smartController,
-          child: Container(
-            child: Column(
-              children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                        child: IconButton(
-                          icon: Icon(Icons.keyboard_backspace),
-                          color: Color(0xff0D30D9),
-                          onPressed: () => Get.back(),
-                        ),
-                      ),
-                      Text('Profile',
-                          style: GoogleFonts.montserrat(
-                              fontSize: 18, color: Color(0xff0D30D9))),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                        child: IconButton(
-                          icon: Icon(null),
-                          color: Colors.black,
-                          onPressed: null,
-                        ),
-                      )
-                    ]),
-                const SizedBox(height: 5.0),
-                imageView('${context.watch<Controller>().avatar}', context,
-                    callBack: () async {
-                  try {
-                    final file = await ImagePicker()
-                        .pickImage(source: ImageSource.gallery);
-                    context.read<Controller>().uploadImage(file!.path);
-                  } on MissingPluginException {}
-                }),
-                const SizedBox(height: 10.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: Text(
-                          '${item!.firstName} ${item.lastName} ${item.otherName}'
-                              .toUpperCase(),
-                          style: GoogleFonts.montserrat(
-                              fontSize: 21,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500),
-                          textAlign: TextAlign.center),
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          print(setMap());
-                          Get.to(() => PersonalDetails(setMap()));
-                        },
-                        icon: Icon(Icons.edit, color: DEFAULT_COLOR))
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('${item.user!.email}',
-                        style: GoogleFonts.montserrat(
-                            fontSize: 15, color: Colors.grey),
-                        textAlign: TextAlign.left),
-                    const SizedBox(width: 5.0),
-                    Icon(Icons.mail, size: 18.0, color: DEFAULT_COLOR),
-                  ],
-                ),
-                SizedBox(height: 7.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('${item.phone}',
-                        style: GoogleFonts.montserrat(
-                            fontSize: 15, color: Colors.grey),
-                        textAlign: TextAlign.left),
-                    const SizedBox(width: 7.0),
-                    Icon(Icons.phone, size: 18.0, color: DEFAULT_COLOR),
-                  ],
-                ),
-                SizedBox(height: 3.0),
-                Text('${item.location}\n${item.gender!.capitalizeFirst}',
-                    style: GoogleFonts.montserrat(
-                      height: 1.5,
-                        fontSize: 15, color: Colors.grey),
-                    textAlign: TextAlign.center),
-                SizedBox(height: 5.0),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Center(
-                    child: ReadMoreText(
-                      '${item.about}',
-                      textAlign: TextAlign.justify,
-                      trimLines: 1,
-                      colorClickableText: DEFAULT_COLOR,
-                      trimMode: TrimMode.Line,
-                      style: GoogleFonts.montserrat(
-                        color: Colors.black,
-                        fontSize: 14,
-                      ),
-                      trimCollapsedText: '\nShow more',
-                      trimExpandedText: '\nShow less',
-                      moreStyle: GoogleFonts.montserrat(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.blue),
-                      lessStyle: GoogleFonts.montserrat(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.blue),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10.0),
-                Expanded(
-                    child: Container(
-                  child: context.watch<Controller>().profileModel == null
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 20.0),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      child: AutoSizeText(
-                                        'Education',
-                                        minFontSize: 11,
-                                        maxFontSize: 25,
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.grey,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        Get.to(() => AddEducation());
-                                      },
-                                      icon:
-                                          Icon(Icons.add, color: DEFAULT_COLOR),
-                                    )
-                                  ],
-                                ),
-                                item.education!.isEmpty
-                                    ? Text('No Education History',
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.grey,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400))
-                                    : Column(children: [
-                                        ...item.education!
-                                            .map((e) => educationList(e))
-                                            .toList()
-                                      ]),
-                                SizedBox(height: 20.0),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      child: AutoSizeText(
-                                        'Skills',
-                                        minFontSize: 11,
-                                        maxFontSize: 25,
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.grey,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        Get.to(() => AddSkills());
-                                      },
-                                      icon:
-                                          Icon(Icons.add, color: DEFAULT_COLOR),
-                                    )
-                                  ],
-                                ),
-                                item.skill!.isEmpty
-                                    ? Text('No Skill History',
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.grey,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400))
-                                    : Column(children: [
-                                        ...item.skill!
-                                            .map((e) => skillList(e))
-                                            .toList()
-                                      ]),
-                                SizedBox(height: 20.0),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      child: AutoSizeText(
-                                        'Experience',
-                                        minFontSize: 11,
-                                        maxFontSize: 25,
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.grey,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        Get.to(() => AddExperience());
-                                      },
-                                      icon:
-                                          Icon(Icons.add, color: DEFAULT_COLOR),
-                                    )
-                                  ],
-                                ),
-                                item.workExperience!.isEmpty
-                                    ? Text('No Work Experience History',
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.grey,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400))
-                                    : Column(children: [
-                                        ...item.workExperience!
-                                            .map((e) => experienceList(e))
-                                            .toList()
-                                      ]),
-                                SizedBox(height: 20.0),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      child: AutoSizeText(
-                                        'Language',
-                                        minFontSize: 11,
-                                        maxFontSize: 25,
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.grey,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        Get.to(() => Screens(
-                                            selectLanguage(context, c)));
-                                      },
-                                      icon:
-                                          Icon(Icons.add, color: DEFAULT_COLOR),
-                                    )
-                                  ],
-                                ),
-                                item.language!.isEmpty
-                                    ? Text('No Language History',
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.grey,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400))
-                                    : Column(children: [
-                                        ...item.language!
-                                            .map((e) => languageList(e))
-                                            .toList()
-                                      ]),
-                                SizedBox(height: 20.0),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      child: AutoSizeText(
-                                        'Availability',
-                                        minFontSize: 11,
-                                        maxFontSize: 25,
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.grey,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        Get.to(() => AddAvailablity());
-                                      },
-                                      icon:
-                                          Icon(Icons.add, color: DEFAULT_COLOR),
-                                    )
-                                  ],
-                                ),
-                                ...item.availability!
-                                    .map((e) => availableList(e))
-                                    .toList(),
-                                SizedBox(height: 20.0),
-                              ],
-                            ),
-                          ),
-                        ),
-                ))
-              ],
-            ),
-          ),
-        )));
-  }
+//   @override
+//   void initState() {
+//     _fetchProfile().then((value) => setState(() {
+//           profileModel = value;
+//           pageLoading = false;
+//         }));
+//     super.initState();
+//   }
 
-  Widget educationList(Education? educationModel) => Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(7.0),
-        margin: const EdgeInsets.symmetric(vertical: 5.0),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.0),
-            border:
-                Border.all(width: 1.0, color: DEFAULT_COLOR.withOpacity(.05))),
-        child: Row(
-          children: [
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: AutoSizeText(
-                            '${educationModel!.schoolName}'.capitalizeFirst!,
-                            minFontSize: 16,
-                            maxFontSize: 16,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.montserrat(
-                                fontSize: 16,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600)),
-                      ),
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: AutoSizeText.rich(
-                              TextSpan(
-                                  text: 'Course: ',
-                                  style: GoogleFonts.montserrat(
-                                      color: Colors.black38),
-                                  children: [
-                                    TextSpan(
-                                        text: '${educationModel.course}'
-                                            .capitalizeFirst!,
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500))
-                                  ]),
-                              minFontSize: 11,
-                              maxFontSize: 20,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.montserrat(
-                                  fontSize: 13.5,
-                                  color: SUB_HEAD_1,
-                                  fontWeight: FontWeight.normal)),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 5.0),
-                  AutoSizeText.rich(
-                      TextSpan(
-                          text: 'Degree: ',
-                          style: GoogleFonts.montserrat(color: Colors.black38),
-                          children: [
-                            TextSpan(
-                                text: '${educationModel.certificate}'
-                                    .capitalizeFirst!,
-                                style: GoogleFonts.montserrat(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500))
-                          ]),
-                      minFontSize: 11,
-                      maxFontSize: 20,
-                      style: GoogleFonts.montserrat(
-                          fontSize: 13.5,
-                          color: SUB_HEAD_1,
-                          fontWeight: FontWeight.normal)),
-                  SizedBox(height: 5.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: AutoSizeText.rich(
-                            TextSpan(
-                                text: 'from: ',
-                                style: GoogleFonts.montserrat(
-                                    color: Colors.black38),
-                                children: [
-                                  TextSpan(
-                                      text:
-                                           '${DateFormat('yyyy-MM-dd').format(DateTime.parse(educationModel.startDate!))}',
-                                      style: GoogleFonts.montserrat(
-                                          color: Colors.black))
-                                ]),
-                            minFontSize: 11,
-                            maxFontSize: 20,
-                            style: GoogleFonts.montserrat(
-                                fontSize: 13.5,
-                                color: SUB_HEAD_1,
-                                fontWeight: FontWeight.normal)),
-                      ),
-                      Flexible(
-                        child: AutoSizeText.rich(
-                            TextSpan(
-                                text: 'to: ',
-                                style: GoogleFonts.montserrat(
-                                    color: Colors.black38),
-                                children: [
-                                  TextSpan(
-                                      text:
-                                          '${DateFormat('yyyy-MM-dd').format(DateTime.parse(educationModel.endDate!))}',
-                                      style: GoogleFonts.montserrat(
-                                          color: Colors.black))
-                                ]),
-                            minFontSize: 11,
-                            maxFontSize: 20,
-                            style: GoogleFonts.montserrat(
-                                fontSize: 13.5,
-                                color: SUB_HEAD_1,
-                                fontWeight: FontWeight.normal)),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            IconButton(
-                onPressed: () => Get.to(() => EditEducation(educationModel)),
-                icon: Icon(Icons.edit, color: DEFAULT_COLOR))
-          ],
-        ),
-      );
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       body: SafeArea(
+//           child: Column(
+//         children: [
+//           const SizedBox(
+//             height: 10.0,
+//           ),
+//           Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 20.0),
+//             child: Row(
+//               children: [
+//                 GestureDetector(
+//                     onTap: () => Get.back(),
+//                     child: Icon(
+//                       Icons.keyboard_backspace,
+//                       color: DEFAULT_COLOR,
+//                     )),
+//                 const SizedBox(
+//                   width: 20.0,
+//                 ),
+//                 Text(
+//                   'Profile',
+//                   style: GoogleFonts.lato(
+//                       fontSize: 15.0,
+//                       color: Colors.black54,
+//                       fontWeight: FontWeight.w600),
+//                 )
+//               ],
+//             ),
+//           ),
+//           const SizedBox(
+//             height: 30.0,
+//           ),
+//           Expanded(
+//               child: pageLoading
+//                   ? Center(
+//                       child: CircularProgressIndicator(
+//                       color: DEFAULT_COLOR,
+//                     ))
+//                   : SmartRefresher(
+//                       controller: refresh,
+//                       header: WaterDropHeader(),
+//                       onRefresh: () =>
+//                           _fetchProfile().then((value) => setState(() {
+//                                 profileModel = value;
+//                                 refresh.refreshCompleted();
+//                               })),
+//                       child: Padding(
+//                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
+//                           child: SingleChildScrollView(
+//                               child: Column(children: [
+//                             Container(
+//                               margin:
+//                                   const EdgeInsets.symmetric(horizontal: 20.0),
+//                               padding: const EdgeInsets.symmetric(
+//                                   vertical: 10.0, horizontal: 10.0),
+//                               width: MediaQuery.of(context).size.width,
+//                               decoration: BoxDecoration(
+//                                   borderRadius: BorderRadius.circular(12.0),
+//                                   border: Border.all(
+//                                       width: .9,
+//                                       color: Colors.black12.withOpacity(.3))),
+//                               child: Row(
+//                                 children: [
+//                                   CircleAvatar(
+//                                     backgroundColor:
+//                                         DEFAULT_COLOR.withOpacity(.03),
+//                                     radius: 30,
+//                                     backgroundImage: NetworkImage(
+//                                         '${profileModel!.displayPicture}'),
+//                                   ),
+//                                   const SizedBox(
+//                                     width: 25.0,
+//                                   ),
+//                                   Flexible(
+//                                     fit: FlexFit.tight,
+//                                     child: Column(
+//                                       crossAxisAlignment:
+//                                           CrossAxisAlignment.start,
+//                                       children: [
+//                                         Text(
+//                                           '${profileModel!.firstName} ${profileModel!.lastName}',
+//                                           style: GoogleFonts.lato(
+//                                               fontSize: 18.0,
+//                                               color: Colors.black87,
+//                                               fontWeight: FontWeight.w600),
+//                                         ),
+//                                         const SizedBox(
+//                                           height: 5.0,
+//                                         ),
+//                                         Text(
+//                                           '${profileModel!.resumeHeadline}',
+//                                           style: GoogleFonts.lato(
+//                                               fontSize: 14.0,
+//                                               color: Colors.black54,
+//                                               fontWeight: FontWeight.w400),
+//                                         ),
+//                                       ],
+//                                     ),
+//                                   ),
+//                                   IconButton(
+//                                     icon: Icon(
+//                                       Icons.edit,
+//                                       color: DEFAULT_COLOR,
+//                                       size: 18.0,
+//                                     ),
+//                                     onPressed: () => Get.to(() =>
+//                                         ReApplicantProfileEdit(profileModel!)),
+//                                   )
+//                                 ],
+//                               ),
+//                             ),
+//                             const SizedBox(
+//                               height: 35.0,
+//                             ),
+//                             GestureDetector(
+//                                 onTap: () {
+//                                   allList[9] = true;
+//                                   for (int i = 0; i < allList.length; i++) {
+//                                     setState(() {
+//                                       if (i != 9) {
+//                                         allList[i] = false;
+//                                       }
+//                                     });
+//                                   }
+//                                 },
+//                                 child: _items(
+//                                     'Contact Information',
+//                                     Icons.person,
+//                                     () => Get.to(() => null),
+//                                     allList[9])),
+//                             //============contact information============
+//                             allList[9] ? _contactInfo() : SizedBox(),
+//                             GestureDetector(
+//                                 onTap: () {
+//                                   allList[0] = true;
+//                                   for (int i = 0; i < allList.length; i++) {
+//                                     if (i != 0) {
+//                                       allList[i] = false;
+//                                     }
+//                                   }
+//                                   setState(() {});
+//                                 },
+//                                 child: _items(
+//                                     'Professional Summary',
+//                                     Icons.book_rounded,
+//                                     () => Get.to(() =>
+//                                         ProfessionalSummary('', profileModel!)),
+//                                     allList[0])),
+//                             //============professional summary============
+//                             allList[0]
+//                                 ? Padding(
+//                                     padding: const EdgeInsets.symmetric(
+//                                         horizontal: 20.0),
+//                                     child: Column(
+//                                       crossAxisAlignment:
+//                                           CrossAxisAlignment.start,
+//                                       children: [
+//                                         const SizedBox(height: 8.0),
+//                                         GestureDetector(
+//                                           onTap: () => Get.to(() =>
+//                                               ProfessionalSummary(
+//                                                   '${profileModel!.profileSummary!}',
+//                                                   profileModel!)),
+//                                           child: Text(
+//                                               profileModel!.profileSummary!,
+//                                               style: GoogleFonts.lato(
+//                                                   fontSize: 13.0,
+//                                                   color: Colors.black54)),
+//                                         ),
+//                                         const SizedBox(height: 15.0),
+//                                       ],
+//                                     ),
+//                                   )
+//                                 : SizedBox(),
+//                             GestureDetector(
+//                                 onTap: () {
+//                                   allList[1] = true;
+//                                   for (int i = 0; i < allList.length; i++) {
+//                                     setState(() {
+//                                       if (i != 1) {
+//                                         allList[i] = false;
+//                                       }
+//                                     });
+//                                   }
+//                                 },
+//                                 child: _items(
+//                                     'Education',
+//                                     Icons.book,
+//                                     () => Get.to(
+//                                         () => RedesignEducation(isEdit: false)),
+//                                     allList[1])),
+//                             allList[1]
+//                                 ? Padding(
+//                                     padding: const EdgeInsets.symmetric(
+//                                         horizontal: 20.0),
+//                                     child: Column(children: [
+//                                       const SizedBox(height: 8.0),
+//                                       ...List.generate(
+//                                           profileModel!.education!.length,
+//                                           (i) => Padding(
+//                                                 padding:
+//                                                     const EdgeInsets.symmetric(
+//                                                         vertical: 8.0),
+//                                                 child: GestureDetector(
+//                                                   onTap: () => Get.to(() =>
+//                                                       RedesignEducation(
+//                                                           isEdit: true,
+//                                                           eModel: profileModel!
+//                                                               .education![i])),
+//                                                   child: Row(
+//                                                     children: [
+//                                                       CircleAvatar(
+//                                                           backgroundColor:
+//                                                               DEFAULT_COLOR
+//                                                                   .withOpacity(
+//                                                                       .03),
+//                                                           radius: 20,
+//                                                           child: Icon(
+//                                                             Icons.book_online,
+//                                                             color:
+//                                                                 DEFAULT_COLOR_1,
+//                                                             size: 18.0,
+//                                                           )),
+//                                                       const SizedBox(
+//                                                         width: 25.0,
+//                                                       ),
+//                                                       Flexible(
+//                                                         fit: FlexFit.tight,
+//                                                         child: Column(
+//                                                           crossAxisAlignment:
+//                                                               CrossAxisAlignment
+//                                                                   .start,
+//                                                           children: [
+//                                                             Text(
+//                                                               '${profileModel!.education![i].course}'
+//                                                                   .capitalize!,
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       16.0,
+//                                                                   color: Colors
+//                                                                       .black,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w500),
+//                                                             ),
+//                                                             const SizedBox(
+//                                                               height: 6.0,
+//                                                             ),
+//                                                             Text(
+//                                                               '${profileModel!.education![i].schoolName}'
+//                                                                   .capitalize!,
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       13.0,
+//                                                                   color: Colors
+//                                                                       .black54,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w400),
+//                                                             ),
+//                                                             const SizedBox(
+//                                                               height: 6.0,
+//                                                             ),
+//                                                             Text(
+//                                                               '${DateFormat('EEEE, MMM, yyyy').format(DateTime.parse(profileModel!.education![i].startDate!))}, - ${DateFormat('EEEE, MMM, yyyy').format(DateTime.parse(profileModel!.education![i].endDate!))}',
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       13.0,
+//                                                                   color: Colors
+//                                                                       .black54,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w400),
+//                                                             ),
+//                                                           ],
+//                                                         ),
+//                                                       ),
+//                                                       IconButton(
+//                                                           onPressed: () =>
+//                                                               Get.to(
+//                                                                   () => null),
+//                                                           icon: Icon(
+//                                                             Icons.edit,
+//                                                             color:
+//                                                                 Colors.black54,
+//                                                           ))
+//                                                     ],
+//                                                   ),
+//                                                 ),
+//                                               )),
+//                                       const SizedBox(height: 15.0),
+//                                     ]),
+//                                   )
+//                                 : const SizedBox(),
+//                             GestureDetector(
+//                                 onTap: () {
+//                                   allList[2] = true;
+//                                   for (int i = 0; i < allList.length; i++) {
+//                                     setState(() {
+//                                       if (i != 2) {
+//                                         allList[i] = false;
+//                                       }
+//                                     });
+//                                   }
+//                                 },
+//                                 child: _items(
+//                                     'Work Experience',
+//                                     Icons.work_history,
+//                                     () => Get.to(() =>
+//                                         RedesignExperience(isEdit: false)),
+//                                     allList[2])),
+//                             //======================Experience==================
+//                             allList[2]
+//                                 ? Padding(
+//                                     padding: const EdgeInsets.symmetric(
+//                                         horizontal: 20.0),
+//                                     child: Column(children: [
+//                                       const SizedBox(height: 8.0),
+//                                       ...List.generate(
+//                                           profileModel!.workExperience!.length,
+//                                           (i) => Padding(
+//                                                 padding:
+//                                                     const EdgeInsets.symmetric(
+//                                                         vertical: 8.0),
+//                                                 child: GestureDetector(
+//                                                   onTap: () => Get.to(
+//                                                       () => RedesignExperience(
+//                                                             isEdit: true,
+//                                                             eModel: profileModel!
+//                                                                 .workExperience![i],
+//                                                           )),
+//                                                   child: Row(
+//                                                     children: [
+//                                                       CircleAvatar(
+//                                                           backgroundColor:
+//                                                               DEFAULT_COLOR
+//                                                                   .withOpacity(
+//                                                                       .03),
+//                                                           radius: 20,
+//                                                           child: Icon(
+//                                                             Icons.book_online,
+//                                                             color:
+//                                                                 DEFAULT_COLOR_1,
+//                                                             size: 18.0,
+//                                                           )),
+//                                                       const SizedBox(
+//                                                         width: 25.0,
+//                                                       ),
+//                                                       Flexible(
+//                                                         fit: FlexFit.tight,
+//                                                         child: Column(
+//                                                           crossAxisAlignment:
+//                                                               CrossAxisAlignment
+//                                                                   .start,
+//                                                           children: [
+//                                                             Text(
+//                                                               '${profileModel!.workExperience![i].title}'
+//                                                                   .capitalize!,
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       16.0,
+//                                                                   color: Colors
+//                                                                       .black,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w500),
+//                                                             ),
+//                                                             const SizedBox(
+//                                                               height: 6.0,
+//                                                             ),
+//                                                             Text(
+//                                                               '${profileModel!.workExperience![i].companyName}'
+//                                                                   .capitalize!,
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       13.0,
+//                                                                   color: Colors
+//                                                                       .black54,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w400),
+//                                                             ),
+//                                                             const SizedBox(
+//                                                               height: 6.0,
+//                                                             ),
+//                                                             Text(
+//                                                               '${DateFormat('EEEE, MMM, yyyy').format(DateTime.parse(profileModel!.workExperience![i].startDate!))}',
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       13.0,
+//                                                                   color: Colors
+//                                                                       .black54,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w400),
+//                                                             ),
+//                                                           ],
+//                                                         ),
+//                                                       ),
+//                                                       IconButton(
+//                                                           onPressed: () =>
+//                                                               Get.to(
+//                                                                   () => null),
+//                                                           icon: Icon(
+//                                                             Icons.edit,
+//                                                             color:
+//                                                                 Colors.black54,
+//                                                           ))
+//                                                     ],
+//                                                   ),
+//                                                 ),
+//                                               )),
+//                                       const SizedBox(height: 15.0),
+//                                     ]),
+//                                   )
+//                                 : const SizedBox(),
 
-  Widget skillList(Skill? skill) => Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(7.0),
-        margin: const EdgeInsets.symmetric(vertical: 5.0),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.0),
-            border:
-                Border.all(width: 1.0, color: DEFAULT_COLOR.withOpacity(.05))),
-        child: Row(
-          children: [
-            Flexible(
-              fit: FlexFit.tight,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AutoSizeText('${skill!.skillName}'.capitalizeFirst!,
-                      minFontSize: 11,
-                      maxFontSize: 16,
-                      style: GoogleFonts.montserrat(
-                          fontSize: 18,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600)),
-                  SizedBox(height: 5.0),
-                  AutoSizeText.rich(
-                      TextSpan(
-                          text: 'skill level: ',
-                          style: GoogleFonts.montserrat(
-                              color: Colors.black38, fontSize: 14),
-                          children: [
-                            TextSpan(
-                                text: '${skill.level}'.capitalizeFirst!,
-                                style:
-                                    GoogleFonts.montserrat(color: Colors.black))
-                          ]),
-                      minFontSize: 11,
-                      maxFontSize: 20,
-                      style: GoogleFonts.montserrat(
-                          fontSize: 15,
-                          color: SUB_HEAD_1,
-                          fontWeight: FontWeight.normal)),
-                  SizedBox(height: 5.0),
-                  AutoSizeText.rich(
-                      TextSpan(
-                          text: 'Experience: ',
-                          style: GoogleFonts.montserrat(
-                              color: Colors.black38, fontSize: 14),
-                          children: [
-                            TextSpan(
-                                text: '${skill.yearOfExperience} Experience',
-                                style: GoogleFonts.montserrat(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500))
-                          ]),
-                      minFontSize: 11,
-                      maxFontSize: 20,
-                      style: GoogleFonts.montserrat(
-                          fontSize: 15,
-                          color: SUB_HEAD_1,
-                          fontWeight: FontWeight.normal)),
-                ],
-              ),
-            ),
-            IconButton(
-                onPressed: () => Get.to(() => EditSkill(skill)),
-                icon: Icon(Icons.edit, color: DEFAULT_COLOR))
-          ],
-        ),
-      );
+//                             GestureDetector(
+//                                 onTap: () {
+//                                   allList[10] = true;
+//                                   for (int i = 0; i < allList.length; i++) {
+//                                     setState(() {
+//                                       if (i != 10) {
+//                                         allList[i] = false;
+//                                       }
+//                                     });
+//                                   }
+//                                 },
+//                                 child: _items(
+//                                     'Skills',
+//                                     Icons.trending_down,
+//                                     () => Get.to(() => AddSkills()),
+//                                     allList[10])),
+//                             //===========================SKILLS===========================
+//                             allList[10]
+//                                 ? Padding(
+//                                     padding: const EdgeInsets.symmetric(
+//                                         horizontal: 20.0),
+//                                     child: Wrap(children: [
+//                                       const SizedBox(height: 8.0),
+//                                       ...List.generate(
+//                                           profileModel!.skill!.length,
+//                                           (i) => Padding(
+//                                                 padding:
+//                                                     const EdgeInsets.symmetric(
+//                                                         vertical: 8.0),
+//                                                 child: GestureDetector(
+//                                                   onTap: () => Get.to(() =>
+//                                                       EditSkill(profileModel!
+//                                                           .skill![i])),
+//                                                   child: Row(
+//                                                     children: [
+//                                                       CircleAvatar(
+//                                                           backgroundColor:
+//                                                               DEFAULT_COLOR
+//                                                                   .withOpacity(
+//                                                                       .03),
+//                                                           radius: 20,
+//                                                           child: Icon(
+//                                                             Icons.book_online,
+//                                                             color:
+//                                                                 DEFAULT_COLOR_1,
+//                                                             size: 18.0,
+//                                                           )),
+//                                                       const SizedBox(
+//                                                         width: 25.0,
+//                                                       ),
+//                                                       Flexible(
+//                                                         fit: FlexFit.tight,
+//                                                         child: Column(
+//                                                           crossAxisAlignment:
+//                                                               CrossAxisAlignment
+//                                                                   .start,
+//                                                           children: [
+//                                                             Text(
+//                                                               '${profileModel!.skill![i].skillName}'
+//                                                                   .capitalize!,
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       16.0,
+//                                                                   color: Colors
+//                                                                       .black,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w500),
+//                                                             ),
+//                                                             const SizedBox(
+//                                                               height: 6.0,
+//                                                             ),
+//                                                             Text(
+//                                                               '${profileModel!.skill![i].level}'
+//                                                                   .capitalize!,
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       13.0,
+//                                                                   color: Colors
+//                                                                       .black54,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w400),
+//                                                             ),
+//                                                             const SizedBox(
+//                                                               height: 6.0,
+//                                                             ),
+//                                                             Text(
+//                                                               '${profileModel!.skill![i].yearOfExperience} Years Exp.'
+//                                                                   .capitalize!,
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       13.0,
+//                                                                   color: Colors
+//                                                                       .black54,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w400),
+//                                                             ),
+//                                                           ],
+//                                                         ),
+//                                                       ),
+//                                                     ],
+//                                                   ),
+//                                                 ),
+//                                               )),
+//                                       const SizedBox(height: 15.0),
+//                                     ]),
+//                                   )
+//                                 : const SizedBox(),
 
-  Widget languageList(Language? lang) => Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(7.0),
-        margin: const EdgeInsets.symmetric(vertical: 5.0),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.0),
-            border:
-                Border.all(width: 1.0, color: DEFAULT_COLOR.withOpacity(.05))),
-        child: Row(
-          children: [
-            Flexible(
-              fit: FlexFit.tight,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AutoSizeText('${lang!.language}'.capitalizeFirst!,
-                      minFontSize: 11,
-                      maxFontSize: 16,
-                      style: GoogleFonts.montserrat(
-                          fontSize: 18,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600)),
-                  SizedBox(height: 5.0),
-                  AutoSizeText.rich(
-                      TextSpan(
-                          text: 'level: ',
-                          style: GoogleFonts.montserrat(
-                              color: Colors.black38, fontSize: 14),
-                          children: [
-                            TextSpan(
-                                text: '${lang.level}'.capitalizeFirst!,
-                                style:
-                                    GoogleFonts.montserrat(color: Colors.black))
-                          ]),
-                      minFontSize: 11,
-                      maxFontSize: 20,
-                      style: GoogleFonts.montserrat(
-                          fontSize: 15,
-                          color: SUB_HEAD_1,
-                          fontWeight: FontWeight.normal)),
-                ],
-              ),
-            ),
-            IconButton(
-                onPressed: () => Get.to(() => EditLanguage(lang)),
-                icon: Icon(Icons.edit, color: DEFAULT_COLOR))
-          ],
-        ),
-      );
+//                             GestureDetector(
+//                                 onTap: () {
+//                                   allList[3] = true;
+//                                   for (int i = 0; i < allList.length; i++) {
+//                                     setState(() {
+//                                       if (i != 3) {
+//                                         allList[i] = false;
+//                                       }
+//                                     });
+//                                   }
+//                                 },
+//                                 child: _items(
+//                                     'Key Skills',
+//                                     Icons.trending_down,
+//                                     () => Get.to(() => RedesignSkills(
+//                                         profileModel!,
+//                                         isEdit: false)),
+//                                     allList[3])),
+//                             //===========================KEY SKILLS===========================
+//                             allList[3]
+//                                 ? Padding(
+//                                     padding: const EdgeInsets.symmetric(
+//                                         horizontal: 20.0),
+//                                     child: Wrap(children: [
+//                                       const SizedBox(height: 8.0),
+//                                       ...List.generate(
+//                                           profileModel!.keySkills!.isEmpty
+//                                               ? 0
+//                                               : profileModel!.keySkills!
+//                                                   .split(',')
+//                                                   .length,
+//                                           (i) => GestureDetector(
+//                                                 onTap: () => Get.to(() =>
+//                                                     RedesignSkills(
+//                                                         profileModel!,
+//                                                         isEdit: true,
+//                                                         eModel: profileModel!
+//                                                             .keySkills!
+//                                                             .split(','))),
+//                                                 child: Container(
+//                                                     margin: const EdgeInsets
+//                                                             .symmetric(
+//                                                         horizontal: 4.5,
+//                                                         vertical: 4.5),
+//                                                     padding: const EdgeInsets
+//                                                             .symmetric(
+//                                                         horizontal: 10.0,
+//                                                         vertical: 3.0),
+//                                                     decoration: BoxDecoration(
+//                                                         color: DEFAULT_COLOR
+//                                                             .withOpacity(.05),
+//                                                         borderRadius:
+//                                                             BorderRadius
+//                                                                 .circular(5.0),
+//                                                         border: Border.all(
+//                                                             width: .5,
+//                                                             color: DEFAULT_COLOR
+//                                                                 .withOpacity(
+//                                                                     .5))),
+//                                                     child: Row(
+//                                                       mainAxisSize:
+//                                                           MainAxisSize.min,
+//                                                       children: [
+//                                                         Text(
+//                                                             '${profileModel!.keySkills!.split(',')[i]}',
+//                                                             style: GoogleFonts.lato(
+//                                                                 fontSize: 15.0,
+//                                                                 color:
+//                                                                     DEFAULT_COLOR)),
+//                                                       ],
+//                                                     )),
+//                                               )),
+//                                       const SizedBox(height: 15.0),
+//                                     ]),
+//                                   )
+//                                 : const SizedBox(),
 
-  Widget experienceList(WorkExperience? eModel) => Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(7.0),
-        margin: const EdgeInsets.symmetric(vertical: 5.0),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.0),
-            border:
-                Border.all(width: 1.0, color: DEFAULT_COLOR.withOpacity(.05))),
-        child: Row(
-          children: [
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AutoSizeText('${eModel!.companyName}'.capitalizeFirst!,
-                      minFontSize: 11,
-                      maxFontSize: 16,
-                      style: GoogleFonts.montserrat(
-                          fontSize: 18,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600)),
-                  SizedBox(height: 5.0),
-                  ReadMoreText(
-                    '${eModel.description}',
-                    trimLines: 1,
-                    colorClickableText: DEFAULT_COLOR,
-                    trimMode: TrimMode.Line,
-                    style: GoogleFonts.montserrat(
-                      color: Colors.black54,
-                      fontSize: 15,
-                    ),
-                    trimCollapsedText: '\nShow more',
-                    trimExpandedText: '\nShow less',
-                    moreStyle: GoogleFonts.montserrat(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.blue),
-                    lessStyle: GoogleFonts.montserrat(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.blue),
-                  ),
-                  SizedBox(height: 5.0),
-                  AutoSizeText(
-                      '${eModel.current == true ? 'Forfieted' : 'Still Working'}',
-                      minFontSize: 11,
-                      maxFontSize: 20,
-                      style: GoogleFonts.montserrat(
-                          fontSize: 14,
-                          color: SUB_HEAD_1,
-                          fontWeight: FontWeight.normal)),
-                  SizedBox(height: 5.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: AutoSizeText.rich(
-                            TextSpan(
-                                text: 'from: ',
-                                style: GoogleFonts.montserrat(
-                                    color: Colors.black38),
-                                children: [
-                                  TextSpan(
-                                      text:
-                                          '${DateFormat('yyyy-MM-dd').format(DateTime.parse(eModel.startDate!))}',
-                                      style: GoogleFonts.montserrat(
-                                          color: Colors.black))
-                                ]),
-                            minFontSize: 11,
-                            maxFontSize: 20,
-                            style: GoogleFonts.montserrat(
-                                fontSize: 13.5,
-                                color: SUB_HEAD_1,
-                                fontWeight: FontWeight.normal)),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            IconButton(
-                onPressed: () => Get.to(() => EditExperience(eModel)),
-                icon: Icon(Icons.edit, color: DEFAULT_COLOR))
-          ],
-        ),
-      );
+//                             GestureDetector(
+//                                 onTap: () {
+//                                   allList[4] = true;
+//                                   for (int i = 0; i < allList.length; i++) {
+//                                     setState(() {
+//                                       if (i != 4) {
+//                                         allList[i] = false;
+//                                       }
+//                                     });
+//                                   }
+//                                 },
+//                                 child: _items(
+//                                     'Certification',
+//                                     Icons.star_border_outlined,
+//                                     () => Get.to(() => Redesigncertification(
+//                                         isEdit: false, eModel: null)),
+//                                     allList[4])),
+//                             //======================Cerification==================
+//                             allList[4]
+//                                 ? Padding(
+//                                     padding: const EdgeInsets.symmetric(
+//                                         horizontal: 20.0),
+//                                     child: Column(children: [
+//                                       const SizedBox(height: 8.0),
+//                                       ...List.generate(
+//                                           profileModel!.certificate == null
+//                                               ? 0
+//                                               : profileModel!
+//                                                   .certificate!.length,
+//                                           (i) => Padding(
+//                                                 padding:
+//                                                     const EdgeInsets.symmetric(
+//                                                         vertical: 8.0),
+//                                                 child: GestureDetector(
+//                                                   onTap: () => Get.to(() =>
+//                                                       Redesigncertification(
+//                                                         isEdit: true,
+//                                                         eModel: profileModel!
+//                                                             .certificate![i],
+//                                                       )),
+//                                                   child: Row(
+//                                                     children: [
+//                                                       CircleAvatar(
+//                                                           backgroundColor:
+//                                                               DEFAULT_COLOR
+//                                                                   .withOpacity(
+//                                                                       .03),
+//                                                           radius: 20,
+//                                                           child: Icon(
+//                                                             Icons.star,
+//                                                             color:
+//                                                                 DEFAULT_COLOR_1,
+//                                                             size: 18.0,
+//                                                           )),
+//                                                       const SizedBox(
+//                                                         width: 25.0,
+//                                                       ),
+//                                                       Flexible(
+//                                                         fit: FlexFit.tight,
+//                                                         child: Column(
+//                                                           crossAxisAlignment:
+//                                                               CrossAxisAlignment
+//                                                                   .start,
+//                                                           children: [
+//                                                             Text(
+//                                                               '${profileModel!.certificate![i].title}',
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       16.0,
+//                                                                   color: Colors
+//                                                                       .black,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w500),
+//                                                             ),
+//                                                             const SizedBox(
+//                                                               height: 6.0,
+//                                                             ),
+//                                                             Text(
+//                                                               '${profileModel!.certificate![i].issuer}',
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       13.0,
+//                                                                   color: Colors
+//                                                                       .black54,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w400),
+//                                                             ),
+//                                                             const SizedBox(
+//                                                               height: 6.0,
+//                                                             ),
+//                                                             Text(
+//                                                               '${DateFormat('EEEE, MMM, yyyy').format(DateTime.parse(profileModel!.certificate![i].dated!))}',
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       13.0,
+//                                                                   color: Colors
+//                                                                       .black54,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w400),
+//                                                             ),
+//                                                           ],
+//                                                         ),
+//                                                       ),
+//                                                       IconButton(
+//                                                           onPressed: () =>
+//                                                               Get.to(
+//                                                                   () => null),
+//                                                           icon: Icon(
+//                                                             Icons.edit,
+//                                                             color:
+//                                                                 Colors.black54,
+//                                                           ))
+//                                                     ],
+//                                                   ),
+//                                                 ),
+//                                               )),
+//                                       const SizedBox(height: 15.0),
+//                                     ]),
+//                                   )
+//                                 : const SizedBox(),
+//                             GestureDetector(
+//                                 onTap: () {
+//                                   allList[5] = true;
+//                                   for (int i = 0; i < allList.length; i++) {
+//                                     setState(() {
+//                                       if (i != 5) {
+//                                         allList[i] = false;
+//                                       }
+//                                     });
+//                                   }
+//                                 },
+//                                 child: _items(
+//                                     'Languages',
+//                                     Icons.person,
+//                                     () => Get.to(
+//                                         () => RedesignLanguage(isEdit: false)),
+//                                     allList[5])),
+//                             //======================Experience==================
+//                             allList[5]
+//                                 ? Padding(
+//                                     padding: const EdgeInsets.symmetric(
+//                                         horizontal: 20.0),
+//                                     child: Column(children: [
+//                                       const SizedBox(height: 8.0),
+//                                       ...List.generate(
+//                                           profileModel!.language!.length,
+//                                           (i) => Padding(
+//                                                 padding:
+//                                                     const EdgeInsets.symmetric(
+//                                                         vertical: 8.0),
+//                                                 child: GestureDetector(
+//                                                   onTap: () => Get.to(
+//                                                       () => RedesignLanguage(
+//                                                             isEdit: true,
+//                                                             eModel: profileModel!
+//                                                                 .language![i],
+//                                                           )),
+//                                                   child: Row(
+//                                                     children: [
+//                                                       CircleAvatar(
+//                                                           backgroundColor:
+//                                                               DEFAULT_COLOR
+//                                                                   .withOpacity(
+//                                                                       .03),
+//                                                           radius: 20,
+//                                                           child: Icon(
+//                                                             Icons.book_online,
+//                                                             color:
+//                                                                 DEFAULT_COLOR_1,
+//                                                             size: 18.0,
+//                                                           )),
+//                                                       const SizedBox(
+//                                                         width: 25.0,
+//                                                       ),
+//                                                       Flexible(
+//                                                         fit: FlexFit.tight,
+//                                                         child: Column(
+//                                                           crossAxisAlignment:
+//                                                               CrossAxisAlignment
+//                                                                   .start,
+//                                                           children: [
+//                                                             Text(
+//                                                               '${profileModel!.language![i].language}',
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       16.0,
+//                                                                   color: Colors
+//                                                                       .black,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w500),
+//                                                             ),
+//                                                             const SizedBox(
+//                                                               height: 6.0,
+//                                                             ),
+//                                                             Text(
+//                                                               '${profileModel!.language![i].level}',
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       13.0,
+//                                                                   color: Colors
+//                                                                       .black54,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w400),
+//                                                             ),
+//                                                           ],
+//                                                         ),
+//                                                       ),
+//                                                       IconButton(
+//                                                           onPressed: () =>
+//                                                               Get.to(
+//                                                                   () => null),
+//                                                           icon: Icon(
+//                                                             Icons.edit,
+//                                                             color:
+//                                                                 Colors.black54,
+//                                                           ))
+//                                                     ],
+//                                                   ),
+//                                                 ),
+//                                               )),
+//                                       const SizedBox(height: 15.0),
+//                                     ]),
+//                                   )
+//                                 : const SizedBox(),
+//                             GestureDetector(
+//                                 onTap: () {
+//                                   allList[6] = true;
+//                                   for (int i = 0; i < allList.length; i++) {
+//                                     setState(() {
+//                                       if (i != 6) {
+//                                         allList[i] = false;
+//                                       }
+//                                     });
+//                                   }
+//                                 },
+//                                 child: _items(
+//                                     'Availablility',
+//                                     Icons.timelapse,
+//                                     () => Get.to(() => RedesignAvailability(
+//                                         profileModel!,
+//                                         edit: false)),
+//                                     allList[6])),
+//                             //======================Availability==================
+//                             allList[6]
+//                                 ? Padding(
+//                                     padding: const EdgeInsets.symmetric(
+//                                         horizontal: 20.0),
+//                                     child: Column(children: [
+//                                       const SizedBox(height: 8.0),
+//                                       ...List.generate(
+//                                           1,
+//                                           (i) => Padding(
+//                                                 padding:
+//                                                     const EdgeInsets.symmetric(
+//                                                         vertical: 8.0),
+//                                                 child: GestureDetector(
+//                                                   onTap: () => Get.to(() =>
+//                                                       RedesignAvailability(
+//                                                         profileModel!,
+//                                                         edit: true,
+//                                                         update: profileModel!
+//                                                             .availability![i],
+//                                                       )),
+//                                                   child: Row(
+//                                                     children: [
+//                                                       CircleAvatar(
+//                                                           backgroundColor:
+//                                                               DEFAULT_COLOR
+//                                                                   .withOpacity(
+//                                                                       .03),
+//                                                           radius: 20,
+//                                                           child: Icon(
+//                                                             Icons.timelapse,
+//                                                             color:
+//                                                                 DEFAULT_COLOR_1,
+//                                                             size: 18.0,
+//                                                           )),
+//                                                       const SizedBox(
+//                                                         width: 25.0,
+//                                                       ),
+//                                                       Flexible(
+//                                                         fit: FlexFit.tight,
+//                                                         child: Column(
+//                                                           crossAxisAlignment:
+//                                                               CrossAxisAlignment
+//                                                                   .start,
+//                                                           children: [
+//                                                             Text(
+//                                                               profileModel!
+//                                                                       .availability![
+//                                                                           i]
+//                                                                       .fullTime!
+//                                                                   ? 'Available to work Fulltime'
+//                                                                   : 'Not available to work fulltime',
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       16.0,
+//                                                                   color: Colors
+//                                                                       .black,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w500),
+//                                                             ),
+//                                                             const SizedBox(
+//                                                               height: 6.0,
+//                                                             ),
+//                                                             Text(
+//                                                               'Open to jobs',
+//                                                               style: GoogleFonts.lato(
+//                                                                   fontSize:
+//                                                                       13.0,
+//                                                                   color: Colors
+//                                                                       .black54,
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w400),
+//                                                             ),
+//                                                           ],
+//                                                         ),
+//                                                       ),
+//                                                       IconButton(
+//                                                           onPressed: () =>
+//                                                               Get.to(
+//                                                                   () => null),
+//                                                           icon: Icon(
+//                                                             Icons.edit,
+//                                                             color:
+//                                                                 Colors.black54,
+//                                                           ))
+//                                                     ],
+//                                                   ),
+//                                                 ),
+//                                               )),
+//                                       const SizedBox(height: 15.0),
+//                                     ]),
+//                                   )
+//                                 : const SizedBox(),
+//                             GestureDetector(
+//                                 onTap: () {
+//                                   allList[7] = true;
+//                                   for (int i = 0; i < allList.length; i++) {
+//                                     setState(() {
+//                                       if (i != 7) {
+//                                         allList[i] = false;
+//                                       }
+//                                     });
+//                                   }
+//                                 },
+//                                 child: _items(
+//                                     'Resume/CV',
+//                                     Icons.file_open,
+//                                     () => Get.to(
+//                                         () => RedesignResume(isEdit: false)),
+//                                     allList[7])),
+//                             //======================RESUME/CV==================
+//                             allList[7]
+//                                 ? Padding(
+//                                     padding: const EdgeInsets.symmetric(
+//                                         horizontal: 20.0),
+//                                     child: Column(children: [
+//                                       const SizedBox(height: 8.0),
+//                                       profileModel!.cv == null ||
+//                                               profileModel!.cv!.isEmpty
+//                                           ? SizedBox(
+//                                               width: MediaQuery.of(context)
+//                                                   .size
+//                                                   .width,
+//                                               child: Center(
+//                                                   child: Text(
+//                                                       'No Resume/CV Found',
+//                                                       style: GoogleFonts.lato(
+//                                                           fontSize: 14.0,
+//                                                           color:
+//                                                               Colors.black54))))
+//                                           : Container(
+//                                               padding:
+//                                                   const EdgeInsets.all(15.0),
+//                                               margin:
+//                                                   const EdgeInsets.symmetric(
+//                                                       vertical: 5.0),
+//                                               decoration: BoxDecoration(
+//                                                   borderRadius:
+//                                                       BorderRadius.circular(
+//                                                           10.0),
+//                                                   color: DEFAULT_COLOR_1
+//                                                       .withOpacity(.1)),
+//                                               child: Row(
+//                                                 children: [
+//                                                   Icon(
+//                                                     Icons.file_open,
+//                                                     color: DEFAULT_COLOR_1,
+//                                                   ),
+//                                                   const SizedBox(
+//                                                     width: 20.0,
+//                                                   ),
+//                                                   Flexible(
+//                                                     fit: FlexFit.tight,
+//                                                     child: Column(
+//                                                       crossAxisAlignment:
+//                                                           CrossAxisAlignment
+//                                                               .start,
+//                                                       children: [
+//                                                         Text(
+//                                                           '${p.basename(profileModel!.cv!)}',
+//                                                           style: GoogleFonts
+//                                                               .lato(
+//                                                                   color: Colors
+//                                                                       .black54,
+//                                                                   fontSize:
+//                                                                       15.0),
+//                                                         ),
+//                                                         Text(
+//                                                           '',
+//                                                           style: GoogleFonts
+//                                                               .lato(
+//                                                                   color: Colors
+//                                                                       .black54,
+//                                                                   fontSize:
+//                                                                       12.0),
+//                                                         ),
+//                                                       ],
+//                                                     ),
+//                                                   ),
+//                                                   Icon(
+//                                                     Icons.cancel_outlined,
+//                                                     size: 18.0,
+//                                                     color: Colors.redAccent,
+//                                                   ),
+//                                                   const SizedBox(
+//                                                     width: 20.0,
+//                                                   ),
+//                                                 ],
+//                                               ),
+//                                             ),
+//                                       const SizedBox(height: 15.0),
+//                                     ]),
+//                                   )
+//                                 : const SizedBox(),
+//                             GestureDetector(
+//                                 onTap: () {
+//                                   allList[8] = true;
+//                                   for (int i = 0; i < allList.length; i++) {
+//                                     setState(() {
+//                                       if (i != 8) {
+//                                         allList[i] = false;
+//                                       }
+//                                     });
+//                                   }
+//                                 },
+//                                 child: _items(
+//                                     'Additional Information',
+//                                     Icons.person_add,
+//                                     () => Get.to(() => AdditionalInformation(
+//                                         '', profileModel!)),
+//                                     allList[8])),
+//                             //======================ADDITIONAL INFORMATION==================
+//                             allList[8]
+//                                 ? Padding(
+//                                     padding: const EdgeInsets.symmetric(
+//                                         horizontal: 20.0),
+//                                     child: Column(children: [
+//                                       const SizedBox(height: 8.0),
+//                                       GestureDetector(
+//                                         onTap: () => Get.to(() =>
+//                                             AdditionalInformation(
+//                                                 '${profileModel!.about!}',
+//                                                 profileModel!)),
+//                                         child: Text(profileModel!.about!,
+//                                             style: GoogleFonts.lato(
+//                                                 fontSize: 13.0,
+//                                                 color: Colors.black54)),
+//                                       ),
+//                                       const SizedBox(height: 15.0),
+//                                     ]),
+//                                   )
+//                                 : const SizedBox(),
+//                           ]))),
+//                     ))
+//         ],
+//       )),
+//     );
+//   }
 
-  Widget availableList(Availability a) => Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(7.0),
-        margin: const EdgeInsets.symmetric(vertical: 5.0),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.0),
-            border:
-                Border.all(width: 1.0, color: DEFAULT_COLOR.withOpacity(.05))),
-        child: Row(
-          children: [
-            Flexible(
-              fit: FlexFit.tight,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Checkbox(value: a.contract, onChanged: (b) {}),
-                      AutoSizeText('Contract',
-                          minFontSize: 11,
-                          maxFontSize: 16,
-                          style: GoogleFonts.montserrat(
-                              fontSize: 18,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                  SizedBox(height: 5.0),
-                  Row(
-                    children: [
-                      Checkbox(value: a.fullTime, onChanged: (b) {}),
-                      AutoSizeText('Full Time',
-                          minFontSize: 11,
-                          maxFontSize: 16,
-                          style: GoogleFonts.montserrat(
-                              fontSize: 18,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                  SizedBox(height: 5.0),
-                  Row(
-                    children: [
-                      Checkbox(value: a.partTime, onChanged: (b) {}),
-                      AutoSizeText('Part Time',
-                          minFontSize: 11,
-                          maxFontSize: 16,
-                          style: GoogleFonts.montserrat(
-                              fontSize: 18,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            // IconButton(
-            //     onPressed: () => Get.to(() => null),
-            //     icon: Icon(Icons.edit, color: DEFAULT_COLOR))
-          ],
-        ),
-      );
+//   Widget _items(text, icon, callBack, isExpanded) => Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+//         child: !isExpanded
+//             ? Column(
+//                 children: [
+//                   Row(
+//                     children: [
+//                       Icon(
+//                         icon,
+//                         color: DEFAULT_COLOR_1,
+//                         size: 18.0,
+//                       ),
+//                       const SizedBox(
+//                         width: 18.0,
+//                       ),
+//                       Flexible(
+//                           fit: FlexFit.tight,
+//                           child: Text(text,
+//                               style: GoogleFonts.lato(
+//                                   fontSize: 16.0,
+//                                   color: Colors.black54,
+//                                   fontWeight: FontWeight.w600))),
+//                       const SizedBox(
+//                         width: 10.0,
+//                       ),
+//                       GestureDetector(
+//                         onTap: () => callBack(),
+//                         child: Icon(
+//                           Icons.add_circle_outline,
+//                           color: DEFAULT_COLOR_1,
+//                           size: 24.0,
+//                         ),
+//                       )
+//                     ],
+//                   ),
+//                   const SizedBox(
+//                     height: 9.0,
+//                   ),
+//                   Divider(),
+//                 ],
+//               )
+//             : Container(
+//                 height: 45.0,
+//                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
+//                 decoration: BoxDecoration(
+//                     border: Border.all(color: Colors.black54, width: .5),
+//                     borderRadius: BorderRadius.circular(10.0)),
+//                 child: Row(
+//                   children: [
+//                     Icon(
+//                       icon,
+//                       color: DEFAULT_COLOR_1,
+//                       size: 18.0,
+//                     ),
+//                     const SizedBox(
+//                       width: 18.0,
+//                     ),
+//                     Flexible(
+//                         fit: FlexFit.tight,
+//                         child: Text(text,
+//                             style: GoogleFonts.lato(
+//                                 fontSize: 16.0,
+//                                 color: Colors.black54,
+//                                 fontWeight: FontWeight.w600))),
+//                     const SizedBox(
+//                       width: 10.0,
+//                     ),
+//                     GestureDetector(
+//                       onTap: () => callBack(),
+//                       child: Icon(
+//                         Icons.add_circle_outline,
+//                         color: DEFAULT_COLOR_1,
+//                         size: 24.0,
+//                       ),
+//                     )
+//                   ],
+//                 ),
+//               ),
+//       );
 
-  setMap() {
-    if (context.read<Controller>().profileModel!.location!.isNotEmpty) {
-      var s = context.read<Controller>().profileModel!.location!.split(', ');
-      return {
-        'firstname': context.read<Controller>().profileModel!.firstName,
-        'lastname': context.read<Controller>().profileModel!.lastName,
-        'othername': context.read<Controller>().profileModel!.otherName,
-        'countryValue': s.length >= 3 ? s[2] : '',
-        'phone': context.read<Controller>().profileModel!.phone,
-        'stateValue': s.length >= 2 ? s[1] : '',
-        'cityValue': s.length >= 0 ? s[0] : '',
-        'about': context.read<Controller>().profileModel!.about,
-      };
-    }
-    return {
-      'firstname': context.read<Controller>().profileModel!.firstName,
-      'lastname': context.read<Controller>().profileModel!.lastName,
-      'othername': context.read<Controller>().profileModel!.otherName,
-      'countryValue': '',
-      'phone': context.read<Controller>().profileModel!.phone,
-      'stateValue': '',
-      'cityValue': '',
-      'about': context.read<Controller>().profileModel!.about,
-    };
-  }
-}
+//   Widget _contactInfo() => Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 20.0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             const SizedBox(height: 10.0),
+//             Row(
+//               children: [
+//                 Icon(Icons.location_on, color: Colors.black54, size: 18.0),
+//                 const SizedBox(
+//                   width: 10.0,
+//                 ),
+//                 Text('${profileModel!.location}',
+//                     style:
+//                         GoogleFonts.lato(fontSize: 14.0, color: Colors.black54))
+//               ],
+//             ),
+//             const SizedBox(height: 7.0),
+//             Row(
+//               children: [
+//                 Icon(Icons.email_rounded, color: Colors.black54, size: 18.0),
+//                 const SizedBox(
+//                   width: 10.0,
+//                 ),
+//                 Text('${profileModel!.user!.email}',
+//                     style:
+//                         GoogleFonts.lato(fontSize: 14.0, color: Colors.black54))
+//               ],
+//             ),
+//             const SizedBox(height: 7.0),
+//             Row(
+//               children: [
+//                 Icon(Icons.phone, color: Colors.black54, size: 18.0),
+//                 const SizedBox(
+//                   width: 10.0,
+//                 ),
+//                 Text('${profileModel!.phone}',
+//                     style:
+//                         GoogleFonts.lato(fontSize: 14.0, color: Colors.black54))
+//               ],
+//             ),
+//             const SizedBox(height: 15.0),
+//           ],
+//         ),
+//       );
+// }

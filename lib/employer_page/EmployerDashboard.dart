@@ -20,6 +20,7 @@ import 'package:worka/phoenix/CustomScreens.dart';
 import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/redesigns/drawer/re_drawer.dart';
 import 'package:worka/redesigns/employer/reViewApplicants.dart';
+import 'package:worka/redesigns/employer/re_company_profile.dart';
 import 'package:worka/redesigns/employer/redesign_post_job.dart';
 import 'package:worka/reuseables/general_container.dart';
 
@@ -229,7 +230,7 @@ class _EmployerDashboardState extends State<EmployerDashboard> {
   Widget carousel(HotAlert e) => GestureDetector(
         onTap: () {
           if (e.link == 'profile') {
-            Get.to(() => CompanyProfile());
+            Get.to(() => ReCompanyProfile());
           }
         },
         child: Container(

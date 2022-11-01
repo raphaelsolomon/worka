@@ -130,29 +130,6 @@ class _RedesignEducationState extends State<RedesignEducation> {
                     ),
                     inputWidgetRich(ctl: briefController),
                     const SizedBox(
-                      height: 5.0,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Checkbox(
-                            onChanged: (b) {
-                             context.read<Controller>().setGraduate(b);
-                            },
-                            value: context.watch<Controller>().isGraduate,
-                            activeColor: DEFAULT_COLOR,
-                          ),
-                          Text(
-                            'Graduated',
-                            style: GoogleFonts.lato(
-                                fontSize: 12.0, color: Colors.black54),
-                          )
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
                       height: 30.0,
                     ),
                     widget.isEdit == false
@@ -411,11 +388,9 @@ class _RedesignEducationState extends State<RedesignEducation> {
                     initialValue: DateTime.now().toString(),
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
-                    style:
-                        GoogleFonts.lato(fontSize: 15.0, color: Colors.black54),
+                    style: GoogleFonts.lato(fontSize: 13.5, color: Colors.black54),
                     decoration: InputDecoration(
-                        border:
-                            OutlineInputBorder(borderSide: BorderSide.none)),
+                        border: OutlineInputBorder(borderSide: BorderSide.none)),
                     onChanged: (val) => datetext = val,
                   ),
                 ),
@@ -434,8 +409,7 @@ class _RedesignEducationState extends State<RedesignEducation> {
     );
   }
 
-  Widget inputDropDown(List<String> list,
-      {text = 'Select certificate', hint = 'Certificate', callBack}) {
+  Widget inputDropDown(List<String> list, {text = 'Select certificate', hint = 'Certificate', callBack}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Column(

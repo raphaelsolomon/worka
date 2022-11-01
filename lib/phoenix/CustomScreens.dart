@@ -15,7 +15,6 @@ import 'package:worka/employer_page/controller/empContoller.dart';
 import 'package:worka/employer_page/employer_settings.dart';
 import 'package:worka/employer_page/phoenix/screens/EmpInterviews.dart';
 import 'package:worka/employer_page/phoenix/screens/EmpObjQuestions.dart';
-import 'package:worka/employer_page/phoenix/screens/companyProfile.dart';
 import 'package:worka/employer_page/phoenix/screens/postedJobs.dart';
 import 'package:worka/employer_page/phoenix/screens/theoryQuestion.dart';
 import 'package:worka/employer_page/plan_price_android.dart';
@@ -23,8 +22,9 @@ import 'package:worka/interfaces/login_interface.dart';
 import 'package:worka/phoenix/Controller.dart';
 import 'package:worka/phoenix/GeneralButtonContainer.dart';
 import 'package:worka/phoenix/Resusable.dart';
-import 'package:worka/phoenix/dashboard_work/profile.dart';
 import 'package:worka/phoenix/model/MySkill.dart';
+import 'package:worka/redesigns/applicant/re_design_profile.dart';
+import 'package:worka/redesigns/employer/re_company_profile.dart';
 import 'package:worka/redesigns/employer/re_payment_design.dart';
 import 'package:worka/redesigns/employer/re_payment_design_ios.dart';
 import 'package:worka/screens/login_screen.dart';
@@ -3007,7 +3007,7 @@ Widget getDrawer(BuildContext context, scaffold, {name, type}) => Drawer(
               title: Text('My Profile',
                   style: GoogleFonts.montserrat(fontSize: 16)),
               leading: const Icon(Icons.account_circle, color: DEFAULT_COLOR),
-              onTap: () => Get.to(() => ProfileScreen())),
+              onTap: () => Get.to(() => ReApplicantProfile())),
           ListTile(
             title: Text('My Jobs', style: GoogleFonts.montserrat(fontSize: 16)),
             leading: const Icon(Icons.work, color: DEFAULT_COLOR),
@@ -3134,7 +3134,7 @@ Widget getDrawer2(BuildContext context, scaffold) => Drawer(
             ),
             leading: const Icon(Icons.account_circle, color: DEFAULT_COLOR),
             onTap: () {
-              Get.to(() => CompanyProfile());
+              Get.to(() => ReCompanyProfile());
 
               // ...
             },

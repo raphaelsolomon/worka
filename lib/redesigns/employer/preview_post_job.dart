@@ -41,7 +41,6 @@ class _RePostJobsPreviewState extends State<RePostJobsPreview> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.data);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -375,8 +374,7 @@ Widget getAboutCompany(CompModel compModel) => Column(children: [
               ))),
     ]);
 
-Widget getJobDescription(Map data) =>
-    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+Widget getJobDescription(Map data) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text('Job Description:',
           style: GoogleFonts.lato(
               fontSize: 19.0,
