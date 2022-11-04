@@ -143,7 +143,7 @@ class _RedesignExperienceState extends State<RedesignExperience> {
                             ? SizedBox(
                                 width: MediaQuery.of(context).size.width,
                                 child: Center(
-                                  child: CircularProgressIndicator(),
+                                  child: CircularProgressIndicator(color: DEFAULT_COLOR,),
                                 ),
                               )
                             : GestureDetector(

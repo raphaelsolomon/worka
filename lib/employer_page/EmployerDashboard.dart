@@ -11,7 +11,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:worka/employer_page/phoenix/screens/companyProfile.dart';
 import 'package:worka/models/MyPosted.dart';
 import 'package:worka/models/compModel.dart';
 import 'package:worka/models/login/user_model.dart';
@@ -21,6 +20,7 @@ import 'package:worka/phoenix/model/Constant.dart';
 import 'package:worka/redesigns/drawer/re_drawer.dart';
 import 'package:worka/redesigns/employer/reViewApplicants.dart';
 import 'package:worka/redesigns/employer/re_company_profile.dart';
+import 'package:worka/redesigns/employer/re_job_details_emp.dart';
 import 'package:worka/redesigns/employer/redesign_post_job.dart';
 import 'package:worka/reuseables/general_container.dart';
 
@@ -210,21 +210,217 @@ class _EmployerDashboardState extends State<EmployerDashboard> {
                 ],
               ),
               const SizedBox(height: 7),
-              FutureBuilder(
-                future: _fechData(),
-                builder: (ctx, snap) => _container(snap),
+              isLoading ? Expanded(
+                child: Center(child: CircularProgressIndicator(color: DEFAULT_COLOR),)
+              ) : Expanded(
+                child: Column(children: [
+                  if (postedJobs.isEmpty)
+                  Expanded(
+                      child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text('No Posted Jobs',
+                            style: GoogleFonts.montserrat(
+                                fontSize: 20, color: Colors.red)),
+                        const SizedBox(height: 10.0),
+                        GeneralButtonContainer(
+                          name: 'Post a job',
+                          color: DEFAULT_COLOR,
+                          textColor: Colors.white,
+                          onPress: () {
+                            Get.to(
+                              () => RePostJobs(),
+                            );
+                          },
+                          paddingBottom: 3,
+                          paddingLeft: 30,
+                          paddingRight: 30,
+                          paddingTop: 5,
+                        ),
+                      ],
+                    ),
+                  ))
+                else
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: postedJobs
+                            .map(
+                              (e) => InkWell(
+                                onTap: () => Get.to(() => ReJobsDetails(e)),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8.0, horizontal: 15.0),
+                                  margin: const EdgeInsets.symmetric(
+                                      vertical: 8.0, horizontal: 12.0),
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      border: Border.all(
+                                          width: 1.5,
+                                          color: '${e.access}' == 'open'
+                                              ? DEFAULT_COLOR.withOpacity(.8)
+                                              : Colors.transparent)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          CircleAvatar(
+                                            backgroundColor:
+                                                DEFAULT_COLOR.withOpacity(.03),
+                                            radius: 28.0,
+                                            backgroundImage: NetworkImage(
+                                                '${context.watch<Controller>().avatar}'),
+                                          ),
+                                          const SizedBox(
+                                            width: 20.0,
+                                          ),
+                                          Flexible(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '${compModel!.companyName}',
+                                                  style: GoogleFonts.lato(
+                                                      fontSize: 18.0,
+                                                      color: Colors.black87,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                const SizedBox(
+                                                  height: 2.0,
+                                                ),
+                                                Text(
+                                                  '${compModel!.companyEmail}',
+                                                  style: GoogleFonts.lato(
+                                                      fontSize: 13.0,
+                                                      color: Colors.black54,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 6.0,
+                                      ),
+                                      Text(
+                                        '${e.title}'.capitalize!,
+                                        style: GoogleFonts.lato(
+                                            fontSize: 18.0,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(
+                                        height: 6.0,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.location_on,
+                                                    size: 17.0,
+                                                    color: Colors.black26),
+                                                Text(
+                                                  '${compModel!.location}',
+                                                  style: GoogleFonts.lato(
+                                                      fontSize: 14.0,
+                                                      color: Colors.black87,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 5.0,
+                                          ),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 1.0,
+                                                    color: Colors.green),
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0),
+                                                color:
+                                                    Colors.green.withOpacity(.1)),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8.0, vertical: 2.5),
+                                            child: Text(
+                                              '${e.access}',
+                                              style: GoogleFonts.lato(
+                                                  fontSize: 12.5,
+                                                  color: Colors.green,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 5.0,
+                                      ),
+                                      Divider(
+                                        color: Colors.black54,
+                                        thickness: .5,
+                                      ),
+                                      const SizedBox(
+                                        height: 3.0,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            '${e.applications} Applicants',
+                                            style: GoogleFonts.lato(
+                                                fontSize: 13.0,
+                                                color: Colors.black54),
+                                          ),
+                                          InkWell(
+                                            onTap: () => Get.to(() =>
+                                                ReViewApplicant(e, compModel!)),
+                                            child: Text(
+                                              'View all',
+                                              style: GoogleFonts.lato(
+                                                  fontSize: 13.0,
+                                                  color: DEFAULT_COLOR),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 5.0,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                        // children: myList
+                        //     .map((e) => hotListingMethod(e, '${e.jobKey}', '${e.title}',
+                        //         '${e.budget}', '${e.location}'))
+                        //     .toList(),
+                      ),
+                    ),
+                  )
+                ],),
               )
             ]),
           ),
         ),
       ),
     );
-  }
-
-  _fechData() async {
-    return this._asyncMemoizer.runOnce(() async {
-      return await context.read<EmpController>().getPostedJobs(context);
-    });
   }
 
   Widget carousel(HotAlert e) => GestureDetector(
@@ -403,214 +599,6 @@ class _EmployerDashboardState extends State<EmployerDashboard> {
       ),
     );
   }
-
-  _container(snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return Expanded(
-          child: Center(
-              child: CircularProgressIndicator(
-        color: DEFAULT_COLOR,
-      )));
-    } else if (snapshot.connectionState == ConnectionState.done) {
-      if (snapshot.hasError) {
-        return Expanded(child: Center(child: Text('Error')));
-      } else if (snapshot.hasData) {
-        if (snapshot.data!.isEmpty) {
-          return Expanded(
-              child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text('No Posted Jobs',
-                    style: GoogleFonts.montserrat(
-                        fontSize: 20, color: Colors.red)),
-                const SizedBox(height: 10.0),
-                GeneralButtonContainer(
-                  name: 'Post a job',
-                  color: DEFAULT_COLOR,
-                  textColor: Colors.white,
-                  onPress: () {
-                    Get.to(
-                      () => RePostJobs(),
-                    );
-                  },
-                  paddingBottom: 3,
-                  paddingLeft: 30,
-                  paddingRight: 30,
-                  paddingTop: 5,
-                ),
-              ],
-            ),
-          ));
-        }
-        List<MyPosted> myList = snapshot.data;
-        return Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              children: myList
-                  .map(
-                    (e) => InkWell(
-                      onTap: () => Get.to(() => JobDetailsEmp(e)),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 15.0),
-                            margin: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 15.0),
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12.0),
-                            border: Border.all(
-                                width: 1.5,
-                                color: '${e.access}' == 'open'
-                                    ? DEFAULT_COLOR.withOpacity(.8)
-                                    : Colors.transparent)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: DEFAULT_COLOR.withOpacity(.03),
-                                  radius: 28.0,
-                                  backgroundImage: NetworkImage(
-                                      '${context.watch<Controller>().avatar}'),
-                                ),
-                                const SizedBox(
-                                  width: 20.0,
-                                ),
-                                Flexible(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${compModel!.companyName}',
-                                        style: GoogleFonts.lato(
-                                            fontSize: 18.0,
-                                            color: Colors.black87,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const SizedBox(
-                                        height: 2.0,
-                                      ),
-                                      Text(
-                                        '${compModel!.companyEmail}',
-                                        style: GoogleFonts.lato(
-                                            fontSize: 13.0,
-                                            color: Colors.black54,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 6.0,
-                            ),
-                            Text(
-                              '${e.title}'.capitalize!,
-                              style: GoogleFonts.lato(
-                                  fontSize: 18.0,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 6.0,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Flexible(
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.location_on,
-                                          size: 17.0, color: Colors.black26),
-                                      Text(
-                                        '${compModel!.location}',
-                                        style: GoogleFonts.lato(
-                                            fontSize: 14.0,
-                                            color: Colors.black87,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 5.0,
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1.0, color: Colors.green),
-                                      borderRadius: BorderRadius.circular(5.0),
-                                      color: Colors.green.withOpacity(.1)),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0, vertical: 2.5),
-                                  child: Text(
-                                    '${e.access}',
-                                    style: GoogleFonts.lato(
-                                        fontSize: 12.5,
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 5.0,
-                            ),
-                            Divider(
-                              color: Colors.black54,
-                              thickness: .5,
-                            ),
-                            const SizedBox(
-                              height: 3.0,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '${e.applications} Applicants',
-                                  style: GoogleFonts.lato(
-                                      fontSize: 13.0, color: Colors.black54),
-                                ),
-                                InkWell(
-                                  onTap: () => Get.to(
-                                      () => ReViewApplicant(e, compModel!)),
-                                  child: Text(
-                                    'View all',
-                                    style: GoogleFonts.lato(
-                                        fontSize: 13.0, color: DEFAULT_COLOR),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 5.0,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                  .toList(),
-              // children: myList
-              //     .map((e) => hotListingMethod(e, '${e.jobKey}', '${e.title}',
-              //         '${e.budget}', '${e.location}'))
-              //     .toList(),
-            ),
-          ),
-        );
-      } else {
-        return Expanded(child: Center(child: Text('Empty data')));
-      }
-    } else {
-      return Text('State: ${snapshot.connectionState}');
-    }
-  }
-
   Widget carouselEmpty() => GestureDetector(
         onTap: () {},
         child: Container(

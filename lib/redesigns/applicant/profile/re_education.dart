@@ -44,6 +44,7 @@ class _RedesignEducationState extends State<RedesignEducation> {
     if (widget.isEdit) {
       schoolname.text = widget.eModel!.schoolName!;
       disciplineController.text = widget.eModel!.course!;
+      briefController.text = '';
       level = widget.eModel!.level!;
       certificate = widget.eModel!.certificate!;
       stringStart = widget.eModel!.startDate!;
@@ -185,6 +186,7 @@ class _RedesignEducationState extends State<RedesignEducation> {
                                               'certificate': certificate.toLowerCase(),
                                               'start_date': stringStart,
                                               'end_date': stringStop,
+                                              'description': '${briefController.text}',
                                               'course': certificate.toLowerCase(),
                                             };
                                             updateData(data);
@@ -260,19 +262,20 @@ class _RedesignEducationState extends State<RedesignEducation> {
       return;
     }
 
-    if ((end_date ==
-            '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}') &&
-        (start_date ==
-            '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}')) {
-      CustomSnack('Error', 'Both Date is can not be the same...');
-      return;
-    }
+    // if ((end_date ==
+    //         '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}') &&
+    //     (start_date ==
+    //         '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}')) {
+    //   CustomSnack('Error', 'Both Date is can not be the same...');
+    //   return;
+    // }
 
-    if (DateTime.parse(end_date).millisecondsSinceEpoch <
-        DateTime.parse(start_date).millisecondsSinceEpoch) {
-      CustomSnack('Error', 'End Date must be greater than start Date...');
-      return;
-    }
+    // if (DateTime.parse(end_date).millisecondsSinceEpoch <
+    //     DateTime.parse(start_date).millisecondsSinceEpoch) {
+    //   CustomSnack('Error', 'End Date must be greater than start Date...');
+    //   return;
+    // }
+    print(start_date);
 
     var data = {
       'school_name': '$school'.toLowerCase(),
@@ -280,6 +283,7 @@ class _RedesignEducationState extends State<RedesignEducation> {
       'certificate': certificate.toLowerCase(),
       'start_date': '$start_date',
       'end_date': '$end_date',
+      'description': '${briefController.text}',
       'course': '$course'.toLowerCase(),
     };
     try {
@@ -345,7 +349,7 @@ class _RedesignEducationState extends State<RedesignEducation> {
           }));
       if (res.statusCode == 200) {
         Get.off(() => Success(
-              'Education Updated...',
+              'Education Delete...',
               callBack: () => Get.back(),
             ));
       }

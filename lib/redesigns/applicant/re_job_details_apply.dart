@@ -363,25 +363,25 @@ Widget getAboutCompany(JobData jobData, BuildContext context) => SizedBox(
   
         ),
   
-        Text('Successful Hires:',
+        // Text('Successful Hires:',
   
-            style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+        //     style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
   
-        const SizedBox(
+        // const SizedBox(
   
-          height: 10.0,
+        //   height: 10.0,
   
-        ),
+        // ),
   
-        Text('${jobData.employer.hired} Successful Hires',
+        // Text('${jobData.employer.hired} Successful Hires',
   
-            style: GoogleFonts.lato(fontSize: 13.0, color: Colors.black54)),
+        //     style: GoogleFonts.lato(fontSize: 13.0, color: Colors.black54)),
   
-        const SizedBox(
+        // const SizedBox(
   
-          height: 18.0,
+        //   height: 18.0,
   
-        ),
+        // ),
   
         Text('Reviews',
   

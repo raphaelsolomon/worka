@@ -202,7 +202,7 @@ class _RedesignLanguageState extends State<RedesignLanguage> {
       isLoading = true;
     });
     try {
-      final res = await Dio().post('${ROOT}add/',
+      final res = await Dio().post('${ROOT}addlanguage/',
           data: data,
           options: Options(headers: {
             'Authorization': 'TOKEN ${context.read<Controller>().token}'

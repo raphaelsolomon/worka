@@ -23,6 +23,7 @@ class RedesignResume extends StatefulWidget {
 class _RedesignResumeState extends State<RedesignResume> {
   bool isAvailable = true;
   File path = File('');
+  String size = '0.00kb';
 
   @override
   void initState() {
@@ -84,9 +85,9 @@ class _RedesignResumeState extends State<RedesignResume> {
                           allowedExtensions: ['pdf'],
                         );
                         if (result != null) {
-                          setState(() {
                             path = File(result.files.single.path!);
-                          });
+                            size = await getFileSize(path.path, 1);
+                          setState(() {});
                         } else {
                           // User canceled the picker
                         }
@@ -156,20 +157,24 @@ class _RedesignResumeState extends State<RedesignResume> {
                                 Text(
                                   path.path == ''
                                       ? '0.00 byte'
-                                      : '${getFileSize(path.path, 1)}',
+                                      : '${size}',
                                   style: GoogleFonts.lato(
                                       color: Colors.black54, fontSize: 12.0),
                                 ),
                               ],
                             ),
                           ),
-                          Icon(
-                            Icons.cancel_outlined,
-                            color: Colors.redAccent,
+                          GestureDetector(
+                            onTap: () => setState(() {
+                              path = File(''); 
+                            }),
+                            child: Icon(
+                              Icons.cancel_outlined,
+                              color: Colors.redAccent,
+                              size: 20.0
+                            ),
                           ),
-                          const SizedBox(
-                            width: 20.0,
-                          ),
+                          
                         ],
                       ),
                     ),

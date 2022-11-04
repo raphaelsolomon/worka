@@ -12,7 +12,7 @@ class GeneralButtonContainer extends StatelessWidget {
       required this.paddingTop,
       required this.paddingRight,
       required this.paddingBottom,
-      this.radius = 11.0});
+      this.radius = 8.0});
 
   final String name;
   final VoidCallback onPress;
@@ -30,9 +30,9 @@ class GeneralButtonContainer extends StatelessWidget {
       onTap: onPress,
       child: Padding(
         padding: EdgeInsets.fromLTRB(
-            paddingLeft, paddingTop, paddingRight, paddingBottom),
+            20.0, paddingTop, 20.0, paddingBottom),
         child: Container(
-          width: 200,
+          width: MediaQuery.of(context).size.width,
           height: 45,
           alignment: Alignment.center,
           decoration: BoxDecoration(

@@ -28,6 +28,8 @@ class RegistrationPage extends StatefulWidget {
 
 class _RegistrationPageState extends State<RegistrationPage> {
   final GlobalKey<FormState> _formKey = GlobalKey();
+  bool isPass1 = true;
+  bool isPass2 = true;
   final firstNameController = TextEditingController();
   final middleNameController = TextEditingController();
   final surNameController = TextEditingController();
@@ -297,16 +299,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     getCardFormPassword(
                       'Confirm Password',
                       'Confirm Password',
-                      false,
                       ctl: passwordController,
                     ),
                     const SizedBox(
                       height: 15.0,
                     ),
-                    getCardFormPassword(
+                    getCardFormPassword1(
                       'Confirm Password',
                       'Confirm Password',
-                      false,
                       ctl: confirmPasswordController,
                     ),
                     const SizedBox(
@@ -627,7 +627,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 
-  getCardFormPassword(label, hint, hidePassword, {ctl}) {
+  getCardFormPassword(label, hint, {ctl}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: Column(
@@ -650,16 +650,65 @@ class _RegistrationPageState extends State<RegistrationPage> {
               controller: ctl,
               style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
               maxLines: 1,
-              obscureText: hidePassword,
+              obscureText: isPass1,
               keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
                   suffixIcon: IconButton(
                     onPressed: () => setState(() {
-                      hidePassword = !hidePassword;
+                      isPass1 = !isPass1;
                     }),
                     color: Colors.black,
                     icon: Icon(
-                      hidePassword ? Icons.visibility_off : Icons.visibility,
+                      isPass1 ? Icons.visibility_off : Icons.visibility,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  hintText: hint,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  hintStyle:
+                      GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+                  border: OutlineInputBorder(borderSide: BorderSide.none)),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  getCardFormPassword1(label, hint, {ctl}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10.0),
+          Container(
+            height: 48.0,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: DEFAULT_COLOR.withOpacity(.05)),
+            child: TextField(
+              controller: ctl,
+              style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+              maxLines: 1,
+              obscureText: isPass2,
+              keyboardType: TextInputType.visiblePassword,
+              decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    onPressed: () => setState(() {
+                      isPass2 = !isPass2;
+                    }),
+                    color: Colors.black,
+                    icon: Icon(
+                      isPass2 ? Icons.visibility_off : Icons.visibility,
                       size: 20,
                       color: Colors.grey,
                     ),

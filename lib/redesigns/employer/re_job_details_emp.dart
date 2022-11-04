@@ -27,7 +27,7 @@ class ReJobsDetails extends StatefulWidget {
 class _ReJobsDetailsState extends State<ReJobsDetails> {
   bool isJobDesc = true;
   final refresh = RefreshController();
-  bool isLoading = true;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -55,15 +55,18 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                       onTap: () => Get.back(),
                       child:
                           Icon(Icons.keyboard_backspace, color: DEFAULT_COLOR)),
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        border: Border.all(width: .5, color: Colors.black54)),
-                    child: Icon(
-                      Icons.bookmark_outline,
-                      color: Colors.black54,
-                      size: 18.0,
+                  Visibility(
+                    visible: false,
+                    child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          border: Border.all(width: .5, color: Colors.black54)),
+                      child: Icon(
+                        Icons.bookmark_outline,
+                        color: Colors.black54,
+                        size: 18.0,
+                      ),
                     ),
                   )
                 ],
@@ -97,12 +100,14 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                             const SizedBox(
                               height: 10.0,
                             ),
-                            Text(
-                              '${widget.jobs.title}'.capitalize!,
-                              style: GoogleFonts.lato(
-                                  fontSize: 19.0,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
+                            FittedBox(
+                              child: Text(
+                                '${widget.jobs.title}'.capitalize!,
+                                style: GoogleFonts.lato(
+                                    fontSize: 19.0,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                             const SizedBox(
                               height: 9.0,
@@ -111,12 +116,14 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Flexible(
-                                  child: Text(
-                                    '${widget.jobs.location}',
-                                    style: GoogleFonts.lato(
-                                        fontSize: 16.0,
-                                        color: Colors.black87,
-                                        fontWeight: FontWeight.w500),
+                                  child: FittedBox(
+                                    child: Text(
+                                      '${widget.jobs.location}',
+                                      style: GoogleFonts.lato(
+                                          fontSize: 16.0,
+                                          color: Colors.black87,
+                                          fontWeight: FontWeight.w500),
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(
@@ -133,7 +140,7 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                                     child: Text(
                                       '${widget.jobs.jobType}'.capitalize!,
                                       style: GoogleFonts.lato(
-                                          fontSize: 15.0,
+                                          fontSize: 13.0,
                                           color: DEFAULT_COLOR,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -309,13 +316,13 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                                   padding: const EdgeInsets.all(15.0),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10.0),
-                                      color: DEFAULT_COLOR_1),
+                                      color: Colors.redAccent),
                                   child: Center(
                                     child: Text(
                                       'Close Vacancy',
                                       style: GoogleFonts.lato(
                                           fontSize: 15.0,
-                                          color: Colors.redAccent),
+                                          color: Colors.white),
                                     ),
                                   )),
                             ),
@@ -340,10 +347,11 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
     try {
       final res = await http.Client().get(
           Uri.parse('${ROOT}close_job/${widget.jobs.jobKey}'),
-          headers: {'Authorization': c.read<Controller>().token});
+          headers: {'Authorization': 'TOKEN ${c.read<Controller>().token}'});
       if (res.statusCode == 200) {
         Get.off(
           () => Success(
+            
             'Job Closed Successfully..',
             callBack: () {
               Get.offAll(() => EmployerNav());
@@ -367,7 +375,7 @@ Widget getJobDescription(MyPosted jobs) =>
     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text('Job Description:',
           style: GoogleFonts.lato(
-              fontSize: 19.0,
+              fontSize: 15.0,
               color: Colors.black,
               fontWeight: FontWeight.bold)),
       const SizedBox(
@@ -380,7 +388,7 @@ Widget getJobDescription(MyPosted jobs) =>
       ),
       Text('Requirements:',
           style: GoogleFonts.lato(
-              fontSize: 19.0,
+              fontSize: 15.0,
               color: Colors.black,
               fontWeight: FontWeight.bold)),
       const SizedBox(
@@ -393,7 +401,7 @@ Widget getJobDescription(MyPosted jobs) =>
       ),
       Text('Qualification:',
           style: GoogleFonts.lato(
-              fontSize: 19.0,
+              fontSize: 15.0,
               color: Colors.black,
               fontWeight: FontWeight.bold)),
       const SizedBox(
@@ -406,7 +414,7 @@ Widget getJobDescription(MyPosted jobs) =>
       ),
       Text('Benefits:',
           style: GoogleFonts.lato(
-              fontSize: 19.0,
+              fontSize: 15.0,
               color: Colors.black,
               fontWeight: FontWeight.bold)),
       const SizedBox(
@@ -435,7 +443,7 @@ Widget getJobDescription(MyPosted jobs) =>
       ),
       Text('Required Skills:',
           style: GoogleFonts.lato(
-              fontSize: 19.0,
+              fontSize: 15.0,
               color: Colors.black,
               fontWeight: FontWeight.bold)),
       const SizedBox(

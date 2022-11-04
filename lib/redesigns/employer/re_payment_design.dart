@@ -123,7 +123,7 @@ class _RePaymentAndroidState extends State<RePaymentAndroid> {
                                           color: PLAN_PRICE[e.key]!['color'],
                                           fontWeight: FontWeight.w600)),
                                 ),
-                                Text('${PLAN_PRICE[e.key]!['price']}',
+                                Text('${PLAN_PRICE[e.key]!['amount']}',
                                     style: GoogleFonts.lato(
                                         fontSize: 20.0,
                                         color: Colors.black87.withOpacity(.6),
@@ -291,7 +291,7 @@ class _RePaymentAndroidState extends State<RePaymentAndroid> {
       charge: charge,
       fullscreen: false,
       logo: Image.asset(
-        'assets/logo.png',
+        'assets/editted.png',
         width: 50,
         height: 50,
         fit: BoxFit.cover,

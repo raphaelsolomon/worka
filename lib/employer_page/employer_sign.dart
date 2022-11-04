@@ -51,6 +51,8 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
 
   int pageCounter = 0;
 
+  final firstScroll = ScrollController();
+
   @override
   void dispose() {
     firstnameController.dispose();
@@ -68,6 +70,9 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
 
   @override
   void initState() {
+    firstScroll.addListener(() {
+      
+    });
     super.initState();
   }
 
@@ -123,6 +128,7 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
                   Flexible(
                       child: InkWell(
                     onTap: () {
+                      firstScroll.animateTo(0.0, duration: Duration(seconds: 1), curve: Curves.linear);
                       setState(() {
                         pageCounter = 0;
                       });
@@ -149,6 +155,7 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
                       child: InkWell(
                     onTap: () {
                       setState(() {
+                        firstScroll.animateTo(0.0, duration: Duration(seconds: 1), curve: Curves.linear);
                         pageCounter = 1;
                       });
                     },
@@ -183,6 +190,7 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
 
   buildPersonal() {
     return SingleChildScrollView(
+      controller: firstScroll,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Column(
@@ -246,6 +254,7 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
                 paddingHeight: 50,
                 name: 'Proceed',
                 onPress: () {
+                  firstScroll.animateTo(0.0, duration: Duration(seconds: 1), curve: Curves.linear);
                   setState(() {
                     pageCounter = 1;
                   });
@@ -263,26 +272,14 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
 
   buildContact() {
     return SingleChildScrollView(
+      controller: firstScroll,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0.0),
-              child: getCardForm('Company Email', 'Company Email',
-                  ctl: companyController),
-            ),
             const SizedBox(
-              height: 12.0,
-            ),
-            getCardFormPhone('Mobile Number', 'Mobile Number'),
-            const SizedBox(
-              height: 12.0,
-            ),
-            getCardForm('Website', 'Website', ctl: myControllerWebsite),
-            const SizedBox(
-              height: 12.0,
+              height: 10.0,
             ),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -294,21 +291,37 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
                       fontWeight: FontWeight.w600),
                 )),
             const SizedBox(height: 10.0),
-            buildCSC(),
+             buildCSC(),
             const SizedBox(
-              height: 12.0,
+              height: 15.0,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0.0),
+              child: getCardForm('Company Email', 'Company Email',
+                  ctl: companyController),
+            ),
+            const SizedBox(
+              height: 14.0,
+            ),
+            getCardFormPhone('Mobile Number', 'Mobile Number'),
+            const SizedBox(
+              height: 14.0,
+            ),
+            getCardForm('Website', 'Website', ctl: myControllerWebsite),
+            const SizedBox(
+              height: 14.0,
             ),
             getCardForm('Email', 'Email', ctl: emailController),
             const SizedBox(
-              height: 12.0,
+              height: 14.0,
             ),
-            getCardFormPassword('Password', 'Password', isPassVisible,
+            getCardFormPassword('Password', 'Password',
                 ctl: passwordController),
             const SizedBox(
-              height: 12.0,
+              height: 14.0,
             ),
-            getCardFormPassword(
-                'Confirm Password', 'Confirm Password', isCPassVisible,
+            getCardFormPassword1(
+                'Confirm Password', 'Confirm Password',
                 ctl: c_passwordController),
             const SizedBox(
               height: 7.0,
@@ -352,6 +365,7 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
                         paddingWidth: MediaQuery.of(context).size.width,
                         name: 'Back',
                         onPress: () {
+                          firstScroll.animateTo(0.0, duration: Duration(seconds: 1), curve: Curves.linear);
                           setState(() {
                             pageCounter = 0;
                           });
@@ -489,13 +503,11 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
         dropdownDecoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
             color: DEFAULT_COLOR.withOpacity(.05),
-            border:
-                Border.all(color: Color(0xFF1B6DF9).withOpacity(.2), width: 1)),
+            border: Border.all(color: Color(0xFF1B6DF9).withOpacity(.2), width: 0.0)),
         disabledDropdownDecoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10)),
             color: DEFAULT_COLOR.withOpacity(.05),
-            border:
-                Border.all(color: Color(0xFF1B6DF9).withOpacity(.2), width: 1)),
+            border: Border.all(color: Color(0xFF1B6DF9).withOpacity(.2), width: 0.0)),
 
         countrySearchPlaceholder: "Country",
         stateSearchPlaceholder: "State",
@@ -671,7 +683,7 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
     );
   }
 
-  getCardFormPassword(label, hint, hidePassword, {ctl}) {
+  getCardFormPassword(label, hint, {ctl}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0),
       child: Column(
@@ -694,16 +706,65 @@ class _EmployerSignUpState extends State<EmployerSignUp> {
               controller: ctl,
               style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
               maxLines: 1,
-              obscureText: hidePassword,
+              obscureText: isPassVisible,
               keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
                   suffixIcon: IconButton(
                     onPressed: () => setState(() {
-                      hidePassword = !hidePassword;
+                      isPassVisible = !isPassVisible;
                     }),
                     color: Colors.black,
                     icon: Icon(
-                      hidePassword ? Icons.visibility_off : Icons.visibility,
+                      isPassVisible ? Icons.visibility_off : Icons.visibility,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  hintText: hint,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  hintStyle:
+                      GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+                  border: OutlineInputBorder(borderSide: BorderSide.none)),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  getCardFormPassword1(label, hint, {ctl}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10.0),
+          Container(
+            height: 48.0,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: DEFAULT_COLOR.withOpacity(.05)),
+            child: TextField(
+              controller: ctl,
+              style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black45),
+              maxLines: 1,
+              obscureText: isCPassVisible,
+              keyboardType: TextInputType.visiblePassword,
+              decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    onPressed: () => setState(() {
+                      isCPassVisible = !isCPassVisible;
+                    }),
+                    color: Colors.black,
+                    icon: Icon(
+                      isCPassVisible ? Icons.visibility_off : Icons.visibility,
                       size: 20,
                       color: Colors.grey,
                     ),

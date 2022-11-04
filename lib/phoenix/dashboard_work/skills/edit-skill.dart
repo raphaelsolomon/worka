@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/src/provider.dart';
@@ -12,7 +14,6 @@ import 'package:worka/phoenix/model/ProfileModel.dart';
 
 import '../../Controller.dart';
 import '../../GeneralButtonContainer.dart';
-import '../../Resusable.dart';
 import '../Success.dart';
 
 class EditSkill extends StatefulWidget {
@@ -44,6 +45,7 @@ class _EditSkillState extends State<EditSkill> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
         body: SafeArea(
             child: Container(
       child: SingleChildScrollView(
@@ -75,37 +77,25 @@ class _EditSkillState extends State<EditSkill> {
           const SizedBox(height: 20.0),
           imageView('${context.watch<Controller>().avatar}', context),
           const SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text('Skills',
-                style: GoogleFonts.lato(
-                    fontSize: 14.0,
-                    color: Color(0xff0D30D9),
-                    decoration: TextDecoration.none)),
-          ),
+          CustomAutoGeneral('Add Skills', 'skills', skill_name),
           SizedBox(
             height: 10.0,
           ),
-          CustomAutoGeneral(context, 'Add Skills', 'skills', skill_name,
-              LanguageClass.getLocalOccupation(skill_name.text.trim())),
-          SizedBox(
-            height: 10.0,
-          ),
-          CustomDropDown(SILLSLEVEL, callBack: (s) {
+          inputDropDown(SILLSLEVEL, callBack: (s) {
             setState(() {
               level = s;
             });
-          }, hint: '${widget.skill.level}', name: 'Level'),
+          }, hint: '${widget.skill.level}', text: 'Level'),
           SizedBox(
             height: 10.0,
           ),
-          CustomDropDown(YEARS, callBack: (s) {
+          inputDropDown(YEARS, callBack: (s) {
             setState(() {
               year = s;
             });
           },
               hint: '${widget.skill.yearOfExperience} years',
-              name: 'Years of experience'),
+              text: 'Years of experience'),
           SizedBox(
             height: 10.0,
           ),
@@ -152,7 +142,7 @@ class _EditSkillState extends State<EditSkill> {
                     child: isLoading
                         ? Padding(
                             padding: const EdgeInsets.symmetric(vertical: 25.0),
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(color: DEFAULT_COLOR,),
                           )
                         : GeneralButtonContainer(
                             name: 'Delete',
@@ -228,5 +218,130 @@ class _EditSkillState extends State<EditSkill> {
       });
       context.read<Controller>().getprofileReview();
     }
+  }
+
+  Widget CustomAutoGeneral(hint, label, ctl) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Skills',
+              style: GoogleFonts.lato(
+                  fontSize: 15.0,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 10.0),
+            Container(
+              height: 45.0,
+              decoration: BoxDecoration(
+                color: DEFAULT_COLOR.withOpacity(.05),
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              margin: const EdgeInsets.only(top: 5.0),
+              child: TypeAheadField<String?>(
+                suggestionsBoxController: SuggestionsBoxController(),
+                hideSuggestionsOnKeyboardHide: true,
+                noItemsFoundBuilder: (context) => Container(
+                  height: 50,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Text('No Data Found',
+                        style: GoogleFonts.montserrat(
+                            color: Colors.grey, fontSize: 12)),
+                  ),
+                ),
+                suggestionsCallback: (pattern) async {
+                  return await LanguageClass.getLocalOccupation(pattern);
+                },
+                onSuggestionSelected: (suggestion) {
+                  setState(() {
+                    ctl.text = suggestion!;
+                  });
+                },
+                itemBuilder: (ctx, String? suggestion) => ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  title: Text('$suggestion',
+                      style: GoogleFonts.montserrat(
+                          fontSize: 15, color: Colors.grey)),
+                ),
+                textFieldConfiguration: TextFieldConfiguration(
+                  controller: ctl,
+                  autofocus: false,
+                  style: GoogleFonts.montserrat(
+                      fontSize: 15.0, color: Colors.grey),
+                  decoration: InputDecoration(
+                    filled: false,
+                    hintText: 'Search for skills',
+                    suffixIcon: Icon(Icons.search, color: Colors.black54),
+                    labelStyle: GoogleFonts.montserrat(
+                        fontSize: 15.0, color: Colors.black54),
+                    hintStyle: GoogleFonts.montserrat(
+                        fontSize: 14.0, color: Colors.black54),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 9.9, vertical: 5.0),
+                    border: OutlineInputBorder(borderSide: BorderSide.none),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget inputDropDown(List<String> list,
+      {text = 'Select Level', hint = 'Level', callBack}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$text',
+            style: GoogleFonts.lato(
+                fontSize: 15.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(
+            height: 10.0,
+          ),
+          Container(
+            height: 45.0,
+            decoration: BoxDecoration(
+              color: DEFAULT_COLOR.withOpacity(.05),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: FormBuilderDropdown(
+              name: 'dropDown',
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                color: Colors.black,
+              ),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(horizontal: 15.0),
+                border: OutlineInputBorder(borderSide: BorderSide.none),
+              ),
+              // initialValue: 'Male',
+              onChanged: (s) => callBack(s),
+              hint: Text('$hint',
+                  style:
+                      GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+              items: list
+                  .map((s) => DropdownMenuItem(
+                        value: s,
+                        child: Text(
+                          '$s',
+                          style: GoogleFonts.lato(
+                              fontSize: 15.0, color: Colors.black54),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

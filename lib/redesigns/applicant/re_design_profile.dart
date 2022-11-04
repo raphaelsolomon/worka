@@ -853,7 +853,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                                   .start,
                                                           children: [
                                                             Text(
-                                                              '${profileModel!.language![i].language}',
+                                                              '${profileModel!.language![i].language}'.capitalize!,
                                                               style: GoogleFonts.lato(
                                                                   fontSize:
                                                                       16.0,
@@ -867,7 +867,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                               height: 6.0,
                                                             ),
                                                             Text(
-                                                              '${profileModel!.language![i].level}',
+                                                              '${profileModel!.language![i].level}'.capitalize!,
                                                               style: GoogleFonts.lato(
                                                                   fontSize:
                                                                       13.0,
@@ -1077,32 +1077,14 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                                       children: [
                                                         Text(
                                                           '${p.basename(profileModel!.cv!)}',
-                                                          style: GoogleFonts
-                                                              .lato(
+                                                          style: GoogleFonts.lato(
                                                                   color: Colors
                                                                       .black54,
                                                                   fontSize:
                                                                       15.0),
-                                                        ),
-                                                        Text(
-                                                          '',
-                                                          style: GoogleFonts
-                                                              .lato(
-                                                                  color: Colors
-                                                                      .black54,
-                                                                  fontSize:
-                                                                      12.0),
-                                                        ),
+                                                        )
                                                       ],
                                                     ),
-                                                  ),
-                                                  Icon(
-                                                    Icons.cancel_outlined,
-                                                    size: 18.0,
-                                                    color: Colors.redAccent,
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 20.0,
                                                   ),
                                                 ],
                                               ),
