@@ -376,8 +376,13 @@ class _RePaymentiOSState extends State<RePaymentiOS> {
                                       int.parse(purchaseDetailsList[index]
                                           .transactionDate!))))
                               : _PLAN_PRICE[e.key]!['isSelected']
-                                  ? CircularProgressIndicator(
-                                      color: DEFAULT_COLOR,
+                                  ? SizedBox(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          color: DEFAULT_COLOR,
+                                        ),
+                                      ),
                                     )
                                   : GestureDetector(
                                       onTap: () => selectButton(
@@ -448,7 +453,9 @@ class _RePaymentiOSState extends State<RePaymentiOS> {
       final PurchaseParam purchaseParam =
           PurchaseParam(productDetails: productDetail);
       InAppPurchase.instance.buyConsumable(purchaseParam: purchaseParam);
-    } catch (e) {}
+    } catch (e) {
+      setState(() => _PLAN_PRICE[key]!['isSelected'] = false);
+    }
   }
 
   void updatePlan(String plan, String ref, BuildContext context) async {
@@ -467,6 +474,7 @@ class _RePaymentiOSState extends State<RePaymentiOS> {
             }));
       }
     } catch (e) {
+      setState(() => _PLAN_PRICE[key]!['isSelected'] = false);
       return CoolAlert.show(
           context: context,
           type: CoolAlertType.error,

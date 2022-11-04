@@ -150,7 +150,7 @@ class _ReHomePageState extends State<ReHomePage> {
                                 CircularProgressIndicator(color: DEFAULT_COLOR))
                         : Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 25.0),
+                                const EdgeInsets.symmetric(horizontal: 18.0),
                             child: SmartRefresher(
                               controller: controller,
                               onRefresh: () => fetchData(context)

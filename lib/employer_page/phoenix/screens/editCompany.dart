@@ -119,7 +119,7 @@ class _EditCompanyState extends State<EditCompany> {
                   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: getCardForm('Last Name', 'Last name', ctl: lname)),
-                  SizedBox(height: 7.0),
+                 SizedBox(height: 13.0),
                   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: getCardForm('Company Name', 'Company Name',
@@ -130,13 +130,23 @@ class _EditCompanyState extends State<EditCompany> {
                     child: getCardForm('E-mail Address', 'E-mail Address',
                         ctl: email, read: true),
                   ),
-                  SizedBox(height: 10.0),
+                  SizedBox(height: 13.0),
+                  Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Text(
+                  'Country, State and City',
+                  style: GoogleFonts.lato(
+                      fontSize: 15.0,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w600),
+                )),
+            const SizedBox(height: 10.0),
                   buildCSC(),
-                  SizedBox(height: 7.0),
+                  SizedBox(height: 13.0),
                   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: getCardFormPhone('Mobile Number', phoneNumber, ctl: phone)),
-                  SizedBox(height: 7.0),
+                 SizedBox(height: 13.0),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: getCardDropForm('Industries', INDUSTRY_ITEMS,
@@ -147,12 +157,12 @@ class _EditCompanyState extends State<EditCompany> {
                               })
                             }),
                   ),
-                  SizedBox(height: 7.0),
+                 SizedBox(height: 13.0),
                   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: getCardForm('Company Website', 'Company Website',
                           ctl: website)),
-                  SizedBox(height: 7.0),
+                  SizedBox(height: 13.0),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: getCardDropForm('Position', POSITIONITEM,
@@ -163,7 +173,7 @@ class _EditCompanyState extends State<EditCompany> {
                               })
                             }),
                   ),
-                  SizedBox(height: 7.0),
+                  SizedBox(height: 13.0),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: getCardDropForm('Business Scale', BUSINESSSCALE,
@@ -174,7 +184,7 @@ class _EditCompanyState extends State<EditCompany> {
                               })
                             }),
                   ),
-                  SizedBox(height: 7.0),
+                 SizedBox(height: 13.0),
                   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: getCardRichForm(
@@ -217,14 +227,12 @@ class _EditCompanyState extends State<EditCompany> {
         flagState: CountryFlag.DISABLE,
         dropdownDecoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
-            color: Colors.white,
-            border:
-                Border.all(color: Color(0xFF1B6DF9).withOpacity(.2), width: 1)),
+            color: DEFAULT_COLOR.withOpacity(.05),
+            border: Border.all(color: Color(0xFF1B6DF9).withOpacity(.2), width: 0.0)),
         disabledDropdownDecoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10)),
-            color: Colors.white,
-            border:
-                Border.all(color: Color(0xFF1B6DF9).withOpacity(.2), width: 1)),
+            color: DEFAULT_COLOR.withOpacity(.05),
+            border: Border.all(color: Color(0xFF1B6DF9).withOpacity(.2), width: 0.0)),
 
         countrySearchPlaceholder: "Country",
         stateSearchPlaceholder: "State",
@@ -356,7 +364,7 @@ class _EditCompanyState extends State<EditCompany> {
 
   getCardFormPhone(label, initialValue, {ctl}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
