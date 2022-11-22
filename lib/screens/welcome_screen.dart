@@ -86,7 +86,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 15.0, bottom: 10.0),
                 child: Image.asset(
-                  'assets/black.png',
+                  'assets/fonts/Logo.png',
                   height: 280,
                   width: 280,
                   fit: BoxFit.contain,
