@@ -63,7 +63,8 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                     padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
-                        border: Border.all(width: .5, color: Colors.black54)),
+                        border:
+                            Border.all(width: .5, color: Colors.transparent)),
                     child: Icon(
                       null,
                       color: Colors.black54,
@@ -137,7 +138,8 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                                                 style: GoogleFonts.lato(
                                                     fontSize: 16.0,
                                                     color: Colors.black87,
-                                                    fontWeight: FontWeight.w500),
+                                                    fontWeight:
+                                                        FontWeight.w500),
                                               ),
                                             ),
                                           ),
@@ -280,7 +282,8 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                                 ),
                                 isJobDesc
                                     ? getJobDescription(jobDetails!.jobData)
-                                    : getAboutCompany(jobDetails!.jobData, context),
+                                    : getAboutCompany(
+                                        jobDetails!.jobData, context),
                                 const SizedBox(
                                   height: 25.0,
                                 ),
@@ -295,7 +298,8 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                                     : GestureDetector(
                                         onTap: jobDetails!.applied
                                             ? () {}
-                                            : () => Get.to(() => ReApplyJob(jobDetails!.jobData.jobKey)),
+                                            : () => Get.to(() => ReApplyJob(
+                                                jobDetails!.jobData.jobKey)),
                                         child: Container(
                                             width: MediaQuery.of(context)
                                                 .size
@@ -309,7 +313,9 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                                                     : DEFAULT_COLOR),
                                             child: Center(
                                               child: Text(
-                                                jobDetails!.applied ? 'Applied' : 'Apply Now',
+                                                jobDetails!.applied
+                                                    ? 'Applied'
+                                                    : 'Apply Now',
                                                 style: GoogleFonts.lato(
                                                     fontSize: 15.0,
                                                     color: jobDetails!.applied
@@ -334,169 +340,149 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
 }
 
 Widget getAboutCompany(JobData jobData, BuildContext context) => SizedBox(
-  width: MediaQuery.of(context).size.width,
-  child:   Column(
-  
-    crossAxisAlignment: CrossAxisAlignment.start,
-  
-    mainAxisSize: MainAxisSize.max,
-  
-    children: [
-  
-        Text('About',
-  
-            style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
-  
-        const SizedBox(
-  
-          height: 10.0,
-  
-        ),
-  
-        Text(jobData.employer.companyProfile,
-  
-            style: GoogleFonts.lato(fontSize: 13.0, color: Colors.black54)),
-  
-        const SizedBox(
-  
-          height: 18.0,
-  
-        ),
-  
-        // Text('Successful Hires:',
-  
-        //     style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
-  
-        // const SizedBox(
-  
-        //   height: 10.0,
-  
-        // ),
-  
-        // Text('${jobData.employer.hired} Successful Hires',
-  
-        //     style: GoogleFonts.lato(fontSize: 13.0, color: Colors.black54)),
-  
-        // const SizedBox(
-  
-        //   height: 18.0,
-  
-        // ),
-  
-        Text('Reviews',
-  
-            style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
-  
-        const SizedBox(
-  
-          height: 10.0,
-  
-        ),
-  
-        RatingBar.builder(
-  
-          initialRating: double.parse('${jobData.employer.reviews}'),
-  
-          minRating: 1,
-  
-          itemSize: 15.0,
-  
-          direction: Axis.horizontal,
-  
-          allowHalfRating: true,
-  
-          itemCount: 5,
-  
-          updateOnDrag: false,
-  
-          ignoreGestures: true,
-  
-          itemPadding: EdgeInsets.symmetric(horizontal: 0.0),
-  
-          itemBuilder: (context, _) => Icon(Icons.star, color: Colors.amber),
-  
-          onRatingUpdate: (rating) {
-  
-            print(rating);
-  
-          },
-  
-        ),
-  
-        SizedBox(
-  
-          height: 30.0,
-  
-        )
-  
-      ]),
-);
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Text('About',
+                style: GoogleFonts.lato(
+                    fontSize: 17.0,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold)),
+
+            const SizedBox(
+              height: 10.0,
+            ),
+
+            Text(jobData.employer.companyProfile,
+                style: GoogleFonts.lato(fontSize: 13.0, color: Colors.black54)),
+
+            const SizedBox(
+              height: 18.0,
+            ),
+
+            // Text('Successful Hires:',
+
+            //     style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+
+            // const SizedBox(
+
+            //   height: 10.0,
+
+            // ),
+
+            // Text('${jobData.employer.hired} Successful Hires',
+
+            //     style: GoogleFonts.lato(fontSize: 13.0, color: Colors.black54)),
+
+            // const SizedBox(
+
+            //   height: 18.0,
+
+            // ),
+
+            Text('Reviews',
+                style: GoogleFonts.lato(
+                    fontSize: 17.0,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold)),
+
+            const SizedBox(
+              height: 10.0,
+            ),
+
+            RatingBar.builder(
+              initialRating: double.parse('${jobData.employer.reviews}'),
+              minRating: 1,
+              itemSize: 15.0,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemCount: 5,
+              updateOnDrag: false,
+              ignoreGestures: true,
+              itemPadding: EdgeInsets.symmetric(horizontal: 0.0),
+              itemBuilder: (context, _) =>
+                  Icon(Icons.star, color: Colors.amber),
+              onRatingUpdate: (rating) {
+                print(rating);
+              },
+            ),
+
+            SizedBox(
+              height: 30.0,
+            )
+          ]),
+    );
 
 Widget getJobDescription(JobData jobData) =>
     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text('Job Description:',
           style: GoogleFonts.lato(
-              fontSize: 19.0,
+              fontSize: 17.0,
               color: Colors.black,
               fontWeight: FontWeight.bold)),
       const SizedBox(
         height: 10.0,
       ),
       Text('${jobData.description}',
-          style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+          style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black54)),
       const SizedBox(
         height: 18.0,
       ),
       Text('Requirements:',
           style: GoogleFonts.lato(
-              fontSize: 19.0,
+              fontSize: 17.0,
               color: Colors.black,
               fontWeight: FontWeight.bold)),
       const SizedBox(
         height: 10.0,
       ),
       Text('${jobData.requirement}',
-          style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+          style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black54)),
       const SizedBox(
         height: 18.0,
       ),
       Text('Qualification:',
           style: GoogleFonts.lato(
-              fontSize: 19.0,
+              fontSize: 17.0,
               color: Colors.black,
               fontWeight: FontWeight.bold)),
       const SizedBox(
         height: 10.0,
       ),
       Text('${jobData.qualification}',
-          style: GoogleFonts.lato(fontSize: 15.0, color: Colors.black54)),
+          style: GoogleFonts.lato(fontSize: 14.0, color: Colors.black54)),
       const SizedBox(
         height: 18.0,
       ),
       Text('Benefits:',
           style: GoogleFonts.lato(
-              fontSize: 19.0,
+              fontSize: 17.0,
               color: Colors.black,
               fontWeight: FontWeight.bold)),
       const SizedBox(
         height: 10.0,
       ),
       ...List.generate(jobData.benefit.toString().split(', ').length, (i) {
-        return Row(
-          children: [
-            Icon(
-              Icons.shield_outlined,
-              color: DEFAULT_COLOR,
-            ),
-            const SizedBox(
-              width: 10.0,
-            ),
-            Flexible(
-              child: Text('${jobData.benefit.toString().split(', ')[i]}',
-                  style:
-                      GoogleFonts.lato(fontSize: 16.0, color: Colors.black54)),
-            )
-          ],
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 3.0),
+          child: Row(
+            children: [
+              Icon(
+                Icons.shield_outlined,
+                color: DEFAULT_COLOR,
+              ),
+              const SizedBox(
+                width: 10.0,
+              ),
+              Flexible(
+                child: Text('${jobData.benefit.toString().split(', ')[i]}',
+                    style: GoogleFonts.lato(
+                        fontSize: 16.0, color: Colors.black54)),
+              )
+            ],
+          ),
         );
       }),
       const SizedBox(
@@ -504,7 +490,7 @@ Widget getJobDescription(JobData jobData) =>
       ),
       Text('Required Skills:',
           style: GoogleFonts.lato(
-              fontSize: 19.0,
+              fontSize: 17.0,
               color: Colors.black,
               fontWeight: FontWeight.bold)),
       const SizedBox(
@@ -526,7 +512,7 @@ Widget getJobDescription(JobData jobData) =>
                   children: [
                     Text('Production',
                         style: GoogleFonts.lato(
-                            fontSize: 15.0, color: DEFAULT_COLOR)),
+                            fontSize: 14.0, color: DEFAULT_COLOR)),
                     const SizedBox(width: 15.0),
                     Text('x',
                         style: GoogleFonts.lato(

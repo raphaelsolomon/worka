@@ -45,7 +45,7 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
       lname.text = widget.profileModel.lastName!;
       oname.text = widget.profileModel.otherName!;
       name.text = widget.profileModel.keySkills!;
-      contactController.text = phoneNumber!.phoneNumber!;
+      contactController.text = '';
       isPageLoaded = false;
     })));
     super.initState();
@@ -174,9 +174,11 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
   }
 
   void executeThis() async {
+
     setState(() {
       isLoading = true;
     });
+    
     try {
       final res = await Dio().post('${ROOT}employeedetails/',
           data: {
@@ -185,7 +187,7 @@ class _ReApplicantProfileEditState extends State<ReApplicantProfileEdit> {
             'first_name': fname.text.trim(),
             'last_name': lname.text.trim(),
             'other_name': oname.text.trim(),
-            'phone': contactController.text,
+            'phone':'+${phoneNumber!.dialCode} ${contactController.text}',
             'gender': widget.profileModel.gender.toString(),
             'display_picture': widget.profileModel.displayPicture.toString(),
             'location': widget.profileModel.location,

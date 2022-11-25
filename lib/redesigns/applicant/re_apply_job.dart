@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -33,6 +35,8 @@ class _ReApplyJobState extends State<ReApplyJob> {
   final email = TextEditingController();
   final fname = TextEditingController();
   final lastname = TextEditingController();
+  File path = File('');
+  String size = '0.00kb';
 
   _fetchProfile() async {
     return await context.read<Controller>().getprofileReview();
@@ -43,8 +47,8 @@ class _ReApplyJobState extends State<ReApplyJob> {
     _fetchProfile().then((value) => setState(() {
           profileModel = value;
           pageLoading = false;
-          lastname.text = value.lastname!;
-          fname.text = value.fname!;
+          lastname.text = profileModel!.lastName!;
+          fname.text = profileModel!.firstName!;
           email.text = profileModel!.user!.email!;
           coverLetter.text = profileModel!.profileSummary!;
         }));
@@ -109,7 +113,7 @@ class _ReApplyJobState extends State<ReApplyJob> {
                               const SizedBox(
                                 height: 25.0,
                               ),
-                              inputWidgetRich(
+                              inputWidget(
                                   text: 'Last name',
                                   icons: Icons.shopping_basket,
                                   hint: 'Last name',
@@ -117,7 +121,7 @@ class _ReApplyJobState extends State<ReApplyJob> {
                               const SizedBox(
                                 height: 25.0,
                               ),
-                              inputWidgetRich(
+                              inputWidget(
                                   text: 'E-mail Address',
                                   icons: Icons.school_outlined,
                                   hint: 'E-mail Address',
@@ -135,7 +139,20 @@ class _ReApplyJobState extends State<ReApplyJob> {
                               ),
                               isUpload
                                   ? GestureDetector(
-                                      onTap: () async {},
+                                      onTap: () async {
+                                        final result = await FilePicker.platform.pickFiles(
+                          allowMultiple: false,
+                          type: FileType.custom,
+                          allowedExtensions: ['pdf'],
+                        );
+                        if (result != null) {
+                            path = File(result.files.single.path!);
+                            size = await getFileSize(path.path, 1);
+                          setState(() {});
+                        } else {
+                          // User canceled the picker
+                        }
+                                      },
                                       child: Container(
                                         padding: const EdgeInsets.all(15.0),
                                         decoration: BoxDecoration(
@@ -256,7 +273,7 @@ class _ReApplyJobState extends State<ReApplyJob> {
   void showpopUp() {
     showDialog(
         context: context,
-        barrierDismissible: false,
+        barrierDismissible: true,
         builder: (BuildContext context) => Stack(
               alignment: Alignment.center,
               children: <Widget>[
@@ -266,7 +283,7 @@ class _ReApplyJobState extends State<ReApplyJob> {
                       40), // to push the box half way below circle
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   padding: const EdgeInsets.only(
                       top: 15, left: 20, right: 20), // spacing inside the box
@@ -305,6 +322,7 @@ class _ReApplyJobState extends State<ReApplyJob> {
                           height: 10.0,
                         ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               'A ',
@@ -401,7 +419,7 @@ class _ReApplyJobState extends State<ReApplyJob> {
               child: Text(
                 'Pdf, Doc, Jpeg, Png ( Max 10mb)',
                 style: GoogleFonts.lato(
-                    fontSize: 15.0,
+                    fontSize: 13.0,
                     color: Colors.black54,
                     fontWeight: FontWeight.bold),
               ),
@@ -488,5 +506,17 @@ class _ReApplyJobState extends State<ReApplyJob> {
         )
       ],
     );
+  }
+
+   getFileSize(String filepath, int decimals) {
+    var file = File(filepath);
+    return file.length().then((bytes) {
+      if (bytes <= 0) return "0 B";
+      const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+      var i = (log(bytes) / log(1024)).floor();
+      return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) +
+          ' ' +
+          suffixes[i];
+    });
   }
 }

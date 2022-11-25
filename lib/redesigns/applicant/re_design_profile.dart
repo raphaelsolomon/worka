@@ -103,7 +103,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                     ))
                   : SmartRefresher(
                       controller: refresh,
-                      header: WaterDropHeader(),
+                      header: WaterDropHeader(waterDropColor: DEFAULT_COLOR,),
                       onRefresh: () =>
                           _fetchProfile().then((value) => setState(() {
                                 profileModel = value;
@@ -192,7 +192,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     'Contact Information',
                                     Icons.person,
                                     () => Get.to(() => null),
-                                    allList[9])),
+                                    allList[9], false)),
                             //============contact information============
                             allList[9] ? _contactInfo() : SizedBox(),
                             GestureDetector(
@@ -208,9 +208,9 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                 child: _items(
                                     'Professional Summary',
                                     Icons.book_rounded,
-                                    () => Get.to(() =>
-                                        ProfessionalSummary('', profileModel!)),
-                                    allList[0])),
+                                    () => profileModel!.profileSummary!.isNotEmpty? Get.to(() =>
+                                              ProfessionalSummary('${profileModel!.profileSummary!}', profileModel!)) : Get.to(() =>ProfessionalSummary('', profileModel!)),
+                                    allList[0], profileModel!.profileSummary!.isNotEmpty)),
                             //============professional summary============
                             allList[0]
                                 ? Padding(
@@ -253,7 +253,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     Icons.book,
                                     () => Get.to(
                                         () => RedesignEducation(isEdit: false)),
-                                    allList[1])),
+                                    allList[1], false)),
                             allList[1]
                                 ? Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -373,7 +373,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     Icons.work_history,
                                     () => Get.to(() =>
                                         RedesignExperience(isEdit: false)),
-                                    allList[2])),
+                                    allList[2], false)),
                             //======================Experience==================
                             allList[2]
                                 ? Padding(
@@ -495,7 +495,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     'Skills',
                                     Icons.trending_down,
                                     () => Get.to(() => AddSkills()),
-                                    allList[10])),
+                                    allList[10], false)),
                             //===========================SKILLS===========================
                             allList[10]
                                 ? Padding(
@@ -608,7 +608,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     () => Get.to(() => RedesignSkills(
                                         profileModel!,
                                         isEdit: false)),
-                                    allList[3])),
+                                    allList[3], false)),
                             //===========================KEY SKILLS===========================
                             allList[3]
                                 ? Padding(
@@ -684,7 +684,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     Icons.star_border_outlined,
                                     () => Get.to(() => Redesigncertification(
                                         isEdit: false, eModel: null)),
-                                    allList[4])),
+                                    allList[4], false)),
                             //======================Cerification==================
                             allList[4]
                                 ? Padding(
@@ -807,7 +807,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     Icons.person,
                                     () => Get.to(
                                         () => RedesignLanguage(isEdit: false)),
-                                    allList[5])),
+                                    allList[5], false)),
                             //======================Experience==================
                             allList[5]
                                 ? Padding(
@@ -914,7 +914,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     () => Get.to(() => RedesignAvailability(
                                         profileModel!,
                                         edit: false)),
-                                    allList[6])),
+                                    allList[6], false)),
                             //======================Availability==================
                             allList[6]
                                 ? Padding(
@@ -1026,7 +1026,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                     Icons.file_open,
                                     () => Get.to(
                                         () => RedesignResume(isEdit: false)),
-                                    allList[7])),
+                                    allList[7], false)),
                             //======================RESUME/CV==================
                             allList[7]
                                 ? Padding(
@@ -1107,9 +1107,9 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                                 child: _items(
                                     'Additional Information',
                                     Icons.person_add,
-                                    () => Get.to(() => AdditionalInformation(
-                                        '', profileModel!)),
-                                    allList[8])),
+                                    () =>profileModel!.about!.isNotEmpty ? Get.to(() =>
+                                            AdditionalInformation('${profileModel!.about!}', profileModel!)) : Get.to(() => AdditionalInformation('', profileModel!)),
+                                    allList[8], profileModel!.about!.isNotEmpty)),
                             //======================ADDITIONAL INFORMATION==================
                             allList[8]
                                 ? Padding(
@@ -1138,7 +1138,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
     );
   }
 
-  Widget _items(text, icon, callBack, isExpanded) => Padding(
+  Widget _items(text, icon, callBack, isExpanded, bool edit) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         child: !isExpanded
             ? Column(
@@ -1163,12 +1163,15 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                       const SizedBox(
                         width: 10.0,
                       ),
-                      GestureDetector(
-                        onTap: () => callBack(),
-                        child: Icon(
-                          Icons.add_circle_outline,
-                          color: DEFAULT_COLOR_1,
-                          size: 24.0,
+                      Visibility(
+                        visible: text != 'Contact Information',
+                        child: GestureDetector(
+                          onTap: () => callBack(),
+                          child: Icon(
+                           !edit ?Icons.add_circle_outline: Icons.edit_outlined,
+                            color: DEFAULT_COLOR_1,
+                            size: 24.0,
+                          ),
                         ),
                       )
                     ],
@@ -1205,12 +1208,15 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                     const SizedBox(
                       width: 10.0,
                     ),
-                    GestureDetector(
-                      onTap: () => callBack(),
-                      child: Icon(
-                        Icons.add_circle_outline,
-                        color: DEFAULT_COLOR_1,
-                        size: 24.0,
+                    Visibility(
+                      visible: text != 'Contact Information',
+                      child: GestureDetector(
+                        onTap: () => callBack(),
+                        child: Icon(
+                           !edit ?Icons.add_circle_outline: Icons.edit_outlined,
+                          color: DEFAULT_COLOR_1,
+                          size: 24.0,
+                        ),
                       ),
                     )
                   ],
@@ -1235,7 +1241,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                         GoogleFonts.lato(fontSize: 14.0, color: Colors.black54))
               ],
             ),
-            const SizedBox(height: 7.0),
+            const SizedBox(height: 9.0),
             Row(
               children: [
                 Icon(Icons.email_rounded, color: Colors.black54, size: 18.0),
@@ -1247,7 +1253,7 @@ class _ReApplicantProfileState extends State<ReApplicantProfile> {
                         GoogleFonts.lato(fontSize: 14.0, color: Colors.black54))
               ],
             ),
-            const SizedBox(height: 7.0),
+            const SizedBox(height: 9.0),
             Row(
               children: [
                 Icon(Icons.phone, color: Colors.black54, size: 18.0),

@@ -36,22 +36,24 @@ class _RePostJobsState extends State<RePostJobs> {
   String jobType = '';
   String categories = '';
   String currency = 'USD';
+  String salary_type = 'Annually';
   String stringStart = '';
   var jobTypeItem = ['Job Type', 'Full Time', 'Part Time', 'Contract'];
   var SALARY = [
-    '1.5M - 2M Annually',
-    '950K - 1.5M Annually',
-    '500K - 950K Annually',
-    '300k - 500k Monthly',
-    '150k - 300k Monthly',
-    '100K - 150k Monthly',
-    '50K - 80K Bi-Weekly',
-    '30K - 50K Bi-Weekly',
-    '15K - 30K Bi-Weekly',
-    '1K - 2k /hr',
-    '500 - 1k /hr',
-    '300 - 500 /hr'
+    '1.5M - 2M',
+    '950K - 1.5M',
+    '500K - 950K',
+    '300k - 500k',
+    '150k - 300k',
+    '100K - 150k',
+    '50K - 80K',
+    '30K - 50K',
+    '15K - 30K',
+    '1K - 2k',
+    '500 - 1k',
+    '300 - 500'
   ];
+  var SALARY_TYPE = ['Annually', 'Monthly', 'Weekly', 'Daily', 'Hourly'];
   var jobCategoryItem = [
     "Heritage, culture and libraries",
     "Transport, distribution and logistics",
@@ -221,6 +223,15 @@ class _RePostJobsState extends State<RePostJobs> {
                   const SizedBox(
                     height: 20.0,
                   ),
+                  inputDropDown(SALARY_TYPE,
+                      text: 'Salary Type',
+                      icons: Icons.shopping_bag,
+                      hint: 'Monthly', callBack: (s) {
+                    salary_type = s;
+                  }),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
                   inputDropDown(CURRENCY,
                       text: 'Choose Currency',
                       icons: Icons.shopping_bag,
@@ -316,24 +327,31 @@ class _RePostJobsState extends State<RePostJobs> {
                   const SizedBox(
                     height: 50.0,
                   ),
-                  GestureDetector(
-                    onTap: () async {
-                      executeData();
-                    },
-                    child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        padding: const EdgeInsets.all(15.0),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: DEFAULT_COLOR),
-                        child: Center(
-                          child: Text(
-                            'Submit',
-                            style: GoogleFonts.lato(
-                                fontSize: 15.0, color: Colors.white),
-                          ),
-                        )),
-                  ),
+                  Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: isLoading
+                          ? Center(
+                              child: CircularProgressIndicator(
+                              color: DEFAULT_COLOR,
+                            ))
+                          : GestureDetector(
+                              onTap: () async {
+                                executeData();
+                              },
+                              child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  padding: const EdgeInsets.all(15.0),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      color: DEFAULT_COLOR),
+                                  child: Center(
+                                    child: Text(
+                                      'Submit',
+                                      style: GoogleFonts.lato(
+                                          fontSize: 15.0, color: Colors.white),
+                                    ),
+                                  )),
+                            )),
                   const SizedBox(
                     height: 20.0,
                   ),
@@ -357,7 +375,7 @@ class _RePostJobsState extends State<RePostJobs> {
       'budget': '${budget.trim()}',
       'benefit': benefits.join(', '),
       'skills': skills.join(', '),
-      'salary_type': '$budget'.split(' ')[3].toLowerCase(),
+      'salary_type': salary_type.toLowerCase(),
       'currency': '$currency'.toLowerCase(),
       'is_remote': '${context.read<Controller>().isGraduate}',
       'expiry': '$stringStart',

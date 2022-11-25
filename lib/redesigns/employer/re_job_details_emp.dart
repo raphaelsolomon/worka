@@ -161,13 +161,16 @@ class _ReJobsDetailsState extends State<ReJobsDetails> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  widget.jobs.categories!,
-                                  style: GoogleFonts.lato(
-                                      fontSize: 14.0, color: Colors.black54),
+                                Flexible(
+                                  child: Text(
+                                    widget.jobs.categories!,
+                                    maxLines: 1,
+                                    style: GoogleFonts.lato(
+                                        fontSize: 14.0, color: Colors.black54),
+                                  ),
                                 ),
                                 const SizedBox(
-                                  width: 15.0,
+                                  width: 10.0,
                                 ),
                                 Text(
                                   '${widget.jobs.budget} ${widget.jobs.salary_type}',

@@ -51,7 +51,7 @@ class _SelectionPageState extends State<SelectionPage> {
             ),
             Image.asset(
                   'assets/fonts/Logo.png',
-                  width: 260.0,
+                  width: 160.0,
                   height: 100.0,
                   fit: BoxFit.contain,
                 ),
